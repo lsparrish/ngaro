@@ -31,23 +31,20 @@ default:
 	@echo
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 tools:
-	@echo Building additional tools...
 	@cd tools && make
 toka:
-	@echo Building Toka...
 	@cd toka && make
 image: toka tools
-	@echo Building Image...
 	@cd image && make
 	@mv image/retroImage* bin
 clean:
-	@echo Cleaning up...
 	@rm -f bin/retro
 	@rm -f bin/retro-fast
 	@rm -f bin/retro-fb
 	@rm -f bin/retroImage.map
 	@rm -f bin/retroImage
 	@rm -f toka/toka
+	@rm -f latest.tar.gz
 	@rm -f tools/fix-image
 	@cd vm/framebuffer && make clean
 	@cd vm/java && make clean
@@ -58,4 +55,6 @@ vm:
 fbvm:
 	@cd vm/framebuffer && make
 	@mv vm/framebuffer/retro-fb bin
+dist:
+	@git archive master | gzip -9 >latest.tar.gz
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
