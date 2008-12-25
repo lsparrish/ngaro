@@ -1,0 +1,203 @@
+#!  .----,   .-----  -------  .----,    ,---,
+#!  |     \  |          |     |     \  |     |
+#!  |-----/  |---       |     |-----/  |     |
+#!  |  \     |          |     |  \     |     |
+#!  |   \    |          |     |   \    |     |
+#!  |    \   `-----     |     |    \    `---'
+#! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#! This implements an assembler for the Ngaro VM and a
+#! cross-compiler providing a MachineForth language. The
+#! rest of Retro is written using this as a base.
+#! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#! This code was written by Charles Childers and is
+#! gifted to the public domain.
+#! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+reset
+
+5000000 is-data MAX-IMAGE
+
+value| heap origin imageFile mapFile lastop |
+
+
+#! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#! Bits related to building the image map
+#! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+[ ( $ -- )
+  SPACE string.appendChar
+  >r mapFile r> string.getLength file.write drop
+] is $log
+[ ( -- )
+  mapFile " \n" string.getLength file.write drop ] is \n
+#! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+#! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#! The assembler core
+#! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+[ ( n -- )
+  heap ! heap cell+ to heap ] is ,
+[ ( n "name" -- )
+  [ dup to lastop , ] +action ] is vm:
+
+ 0 vm: nop,          1 vm: lit,          2 vm: dup,
+ 3 vm: drop,         4 vm: swap,         5 vm: push,
+ 6 vm: pop,          7 vm: call,         8 vm: jump,
+ 9 vm: ;            10 vm: >jump,       11 vm: <jump,
+12 vm: !jump,       13 vm: =jump,       14 vm: @,
+15 vm: !,           16 vm: +,           17 vm: -,
+18 vm: *,           19 vm: /mod,        20 vm: and,
+21 vm: or,          22 vm: xor,         23 vm: <<,
+24 vm: >>,          25 vm: 0;           26 vm: 1+,
+27 vm: 1-,          28 vm: in,          29 vm: out,
+30 vm: wait,        98 vm: halt,
+#! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+[ ( -- n )
+  heap origin - cell-size / ] is here
+[ ( -- )
+  here origin cell+ ! ] is main:
+[ ( "name" -- )
+  here is-data
+  last @ :xt >string TAB string.appendChar $log
+  " LABEL:" $log last @ :name $log \n
+] is label:
+[ ( n -- )
+  lit, , ] is #
+[ ( $ -- )
+  string.getLength 0 swap [ dup c@ , char+ ] countedLoop
+  drop 0 , ] is $,
+#! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+#! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#! Assembler directives to mark the beginning and
+#! end of the assembly file.
+#! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+[ ( "NAME" -- )
+  MAX-IMAGE cells malloc keep to origin origin to heap
+  wsparse dup "W" file.open to imageFile
+  " .map" string.append "W" file.open to mapFile
+  jump, 0 ,
+] is begin
+
+[ ( -- )
+  imageFile origin heap origin - file.write imageFile file.close
+  heap origin - cell-size / . ." cells written. Goodbye!\n\n"
+  mapFile file.close bye
+] is end
+#! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+#! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#! Assembler Ends
+#! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+
+#! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#! The Cross-Compiler
+#!
+#! This is where the assembler is expanded into a
+#! MachineForth language.
+#! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+#! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#! Conditionals
+#! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+[ here cells origin + 0 , ] is conditional
+[ !jump, conditional ] is =if
+[ >jump, conditional ] is <if
+[ <jump, conditional ] is >if
+[ =jump, conditional ] is !if
+[ here swap ! nop, ] is then
+#! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+#! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#! Loops
+#! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+[ here ] is repeat
+[ jump, , ] is again
+#! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+#! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#! Colon Definitions
+#! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+{
+  variable getxt
+  [ getxt on ]
+  [ cell-size malloc here over ! nop, nop,
+    [ getxt @ [ @ ] [ call, @ , ] ifTrueFalse
+      getxt off
+    ] +action
+    last @ :xt cell+ @ @ >string TAB string.appendChar $log
+    " WORD:" $log last @ :name $log \n
+  ]
+} is :
+  is '
+
+
+#! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#! Variables
+#! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+[ label: , ] is variable:
+[ 0 variable: ] is variable
+
+
+#! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#! This is where we build the dictionary headers. There
+#! is also some code to mark the dictionary pointer
+#! and patch it at the end of the initial dictionary.
+#! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+value| 'WORD 'MACRO 'DATA 'INLINE link #entries |
+[ #entries 1 + to #entries ] is e+1
+[ e+1 here link , to link , , wsparse $, ] is entry
+[ 'WORD entry ] is word:
+[ 'MACRO entry ] is macro:
+[ 'DATA entry ] is data:
+[ 'INLINE entry ] is inline:
+#! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+[ link r> ! ] is patch-dictionary
+[ here cells origin + >r ] is mark-dictionary
+#! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+#! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#! Tail call elimination
+#!
+#! If the last opcode other than a ; was a call, we can
+#! safely remove the ; and change the call to a jump.
+#! This saves one cell per word ending in a call, and
+#! improves performance a bit by reducing the number of
+#! call/return pairs involved.
+#! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+value| TCE |
+
+[ TCE 1 + to TCE ] is +TCE
+[ lastop 8 <>
+  [ lastop 7 =
+    [ 8 here 2 - cells origin + ! +TCE ]
+    [ ; ]
+    ifTrueFalse
+  ] ifTrue
+] is ;
+#! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+#! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#! Some code to display a summary, and check for stack
+#! related bugs.
+#! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+[ depth 0 <> [ ." BUGS DETECTED!\n" ] ifTrue
+  #entries . ." entries\n"
+  TCE . ." tail calls eliminated\n"
+] is cross-summary
+#! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+#! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#! And finally, include the Retro source
+#! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include retro.forth

@@ -1,0 +1,29 @@
+#! /usr/bin/toka
+
+value| fid size image |
+
+
+( Exit if no arguments were passed                 )
+#args 1 > [ ." Try:\n  image2java.toka imagename\n" bye ] ifFalse
+
+
+( Get the size of the file, and adjust to the      )
+( number of cells, rather than the number of bytes )
+1 arglist array.get "R" file.open to fid
+fid file.size cell-size / to size
+fid file.close
+
+
+( Read the file into a buffer and set image to     )
+( point to it. We also tell Toka not to gc this    )
+( buffer                                           )
+1 arglist array.get file.slurp keep to image
+
+( For each cell in the image, read it, and output  )
+( a line like:  image[cell#]=value;                )
+[ ." memory[" i >string type ." ]=" >string type ." ;\n" ] is assign-cell
+[ 0 size [ image i cell-size * + @ dup 0 <> [ assign-cell ] [ drop ] ifTrueFalse ] countedLoop ] is process-image
+process-image
+
+( All done!                                        )
+bye

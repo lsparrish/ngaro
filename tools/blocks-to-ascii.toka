@@ -1,0 +1,54 @@
+#! /usr/bin/toka
+#! - - - - - - - - - - - - - - - - - - - - - -
+#! FILE: blocks-to-ascii.toka
+#!
+#! This is a Toka script to take a block file
+#! (named 'blocks') and create a plain ASCII
+#! 'blocks.txt' from it.
+#!
+#! It's part of my arsenal of tools to make
+#! dealing with blocks easier.
+#! - - - - - - - - - - - - - - - - - - - - - -
+#! This code is gifted to the public domain
+#! - - - - - - - - - - - - - - - - - - - - - -
+
+[  512 ] is #size
+[ 1024 ] is #blocks
+
+value| of blocks buffer |
+
+." Allocating space for ASCII block buffer...\n"
+  1024 512 * char-size * 1 + malloc keep to buffer
+
+." Loading blocks..,\n"
+  " blocks" file.slurp keep to blocks
+  " blocks.txt" "W" file.open to of
+
+." Converting to ASCII...\n"
+  0 1024 512 * [ blocks i cell-size * + @ buffer i char-size * + c! ] countedLoop
+
+." Writing ascii"
+  value idx
+  buffer to idx
+
+  [ 0 64 [ of " -" 1 file.write drop ] countedLoop of " \n" 1 file.write drop ] is ---
+
+  [ idx 64 + to idx ] is next
+  [ of idx 64 file.write drop of " \n" 1 file.write drop ] is dump-line
+
+[
+  0 1024
+  [ char: . emit
+    of " Block: " string.getLength file.write drop
+    of i >string " \n" string.append string.getLength file.write drop
+    ---
+    0 8 [ dump-line next ] countedLoop
+    ---
+  ] countedLoop
+  cr
+] is dump
+
+  dump
+  of file.close
+
+bye

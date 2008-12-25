@@ -1,0 +1,42 @@
+The Block Editor
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+This is a simple line-oriented block editor. I've used many
+variations of this editor since I started developing with Retro
+back in 2001.
+
+It's proven useful enough that I've actually implemented it on
+each Forth system I've used in the last few years. Several of
+these implementations can be found on the ForthFreak.net wiki.
+
+I'm quite happy to say that the editor has been rewritten and
+is now running happily on Retro 10.
+
+There are some nice bits this time around:
+
+  - Since Retro now uses images, the blocks are stored in the
+    image.
+  - Tools to extract and inject blocks from an image have been
+    written.
+  - All editing words are vectors, which should help allow for
+    easier extension of the core functionality.
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Loading It:
+
+  ./retro --with extras/bootstrap.toka
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Line and column numbers start at 0
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Quick Reference:
+
+     # s        Select a new block
+       p        Previous block
+       n        Next block
+     # i ..     Insert .. into line
+  # #2 ia ..    Insert .. into line [#2] starting at
+                column [#]
+       x        Erase the current block
+     # d        Erase the specified line
+       v        Display the current block
+       e        Evaluate Block
+       new      Erase all blocks
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

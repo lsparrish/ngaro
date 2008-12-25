@@ -1,0 +1,23 @@
+ .----,   .-----  -------  .----,    ,---,
+ |     \  |          |     |     \  |     |
+ |-----/  |---       |     |-----/  |     |
+ |  \     |          |     |  \     |     |
+ |   \    |          |     |   \    |     |
+ |    \   `-----     |     |    \    `---'
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Welcome!
+
+This is a small dialect of Forth. It's minimalistic in nature
+and is designed to be fairly easy to learn and customize for
+specific needs.
+
+There are two parts to Retro, an executable which provides the
+virtual machine, and an image file which contains the actual
+Retro language.
+
+The virtual machine includes a minimal image. If it can't
+find a retroImage and no other image is specified on the
+command line, it will start the minimal image.
+
+Docmentation can be found in the 'doc' directory.
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

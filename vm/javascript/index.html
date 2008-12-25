@@ -1,0 +1,46 @@
+<html>
+<head>
+<title>Retro Interpreter</title>
+<style>
+body
+  {
+    background: black;
+  }
+
+.display
+ {
+   color: green;
+   font-family: "Monaco", monospace;
+   font-style: normal;
+   font-variant: normal;
+   font-weight: normal;
+   font-size: normal;
+   line-height: 100%;
+   word-spacing: normal;
+   letter-spacing: normal;
+   text-decoration: none;
+   text-transform: none;
+   text-align: left;
+   text-indent: 0ex;
+ }
+</style>
+
+<![if !IE]>
+<script src="ngaro.js"></script>
+<![endif]>
+<!--[if IE]>
+<script src="ngaro_ie.js"></script>
+<![endif]-->
+
+<script src="retroImage.js"></script>
+<script>
+  initVM();
+  loadImage();
+  startVM();
+</script>
+</head>
+
+<body>
+  <p id="output" class="display"></p>
+</body>
+</html>

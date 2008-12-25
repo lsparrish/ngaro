@@ -1,0 +1,26 @@
+import java.awt.*;
+import java.applet.*;
+
+public class RetroApp extends Panel {
+  int sp, rsp, ip;
+  int data[], address[], ports[];
+  int memory[];
+
+  public static final int VM_NOP = 0;       public static final int VM_LIT = 1;       public static final int VM_DUP = 2;
+  public static final int VM_DROP = 3;      public static final int VM_SWAP = 4;      public static final int VM_PUSH = 5;
+  public static final int VM_POP = 6;       public static final int VM_CALL = 7;      public static final int VM_JUMP = 8;
+  public static final int VM_RETURN = 9;    public static final int VM_GT_JUMP = 10;  public static final int VM_LT_JUMP = 11;
+  public static final int VM_NE_JUMP = 12;  public static final int VM_EQ_JUMP = 13;  public static final int VM_FETCH = 14;
+  public static final int VM_STORE = 15;    public static final int VM_ADD = 16;      public static final int VM_SUB = 17;
+  public static final int VM_MUL = 18;      public static final int VM_DIVMOD = 19;   public static final int VM_AND = 20;
+  public static final int VM_OR = 21;       public static final int VM_XOR = 22;      public static final int VM_SHL = 23;
+  public static final int VM_SHR = 24;      public static final int VM_ZERO_EXIT = 25;public static final int VM_INC = 26;
+  public static final int VM_DEC = 27;      public static final int VM_IN = 28;       public static final int VM_OUT = 29;
+  public static final int VM_WAIT = 30;
+
+  TextArea tOutput = null;
+  TextArea tInput = null;
+  Button bEval = null;
+
+  public void retro()
+  {
