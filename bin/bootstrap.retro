@@ -36,6 +36,18 @@ create <list>  ( -- a )
 : { ( -- ) last @ <list> @ 1+ <list> + ! 1 <list> +! ;
 : } ( -- ) 1 <list> -! <list> @ 1+ <list> + @ last ! ;
 
+
+( ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ )
+( A somewhat more powerful scoping system                     )
+( ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ )
+( ... global scope ...                                        )
+( {{                                                          )
+(    ... local scope ...                                      )
+( ---reveal---                                                )
+(    ... global scope, with local scope still visible ...     )
+( }}                                                          )
+( ... global scope, local words not visible ...               )
+( ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ )
 : find-last-visible last repeat @ dup @ <list> 1+ @ =if ;; then again ;
 : {{ last @ <list> ! ;
 : ---reveal--- last @ <list> 1+ ! ;
