@@ -85,13 +85,12 @@ variable: heap     ( Starting address of the data/code heap )
 : t-0;                 compiling? 25 # t-, ;
 
 : .word   ( a- )
-  compiler # @, -1 # =if 7 # t-, t-, ; then push, ;
+  compiler # @, -1 # =if 7 # t-, t-, ; then execute ;
 : .inline ( a- )
   dup, @, 0 # !if .word ; then
-  compiler # @, -1 # =if 1+, 1+, @, t-, ; then
-  push, ;
+  compiler # @, -1 # =if 1+, 1+, @, t-, ; then execute ;
 : .macro  ( a- )
-   push, ;
+   execute ;
 : .data   ( a- )
    compiler # @, -1 # =if 1 # t-, t-, then ;
 
@@ -281,8 +280,8 @@ variable found
 #! ------------------------------------------------------------
 : :devector dup, 0 # swap, !, 1+, 0 # swap, !, ;
 : :is       dup, 8 # swap, !, 1+, !, ;
-: devector t-' :devector ; dup, 0 # swap, !, 1+, 0 # swap, !, ;
-: is       t-' :is ; dup, 8 # swap, !, 1+, !, ;
+: devector  t-' :devector ;
+: is        t-' :is ;
 #! ------------------------------------------------------------
 : save 1 # 4 # out, wait ;
 : bye jump, MAX-IMAGE , ;
