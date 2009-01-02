@@ -1,0 +1,6 @@
+( Test Suite for Retro                                        )
+( ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ )
+( This is intended to house a number of tests that should     )
+( help identify bugs introduced as a result of modifications  )
+( to the core Retro code.                                     )
+( ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ )
