@@ -4,3 +4,19 @@
 ( help identify bugs introduced as a result of modifications  )
 ( to the core Retro code.                                     )
 ( ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ )
+
+( Test vectors )
+: foo 1 . ;
+: bar 2 . ;
+
+foo
+' bar is foo
+foo
+devector foo
+foo
+
+bar
+' foo is bar
+bar
+devector bar
+bar
