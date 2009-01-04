@@ -57,4 +57,10 @@ fbvm:
 	@mv vm/framebuffer/retro-fb bin
 dist:
 	@git archive master | gzip -9 >latest.tar.gz
+	@mkdir retro-10.latest
+	@cd retro-10.latest && tar xvf ../latest.tar.gz
+	@rm -r latest.tar.gz
+	@tar cf latest.tar retro-10.latest
+	@gzip -9 latest.tar
+	@rm -rf retro-10.latest
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
