@@ -9,6 +9,23 @@ body
     width: 570px;
   }
 
+#front
+ {
+   display: block;
+ }
+#back
+ {
+ }
+
+#flip {
+    z-index: 99;
+    color: #FFFFFF;
+    font-family: "Monaco", monospace;
+    position:absolute;
+    bottom:5px;
+    right: 20px;
+}
+
 .display
  {
    color: #FFFFFF;
@@ -24,16 +41,30 @@ body
    text-transform: none;
    text-align: left;
    text-indent: 0ex;
-
    padding: 10px;
    height: 280px;
-   overflow: hidden;
+   overflow: none;
  }
 </style>
 
 <script src="ngaro.js"></script>
 <script src="retroImage.js"></script>
 <script>
+function toggle(obj) {
+	var el = document.getElementById(obj);
+	if ( el.style.display != 'none' ) {
+		el.style.display = 'none';
+	}
+	else {
+		el.style.display = 'block';
+	}
+}
+
+function flip()
+{
+  toggle('front');
+}
+
   initVM();
   loadImage();
   startVM();
@@ -41,6 +72,20 @@ body
 </head>
 
 <body>
-  <p id="output" class="display"></p>
+  <div id="flip">
+    <p><a onClick="clearDisplay()">Clear</a> | <a onClick="flip()">Flip</a></p>
+  </div>
+  <div id="front" class="display">
+    <p id="output"></p>
+  </div>
+  <div id="back" class="display">
+    <h3>Tips and Tricks</h3>
+    <ul>
+      <li>If you make a typo, enter some random characters and hit space</li>
+      <li>Space is the only recognized separater between words</li>
+      <li>Hit command+r to reload if you get stuck</li>
+      <li>You can't <b>save</b> your image</li>
+    </ul>
+  </div>
 </body>
 </html>
