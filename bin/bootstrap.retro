@@ -104,11 +104,10 @@ create <list>  ( -- a )
 ( ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ )
 ( Some shortcuts that save some typing and keep the code a    )
 ( bit cleaner in macros.                                      )
-(   `c wordname  =  ['] wordname compile                      )
-(   `x wordname  =  ['] wordname execute                      )
+(   ` wordname  =  ['] wordname compile                      )
+(   ` wordname  =  ['] wordname execute                      )
 ( ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ )
-macro: `c ( "name" -- )  ' literal, ['] compile compile ;
-macro: `x ( "name" -- )  ' compile ;
+macro: `  ( "name" -- )  ' literal, which @ d->class @ compile ;
 
 
 ( ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ )
@@ -116,7 +115,7 @@ macro: `x ( "name" -- )  ' compile ;
 ( display a string.                                           )
 ( ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ )
 macro: ." ( "text" -- )
-   compiler @ 0 =if " type ;; then `x s" `c type ;
+   compiler @ 0 =if " type ;; then ` s" ` type ;
 
 
 ( ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ )
@@ -129,10 +128,10 @@ macro: ." ( "text" -- )
  0 constant FALSE  ( -- flag )
 
 macro: if    ( flag -- )
-       compiler @ 0; drop TRUE literal, `x =if ;
+       compiler @ 0; drop TRUE literal, ` =if ;
 
 macro: ;then ( -- )
-       compiler @ 0; drop `x ;; `x then ;
+       compiler @ 0; drop ` ;; ` then ;
 
 : =  ( x y -- flag )  =if TRUE ;then FALSE ;
 : <> ( x y -- flag )  !if TRUE ;then FALSE ;
