@@ -46,6 +46,7 @@ clean:
 	@rm -f toka/toka
 	@rm -f latest.tar.gz
 	@rm -f tools/fix-image
+	@cd vm/console && make clean
 	@cd vm/framebuffer && make clean
 	@cd vm/java && make clean
 vm:
