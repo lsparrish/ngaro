@@ -12,6 +12,12 @@
 
 begin retroImage
 #! ------------------------------------------------------------
+mark-dictionary
+variable last      ( Pointer to the most recent dictionary )
+                   ( header )
+HEAP-START
+variable: heap     ( Starting address of the data/code heap )
+#! ------------------------------------------------------------
 variable flag      ( Shared variable used by some primitives )
                    ( It's used as a flag, a counter, etc.    )
 #! ------------------------------------------------------------
@@ -19,14 +25,9 @@ label: copytag   " RETRO 10" $,
 label: nomatch   " Word Not Found" $,
 label: okmsg     " ok " $,
 #! ------------------------------------------------------------
-mark-dictionary
-variable last      ( Pointer to the most recent dictionary )
-                   ( header )
 variable which     ( Pointer to dictionary header of the most )
                    ( recently looked up word )
 variable compiler  ( Is the compiler on or off? )
-HEAP-START
-variable: heap     ( Starting address of the data/code heap )
 #! ------------------------------------------------------------
 : dup      dup, ;       : 1+       1+, ;
 : 1-       1-, ;        : swap     swap, ;
