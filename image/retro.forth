@@ -275,8 +275,11 @@ variable found
 : search
   found # off last # @, (search) ;
 
+variable (tick)
+
 : t-'    32 # accept search
-         found # @, -1 # =if which # @, d->xt @, ; then 0 # ;
+         found # @, -1 # =if which # @, d->xt @, ; then 0 #
+         found # on ;
 : t-[']  compiling? 1 # t-, t-' t-, ;
 #! ------------------------------------------------------------
 : :devector dup, 0 # swap, !, 1+, 0 # swap, !, ;
