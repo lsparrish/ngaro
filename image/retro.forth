@@ -17,6 +17,7 @@ variable last      ( Pointer to the most recent dictionary )
                    ( header )
 HEAP-START
 variable: heap     ( Starting address of the data/code heap )
+STRING-START variable: STRINGS
 #! ------------------------------------------------------------
 variable flag      ( Shared variable used by some primitives )
                    ( It's used as a flag, a counter, etc.    )
@@ -193,7 +194,6 @@ variable break-char  ( Holds the delimiter for 'accept' )
 : getLength ( $1 - n )
   0 # swap, (strlen) drop, ;
 
-STRING-START variable: STRINGS
 variable SAFE
 variable LATEST
 
