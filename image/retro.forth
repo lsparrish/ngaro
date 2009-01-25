@@ -1,6 +1,6 @@
 #! ------------------------------------------------------------
 #! Retro, a dialect of Forth
-#! Release 10.0 (stable)
+#! Release 10.0.1
 #!
 #! This code was written by Charles Childers and is gifted to
 #! the public domain.
