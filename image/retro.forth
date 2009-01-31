@@ -341,7 +341,7 @@ main:
 ' t-here       word: here          ' t-,          word: ,
 ' t-]          word: ]             ' create       word: create
 ' t-:          word: :             ' t-macro:     word: macro:
-' t-compiler:  word: compiler:
+' t-compiler:  word: compiler:     ' accept       word: accept
 ' cr           word: cr            ' emit         word: emit
 ' type         word: type          ' clear        word: clear
 ' words        word: words         ' key          word: key
@@ -364,7 +364,7 @@ main:
 ' bye          word: bye           ' (remap-keys) word: (remap-keys)
 ' with-class   word: with-class    ' .word        word: .word
 ' .macro       word: .macro        ' .data        word: .data
-' .inline      word: .inline       ' accept       word: accept
+' .inline      word: .inline       ' .compiler    word: .compiler
 ' d->class     word: d->class      ' d->xt        word: d->xt
 ' d->name      word: d->name       ' boot         word: boot
 ' depth        word: depth         ' reset        word: reset
