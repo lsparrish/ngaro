@@ -19,16 +19,16 @@ HEAP-START
 variable: heap     ( Starting address of the data/code heap )
 STRING-START variable: STRINGS
 #! ------------------------------------------------------------
+variable which     ( Pointer to dictionary header of the most )
+                   ( recently looked up word )
+variable compiler  ( Is the compiler on or off? )
+#! ------------------------------------------------------------
 variable flag      ( Shared variable used by some primitives )
                    ( It's used as a flag, a counter, etc.    )
 #! ------------------------------------------------------------
 label: copytag   " RETRO 10" $,
 label: nomatch   " Word Not Found" $,
 label: okmsg     " ok " $,
-#! ------------------------------------------------------------
-variable which     ( Pointer to dictionary header of the most )
-                   ( recently looked up word )
-variable compiler  ( Is the compiler on or off? )
 #! ------------------------------------------------------------
 : dup      dup, ;       : 1+       1+, ;
 : 1-       1-, ;        : swap     swap, ;
@@ -63,28 +63,26 @@ variable compiler  ( Is the compiler on or off? )
 #! ------------------------------------------------------------
 : t-here      ( -a )   heap # @, ;
 : t-,         ( n- )   t-here !, t-here 1+, heap # !, ;
-: compiling?  ( - )
-  compiler # @, 0 # =if pop, drop, ; then ;
 : t-]         ( - )    -1 # compiler # !, ;
 : t-[         ( - )    0 # compiler # !, ;
-: t-;;        ( - )    compiling? 9 # t-, ;
-: t-;         ( - )    compiling? t-;; t-[ ;
+: t-;;        ( - )    9 # t-, ;
+: t-;         ( - )    t-;; t-[ ;
 : ($,)        ( a-a )  repeat dup, @, 0; t-, 1+, again ;
 : $           ( a- )   ($,) drop, 0 # t-, ;
-: t-push      ( - )    compiling? 5 # t-, ;
-: t-pop       ( - )    compiling? 6 # t-, ;
+: t-push      ( - )    5 # t-, ;
+: t-pop       ( - )    6 # t-, ;
 : compile     ( a- )   7 # t-, t-, ;
 : literal,    ( n- )   1 # t-, t-, ;
 : t-for                t-here 5 # t-, ;
 : t-next               6 # t-, 27 # t-, 25 # t-, 8 # t-, t-, ;
-: t-=if                compiling? 12 # t-, t-here 0 # t-, ;
-: t->if                compiling? 11 # t-, t-here 0 # t-, ;
-: t-<if                compiling? 10 # t-, t-here 0 # t-, ;
-: t-!if                compiling? 13 # t-, t-here 0 # t-, ;
-: t-then               compiling? t-here swap, !, 0 # t-, ;
-: t-repeat             compiling? t-here ;
-: t-again              compiling? 8 # t-, t-, ;
-: t-0;                 compiling? 25 # t-, ;
+: t-=if                12 # t-, t-here 0 # t-, ;
+: t->if                11 # t-, t-here 0 # t-, ;
+: t-<if                10 # t-, t-here 0 # t-, ;
+: t-!if                13 # t-, t-here 0 # t-, ;
+: t-then               t-here swap, !, 0 # t-, ;
+: t-repeat             t-here ;
+: t-again              8 # t-, t-, ;
+: t-0;                 25 # t-, ;
 
 : .word   ( a- )
   compiler # @, -1 # =if 7 # t-, t-, ; then execute ;
@@ -95,9 +93,12 @@ variable compiler  ( Is the compiler on or off? )
    execute ;
 : .data   ( a- )
    compiler # @, -1 # =if 1 # t-, t-, then ;
+: .compiler ( a- )
+   compiler # @, 0 # =if drop ; then execute ;
 
-' .word   to 'WORD     ' .macro  to 'MACRO
-' .data   to 'DATA     ' .inline to 'INLINE
+' .word     to 'WORD      ' .macro  to 'MACRO
+' .data     to 'DATA      ' .inline to 'INLINE
+' .compiler to 'COMPILER
 #! ------------------------------------------------------------
 variable tx     ( framebuffer text x coordinate  )
 variable ty     ( framebuffer text y coordinate  )
@@ -170,6 +171,7 @@ variable break-char  ( Holds the delimiter for 'accept' )
 : (:)        ( - )   last # @, d->class !, t-] 0 # t-, 0 # t-, ;
 : t-:        ( "- )  create 'WORD  # (:) ;
 : t-macro:   ( "- )  create 'MACRO # (:) ;
+: t-compiler: ( "- ) create 'COMPILER # (:) ;
 : t-(        ( "- )  char: ) # accept ;
 #! ------------------------------------------------------------
 : n=n        ( xy- )         !if 0 # flag # !, then ;
@@ -211,7 +213,7 @@ variable LATEST
 ;
 
 : t-" char: " # accept TIB # tempString ;
-: t-s" compiling? 1 # t-, t-" keepString t-, ;
+: t-s" 1 # t-, t-" keepString t-, ;
 #! ------------------------------------------------------------
 variable #value        variable num
 variable #ok           variable negate?
@@ -280,7 +282,7 @@ variable (tick)
 : t-'    32 # accept search
          found # @, -1 # =if which # @, d->xt @, ; then 0 #
          found # on ;
-: t-[']  compiling? 1 # t-, t-' t-, ;
+: t-[']  1 # t-, t-' t-, ;
 #! ------------------------------------------------------------
 : :devector dup, 0 # swap, !, 1+, 0 # swap, !, ;
 : :is       dup, 8 # swap, !, 1+, !, ;
@@ -341,6 +343,7 @@ main:
 ' t-here       word: here          ' t-,          word: ,
 ' t-]          word: ]             ' create       word: create
 ' t-:          word: :             ' t-macro:     word: macro:
+' t-compiler:  word: compiler:
 ' cr           word: cr            ' emit         word: emit
 ' type         word: type          ' clear        word: clear
 ' words        word: words         ' key          word: key
@@ -370,16 +373,19 @@ main:
 ' notfound     word: notfound      ' save         word: save
 ' >number      word: >number       ' ok           word: ok
 
+( Compiler )
+' t-s"         compiler: s"        ' t-[          compiler: [
+' t-;          compiler: ;         ' t-;;         compiler: ;;
+' t-=if        compiler: =if       ' t->if        compiler: >if
+' t-<if        compiler: <if       ' t-!if        compiler: !if
+' t-then       compiler: then      ' t-repeat     compiler: repeat
+' t-again      compiler: again     ' t-0;         compiler: 0;
+' t-push       compiler: push      ' t-pop        compiler: pop
+' t-[']        compiler: [']       ' t-for        compiler: for
+' t-next       compiler: next
+
 ( Macros )
-' t-s"         macro: s"           ' t-[          macro: [
-' t-;          macro: ;            ' t-;;         macro: ;;
-' t-=if        macro: =if          ' t->if        macro: >if
-' t-<if        macro: <if          ' t-!if        macro: !if
-' t-then       macro: then         ' t-repeat     macro: repeat
-' t-again      macro: again        ' t-0;         macro: 0;
-' t-(          macro: (            ' t-push       macro: push
-' t-pop        macro: pop          ' t-[']        macro: [']
-' t-for        macro: for          ' t-next       macro: next
+' t-(          macro: (
 
 ( Data )
   tx           data: tx            ty           data: ty

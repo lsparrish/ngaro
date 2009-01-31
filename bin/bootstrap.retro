@@ -107,7 +107,7 @@ create <list>  ( -- a )
 (   ` wordname  =  ['] wordname compile                      )
 (   ` wordname  =  ['] wordname execute                      )
 ( ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ )
-macro: `  ( "name" -- )  ' literal, which @ d->class @ compile ;
+compiler: `  ( "name" -- )  ' literal, which @ d->class @ compile ;
 
 
 ( ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ )
@@ -127,10 +127,10 @@ macro: ." ( "text" -- )
 -1 constant TRUE   ( -- flag )
  0 constant FALSE  ( -- flag )
 
-macro: if    ( flag -- )
+compiler: if    ( flag -- )
        compiler @ 0; drop TRUE literal, ` =if ;
 
-macro: ;then ( -- )
+compiler: ;then ( -- )
        compiler @ 0; drop ` ;; ` then ;
 
 : =  ( x y -- flag )  =if TRUE ;then FALSE ;
