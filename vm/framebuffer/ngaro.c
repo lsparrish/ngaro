@@ -14,6 +14,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "SDL.h"
+
 #include "functions.h"
 #include "vm.h"
 
