@@ -8,9 +8,22 @@
 # Written by Charles Childers
 # This code is gifted to the public domain.
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+CC = gcc
+CFLAGS = -Wall -O3 -fomit-frame-pointer -DUSE_SDL `sdl-config --cflags`
+LIBS = `sdl-config --libs`
 
-default:
-	@gcc -Wall -O3 -fomit-frame-pointer disassemble.c endian.c initial_image.c loader.c ngaro.c devices.c vm.c -DUSE_SDL -Wall `sdl-config --cflags --libs` -o retro-fb
+default: retro-fb
+.PHONY: default
+
+OFILES = disassemble.o endian.o loader.o ngaro.o devices.o vm.o
+$(OFILES): %.o: %.c
+	$(CC) $(CFLAGS) -c $< -o $@
+
+initial_image.o: initial_image.c
+	$(CC) -Wall -c $< -o $@
+
+retro-fb: $(OFILES) initial_image.o
+	$(CC) $(LIBS) $^ -o $@
 
 clean:
-	@rm -f retro-fb
+	@rm -f retro-fb *.o
