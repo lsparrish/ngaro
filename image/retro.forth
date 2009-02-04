@@ -218,12 +218,13 @@ variable LATEST
 variable #value        variable num
 variable #ok           variable negate?
 
+
 : digit?
-  dup, 47 # >if dup, 58 # <if drop, -1 # ; then then drop, 0 # ;
+ dup, char: 0 # >if dup, char: 9 # <if drop, -1 # ; then then
+ drop, 0 # ;
 
-: char>digit 48 # -, ;
-
-: digit>char 48 # +, ;
+: char>digit char: 0 # -, ;
+: digit>char char: 0 # +, ;
 
 : isNegative?
   ( a-a+1 )
