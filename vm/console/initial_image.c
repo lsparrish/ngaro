@@ -824,12 +824,12 @@ void initial_image()
   vm.image[1084]=240;
   vm.image[1091]=2;
   vm.image[1092]=1;
-  vm.image[1093]=47;
+  vm.image[1093]=48;
   vm.image[1094]=11;
   vm.image[1095]=1106;
   vm.image[1096]=2;
   vm.image[1097]=1;
-  vm.image[1098]=58;
+  vm.image[1098]=57;
   vm.image[1099]=10;
   vm.image[1100]=1105;
   vm.image[1101]=3;
