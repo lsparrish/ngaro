@@ -75,10 +75,11 @@ label: okmsg     " ok " $,
 : literal,    ( n- )   1 # t-, t-, ;
 : t-for                t-here 5 # t-, ;
 : t-next               6 # t-, 27 # t-, 25 # t-, 8 # t-, t-, ;
-: t-=if                12 # t-, t-here 0 # t-, ;
-: t->if                11 # t-, t-here 0 # t-, ;
-: t-<if                10 # t-, t-here 0 # t-, ;
-: t-!if                13 # t-, t-here 0 # t-, ;
+: (if)                 t-here 0 # t-, ;
+: t-=if                12 # t-, (if) ;
+: t->if                11 # t-, (if) ;
+: t-<if                10 # t-, (if) ;
+: t-!if                13 # t-, (if) ;
 : t-then               t-here swap, !, 0 # t-, ;
 : t-repeat             t-here ;
 : t-again              8 # t-, t-, ;
