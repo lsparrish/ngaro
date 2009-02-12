@@ -5,7 +5,7 @@
 #define OUTPUT 2
 
 #define CELL int
-#define DROP vm.data[vm.sp] = 0; vm.sp--;
+#define DROP vm.data[vm.sp] = 0; vm.sp--; if (vm.sp < 0) vm.ip = IMAGE_SIZE;
 #define TOS  vm.data[vm.sp]
 #define NOS  vm.data[vm.sp-1]
 
@@ -46,10 +46,10 @@ enum vm_opcode {VM_NOP, VM_LIT, VM_DUP, VM_DROP, VM_SWAP, VM_PUSH, VM_POP,
                 VM_SHR, VM_ZERO_EXIT, VM_INC, VM_DEC, VM_IN, VM_OUT,
                 VM_WAIT, VM_PICK, VM_BACK, VM_ROT, VM_XOP, VM_EXE, VM_TRESET,
                 VM_SINST, VM_LI_IAC, VM_LI_IOP, VM_PICK_IAC, VM_PICK_IOP,
-		VM_RADD, VM_RSUB, VM_RMUL, VM_RAND, VM_ROR, VM_RXOR, VM_LCALL,
+                VM_RADD, VM_RSUB, VM_RMUL, VM_RAND, VM_ROR, VM_RXOR, VM_LCALL,
                 VM_LRETURN, VM_PRINT, VM_DEFAULT};
 
-#define NUM_OPS      	  53
+#define NUM_OPS           53
 
 #define MAX_STREAM       255
 #define STREAM_LEN      1024

@@ -10,7 +10,7 @@ enum vm_opcode {VM_NOP, VM_LIT, VM_DUP, VM_DROP, VM_SWAP, VM_PUSH, VM_POP,
 #define NUM_OPS VM_WAIT
 
 #define CELL int
-#define DROP vm.data[vm.sp] = 0; vm.sp--;
+#define DROP vm.data[vm.sp] = 0; vm.sp--; if (vm.sp < 0) vm.ip = IMAGE_SIZE;
 #define TOS  vm.data[vm.sp]
 #define NOS  vm.data[vm.sp-1]
 
