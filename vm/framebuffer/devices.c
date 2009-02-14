@@ -85,7 +85,7 @@ int handle_devices(void *unused)
         case SDL_QUIT:
              vm.ip = IMAGE_SIZE;
              vm.ports[0] = 1;
-             break;            
+             break;
       }
     }
     if (vm.ports[2] == 1)
@@ -93,7 +93,7 @@ int handle_devices(void *unused)
       c = TOS; DROP
       y = TOS; DROP
       x = TOS; DROP
-      if (c > 0)
+      if (c >= 0)
         drawcharacter(x, y, c);
       else
         clear_display();
