@@ -78,6 +78,8 @@ int handle_devices(void *unused)
       {
         case SDL_KEYDOWN:
              vm.ports[1] = (int)event.key.keysym.unicode;
+             if (event.key.keysym.sym == SDLK_BACKSPACE)
+               vm.ports[1] = 8;
              vm.ports[0] = 1;
              break;
         case SDL_KEYUP:
