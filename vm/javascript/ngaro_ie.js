@@ -134,6 +134,9 @@ function handleDevices()
     else
       devOutput += ch;
 
+    if (data[sp] == 8)
+      devOutput = devOutput.substr(0, devOutput.length - 2);
+
     sp--;
     ports[2] = 0;
     ports[0] = 1;
