@@ -52,8 +52,8 @@ void drawcharacter(int x, int y, int character)
     charofs = (i + character * io.font->w) * io.font->pitch;
     for (j = 0; j < io.font->w; j++)
     {
-      if ((int)((char *)io.font->pixels)[charofs] != 0)
-        vm.image[screenofs+VIDEO_BASE] = (int)((char *)io.font->pixels)[charofs];
+//      if ((int)((char *)io.font->pixels)[charofs] != 0)
+      vm.image[screenofs+VIDEO_BASE] = (int)((char *)io.font->pixels)[charofs];
       screenofs++;
       charofs++;
     }
