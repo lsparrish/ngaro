@@ -113,6 +113,7 @@ variable fh     ( framebuffer height )
 : fb:cr 0 # tx # !, ty # @, 16 # +, ty # !, ;
 : move tx # @, 16 # +, dup, tx # !, fw # @, >if fb:cr then ;
 : fb:emit
+  dup,  8 # =if 16 # tx # -! ; then
   dup, 10 # =if fb:cr drop, ; then
   dup, 13 # =if fb:cr drop, ; then
   push, tx # @, ty # @, pop,
@@ -152,7 +153,9 @@ variable break-char  ( Holds the delimiter for 'accept' )
 
 : (accept)        ( -x )
   repeat key dup, emit dup,
-         break-char # @, =if ; then >tib ++ again ;
+         break-char # @, =if ; then
+         dup, 8 # =if 1 # >in # -! drop, 8 , ' (accept) , then
+         >tib ++ again ;
 
 : accept          ( x- )
   break-char # !, 0 # >in # !, (eat-leading) (accept) drop,
