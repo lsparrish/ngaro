@@ -1,15 +1,6 @@
-The Block Editor
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-This is a simple line-oriented block editor. I've used many
-variations of this editor since I started developing with Retro
-back in 2001.
-
-It's proven useful enough that I've actually implemented it on
-each Forth system I've used in the last few years. Several of
-these implementations can be found on the ForthFreak.net wiki.
-
-I'm quite happy to say that the editor has been rewritten and
-is now running happily on Retro 10.
+As part of my core extensions to Retro, I am including a small
+block editor. This is based on a series of earlier editors
+going back to 2001 when I first started working on Retro.
 
 There are some nice bits this time around:
 
@@ -20,11 +11,14 @@ There are some nice bits this time around:
   - All editing words are vectors, which should help allow for
     easier extension of the core functionality.
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Loading It:
+Adding it to your image:
 
-  ./retro --with bootstrap.toka
+  ./retro --with extend.retro
+  save
+
+Then it'll be present each time you start Retro.
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Line and column numbers start at 0
+Tip: Line and column numbers start at 0
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Quick Reference:
 
