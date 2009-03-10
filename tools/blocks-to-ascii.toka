@@ -15,27 +15,15 @@
 [  512 ] is #size
 [ 1024 ] is #blocks
 
-value| of blocks buffer |
+value| of blocks buffer idx |
 
-." Allocating space for ASCII block buffer...\n"
-  1024 512 * char-size * 1 + malloc keep to buffer
-
-." Loading blocks..,\n"
-  " blocks" file.slurp keep to blocks
-  " blocks.txt" "W" file.open to of
-
-." Converting to ASCII...\n"
-  0 1024 512 * [ blocks i cell-size * + @ buffer i char-size * + c! ] countedLoop
-
-." Writing ascii"
-  value idx
-  buffer to idx
-
-  [ 0 64 [ of " -" 1 file.write drop ] countedLoop of " \n" 1 file.write drop ] is ---
-
-  [ idx 64 + to idx ] is next
-  [ of idx 64 file.write drop of " \n" 1 file.write drop ] is dump-line
-
+[ 1024 512 * char-size * 1 + malloc keep to buffer buffer to idx ] is prepare
+[ wsparse file.slurp keep to blocks ] is input:
+[ wsparse "W" file.open to of ] is output:
+[ 0 1024 512 * [ blocks i cell-size * + @ buffer i char-size * + c! ] countedLoop ] is convert
+[ 0 64 [ of " -" 1 file.write drop ] countedLoop of " \n" 1 file.write drop ] is ---
+[ idx 64 + to idx ] is next
+[ of idx 64 file.write drop of " \n" 1 file.write drop ] is dump-line
 [
   0 1024
   [ char: . emit
@@ -47,8 +35,12 @@ value| of blocks buffer |
   ] countedLoop
   cr
 ] is dump
+[ of file.close ] is finish
 
-  dump
-  of file.close
-
+prepare
+input: blocks
+output: blocks.txt
+convert
+dump
+finish
 bye
