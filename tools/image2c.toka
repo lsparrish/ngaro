@@ -1,39 +1,85 @@
 #! /usr/bin/toka
+#! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#! This is a Toka script to convert a Retro image into the
+#! initial_image.c file used by the Ngaro VM to initialize if
+#! no external image is found.
+#! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#! Requires:
+#!  - Toka
+#!  - Retro image file ("retroImage")
+#! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#! This code was written by Charles Childers for use with Retro
+#! It is gifted to the public domain. In the event that your
+#! country does not allow a direct dedication to the public
+#! domain, the author voluntarily gives up all rights to the
+#! extent permitted by law.
+#! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 value| fid size image |
 
 
-( Exit if no arguments were passed                 )
+#! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#! Check to make sure an image filename was passed. If not,
+#! report it and exit.
+#! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 #args 1 > [ ." Try:\n  image2c.toka imagename\n" bye ] ifFalse
 
 
-( Get the size of the file, and adjust to the      )
-( number of cells, rather than the number of bytes )
+#! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#! Check the file size and adjust to the number of 32-bit cells
+#! rather than the number of bytes.
+#! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 1 arglist array.get "R" file.open to fid
 fid file.size cell-size / to size
 fid file.close
 
 
-( Read the file into a buffer and set image to     )
-( point to it. We also tell Toka not to gc this    )
-( buffer                                           )
+#! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#! Read the image into a buffer and mark it as non-garbage so
+#! it won't be collected by Toka's GC code.
+#! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 1 arglist array.get file.slurp keep to image
 
 
-( Function declaration [javascript]                )
+#! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#! C stuff (header includes, variable declarations, etc)
+#! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 ." #include \"functions.h\"\n"
 ." #include \"vm.h\"\n"
 ." extern VM_STATE vm;\n\n"
 ." void initial_image()\n{\n"
 
-( For each cell in the image, read it, and output  )
-( a line like:  image[cell#]=value;                )
+
+#! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#! Now process the image.
+#!
+#! This will generate a long list of code like:
+#!   vm.image[#] = value;
+#!
+#! It is smart though - to keep processing time and file size
+#! down, we only output values not equal to zero. This works
+#! beause the VM will initialize the memory to zero before
+#! loading the image.
+#! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 [ ."   vm.image[" i >string type ." ]=" >string type ." ;\n" ] is assign-cell
 [ 0 size [ image i cell-size * + @ dup 0 <> [ assign-cell ] [ drop ] ifTrueFalse ] countedLoop ] is process-image
 process-image
 
-( Function end [javascript]                        )
+
+#! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#! More C stuff to finish out the file
+#! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 ." }\n"
 
-( All done!                                        )
+
+#! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#! Done!
+#! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 bye
