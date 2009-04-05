@@ -1,6 +1,5 @@
 #! ------------------------------------------------------------
 #! Retro, a dialect of Forth
-#! Release 10.0.1
 #!
 #! This code was written by Charles Childers and is gifted to
 #! the public domain.
@@ -30,16 +29,17 @@ label: copytag   " RETRO 10" $,
 label: nomatch   " Word Not Found" $,
 label: okmsg     " ok " $,
 #! ------------------------------------------------------------
-: dup      dup, ;       : 1+       1+, ;
-: 1-       1-, ;        : swap     swap, ;
-: drop     drop, ;      : and      and, ;
-: or       or, ;        : xor      xor, ;
-: @        @, ;         : !        !, ;
-: +        +, ;         : -        -, ;
-: *        *, ;         : /mod     /mod, ;
-: <<       <<, ;        : >>       >>, ;
-: out      out, ;       : in       in, ;
-: wait     0 # 0 # out, wait, ;
+: dup  ( n-nn )  dup, ;       : 1+   ( n-n   )  1+, ;
+: 1-   ( n-n  )  1-, ;        : swap ( xy-yx )  swap, ;
+: drop ( n-   )  drop, ;      : and  ( xy-n  )  and, ;
+: or   ( xy-n )  or, ;        : xor  ( xy-n  )  xor, ;
+: @    ( a-n  )  @, ;         : !    ( na-   )  !, ;
+: +    ( xy-n )  +, ;         : -    ( xy-n  )  -, ;
+: *    ( xy-n )  *, ;         : /mod ( xy-qr )  /mod, ;
+: <<   ( xy-n )  <<, ;        : >>   ( xy-n  )  >>, ;
+: out  ( np-  )  out, ;       : in   ( p-n   )  in, ;
+
+: wait ( - )  0 # 0 # out, wait, ;
 
 : nip      swap, drop, ;
 : over     push, dup, pop, swap, ;
