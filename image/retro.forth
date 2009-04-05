@@ -41,49 +41,49 @@ label: okmsg     " ok " $,
 
 : wait ( - )  0 # 0 # out, wait, ;
 
-: nip      swap, drop, ;
-: over     push, dup, pop, swap, ;
-: 2drop    drop, drop, ;
-: not      -1 # xor, ;
+: nip   ( xy-y   )  swap, drop, ;
+: over  ( xy-xyx )  push, dup, pop, swap, ;
+: 2drop ( nn-    )  drop, drop, ;
+: not   ( x-y    )  -1 # xor, ;
 : rot      push, swap, pop, swap, ;
 : -rot     swap, push, swap, pop, ;
-: tuck     dup, -rot ;
-: 2dup     over over ;
-: on       -1 # swap, !, ;
-: off       0 # swap, !, ;
-: /        /mod, nip ;
-: mod      /mod, drop, ;
-: neg      -1 # *, ;
-: execute   1-, push, ;
+: tuck  ( xy-yxy )  dup, -rot ;
+: 2dup  ( x-xx   )  over over ;
+: on    ( a-     )  -1 # swap, !, ;
+: off   ( a-     )  0 # swap, !, ;
+: /     ( xy-q   )  /mod, nip ;
+: mod   ( xy-r   )  /mod, drop, ;
+: neg   ( x-y    )  -1 # *, ;
+: execute ( a-   )  1-, push, ;
 
 : @+ dup, 1+, swap, @, ;
 : !+ dup, 1+, push, !, pop, ;
 : +! dup, push, @, +, pop, !, ;
 : -! dup, push, @, swap, -, pop, !, ;
 #! ------------------------------------------------------------
-: t-here      ( -a )   heap # @, ;
-: t-,         ( n- )   t-here !, t-here 1+, heap # !, ;
-: t-]         ( - )    -1 # compiler # !, ;
-: t-[         ( - )    0 # compiler # !, ;
-: t-;;        ( - )    9 # t-, ;
-: t-;         ( - )    t-;; t-[ ;
-: ($,)        ( a-a )  repeat dup, @, 0; t-, 1+, again ;
-: $           ( a- )   ($,) drop, 0 # t-, ;
-: t-push      ( - )    5 # t-, ;
-: t-pop       ( - )    6 # t-, ;
-: compile     ( a- )   7 # t-, t-, ;
-: literal,    ( n- )   1 # t-, t-, ;
-: t-for                t-here 5 # t-, ;
-: t-next               6 # t-, 27 # t-, 25 # t-, 8 # t-, t-, ;
-: (if)                 t-here 0 # t-, ;
-: t-=if                12 # t-, (if) ;
-: t->if                11 # t-, (if) ;
-: t-<if                10 # t-, (if) ;
-: t-!if                13 # t-, (if) ;
-: t-then               t-here swap, !, 0 # t-, ;
-: t-repeat             t-here ;
-: t-again              8 # t-, t-, ;
-: t-0;                 25 # t-, ;
+: t-here   ( -a  )  heap # @, ;
+: t-,      ( n-  )  t-here !, t-here 1+, heap # !, ;
+: t-]      ( -   )  -1 # compiler # !, ;
+: t-[      ( -   )  0 # compiler # !, ;
+: t-;;     ( -   )  9 # t-, ;
+: t-;      ( -   )  t-;; t-[ ;
+: ($,)     ( a-a )  repeat dup, @, 0; t-, 1+, again ;
+: $        ( a-  )  ($,) drop, 0 # t-, ;
+: t-push   ( -   )  5 # t-, ;
+: t-pop    ( -   )  6 # t-, ;
+: compile  ( a-  )  7 # t-, t-, ;
+: literal, ( n-  )  1 # t-, t-, ;
+: t-for    ( n-  )  t-here 5 # t-, ;
+: t-next   ( -   )  6 # t-, 27 # t-, 25 # t-, 8 # t-, t-, ;
+: (if)              t-here 0 # t-, ;
+: t-=if    ( xy- )  12 # t-, (if) ;
+: t->if    ( xy- )  11 # t-, (if) ;
+: t-<if    ( xy- )  10 # t-, (if) ;
+: t-!if    ( xy- )  13 # t-, (if) ;
+: t-then   ( -   )  t-here swap, !, 0 # t-, ;
+: t-repeat ( -   )  t-here ;
+: t-again  ( -   )  8 # t-, t-, ;
+: t-0;     ( n-n || n - )  25 # t-, ;
 
 : .word   ( a- )
   compiler # @, -1 # =if 7 # t-, t-, ; then execute ;
@@ -108,11 +108,11 @@ variable fw     ( framebuffer width  )
 variable fh     ( framebuffer height )
 -1 variable: update
 
-: redraw update # @, 0; drop, 0 # 3 # out, ;
-
-: fb:cr 0 # tx # !, ty # @, 16 # +, ty # !, ;
-: move tx # @, 16 # +, dup, tx # !, fw # @, >if fb:cr then ;
-: fb:emit
+: redraw  ( - )  update # @, 0; drop, 0 # 3 # out, ;
+: fb:cr   ( - )  0 # tx # !, ty # @, 16 # +, ty # !, ;
+: move    ( - )
+  tx # @, 16 # +, dup, tx # !, fw # @, >if fb:cr then ;
+: fb:emit ( c- )
   dup,  8 # =if 16 # tx # -! ; then
   dup, 10 # =if fb:cr drop, ; then
   dup, 13 # =if fb:cr drop, ; then
@@ -121,22 +121,22 @@ variable fh     ( framebuffer height )
   redraw
 ;
 
-: tty:emit 1 # 2 # out, wait redraw ;
-: tty:cr   10 # tty:emit ;
+: tty:emit ( c- )  1 # 2 # out, wait redraw ;
+: tty:cr   ( -  )  10 # tty:emit ;
 
-: emit   ( c- )  fb # @, 0 # !if fb:emit  ; then tty:emit ;
-: cr     ( - )   fb # @, 0 # !if fb:cr    ; then tty:cr ;
-: clear  ( - )   -1 # emit 0 # tx # !, 0 # ty # !, ;
+: emit     ( c-  )  fb # @, 0 # !if fb:emit  ; then tty:emit ;
+: cr       ( -   )  fb # @, 0 # !if fb:cr    ; then tty:cr ;
+: clear    ( -   )  -1 # emit 0 # tx # !, 0 # ty # !, ;
 
 : (type) ( a-a ) repeat @+ 0; emit again ;
-: type   ( a- )  update # off (type) drop, update # on redraw ;
+: type   ( a-  ) update # off (type) drop, update # on redraw ;
 #! ------------------------------------------------------------
 variable >in         ( Offset into the TIB )
 variable break-char  ( Holds the delimiter for 'accept' )
 
-: (remap-keys) ;
+: (remap-keys) ( c-c ) ;
 
-: key   ( -x )
+: key ( -x )
   repeat
     1 # 1 # out,
     wait 1 # in,
@@ -144,39 +144,39 @@ variable break-char  ( Holds the delimiter for 'accept' )
   again
 ;
 
-: >tib  ( x- )  TIB # >in # @, +, !, ;
-: ++    ( - )   1 # >in # +! ;
+: >tib ( x- )  TIB # >in # @, +, !, ;
+: ++   ( -  )  1 # >in # +! ;
 
-: (eat-leading)   ( - )
+: (eat-leading) ( - )
   repeat key dup, emit dup,
          break-char # @, !if >tib ++ ; then drop, again ;
 
-: (accept)        ( -x )
+: (accept) ( -x )
   repeat key dup, emit dup,
          break-char # @, =if ; then
          dup, 8 # =if 1 # >in # -! drop, 8 , ' (accept) , then
          >tib ++ again ;
 
-: accept          ( x- )
+: accept ( x- )
   break-char # !, 0 # >in # !, (eat-leading) (accept) drop,
   0 # >tib ;
 #! ------------------------------------------------------------
-: d->class 1+, ;
-: d->xt    1+, 1+, ;
-: d->name  1+, 1+, 1+, ;
+: d->class ( a-a )  1+, ;
+: d->xt    ( a-a )  1+, 1+, ;
+: d->name  ( a-a )  1+, 1+, 1+, ;
 
-: create     ( "- )  t-here              ( Entry Start )
+: create   ( "-  )   t-here              ( Entry Start )
                      last # @, t-,       ( Link to previous )
                      last # !,           ( Set as newest )
                      'DATA # t-,         ( Class = .data )
                      t-here 0 # t-,      ( XT )
                      32 # accept TIB # $ ( Name )
                      t-here swap, !, ;   ( Patch XT to HERE )
-: (:)        ( - )   last # @, d->class !, t-] 0 # t-, 0 # t-, ;
-: t-:        ( "- )  create 'WORD  # (:) ;
-: t-macro:   ( "- )  create 'MACRO # (:) ;
-: t-compiler: ( "- ) create 'COMPILER # (:) ;
-: t-(        ( "- )  char: ) # accept ;
+: (:)        ( -   )  last # @, d->class !, t-] 0 # t-, 0 # t-, ;
+: t-:        ( "-  )  create 'WORD  # (:) ;
+: t-macro:   ( "-  )  create 'MACRO # (:) ;
+: t-compiler: ( "- )  create 'COMPILER # (:) ;
+: t-(        ( "-  )  char: ) # accept ;
 #! ------------------------------------------------------------
 : n=n        ( xy- )         !if 0 # flag # !, then ;
 : get-set    ( ab-xy )       @, swap, @, ;
