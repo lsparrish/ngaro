@@ -45,8 +45,8 @@ label: okmsg     " ok " $,
 : over  ( xy-xyx )  push, dup, pop, swap, ;
 : 2drop ( nn-    )  drop, drop, ;
 : not   ( x-y    )  -1 # xor, ;
-: rot      push, swap, pop, swap, ;
-: -rot     swap, push, swap, pop, ;
+: rot   ( xyz-yzx ) push, swap, pop, swap, ;
+: -rot  ( xyz-xzy ) swap, push, swap, pop, ;
 : tuck  ( xy-yxy )  dup, -rot ;
 : 2dup  ( x-xx   )  over over ;
 : on    ( a-     )  -1 # swap, !, ;
@@ -56,10 +56,10 @@ label: okmsg     " ok " $,
 : neg   ( x-y    )  -1 # *, ;
 : execute ( a-   )  1-, push, ;
 
-: @+ dup, 1+, swap, @, ;
-: !+ dup, 1+, push, !, pop, ;
-: +! dup, push, @, +, pop, !, ;
-: -! dup, push, @, swap, -, pop, !, ;
+: @+ ( a-an )  dup, 1+, swap, @, ;
+: !+ ( na-a )  dup, 1+, push, !, pop, ;
+: +! ( na-  )  dup, push, @, +, pop, !, ;
+: -! ( na-  )  dup, push, @, swap, -, pop, !, ;
 #! ------------------------------------------------------------
 : t-here   ( -a  )  heap # @, ;
 : t-,      ( n-  )  t-here !, t-here 1+, heap # !, ;
@@ -178,9 +178,9 @@ variable break-char  ( Holds the delimiter for 'accept' )
 : t-compiler: ( "- )  create 'COMPILER # (:) ;
 : t-(        ( "-  )  char: ) # accept ;
 #! ------------------------------------------------------------
-: n=n        ( xy- )         !if 0 # flag # !, then ;
-: get-set    ( ab-xy )       @, swap, @, ;
-: next-set   ( ab-a+1 b+1 )  1+, swap, 1+, swap, ;
+: n=n      ( xy-   )  !if 0 # flag # !, then ;
+: get-set  ( ab-xy )  @, swap, @, ;
+: next-set ( ab-cd )  1+, swap, 1+, swap, ;
 
 : (skim)
   repeat
@@ -194,7 +194,7 @@ variable break-char  ( Holds the delimiter for 'accept' )
   -1 # flag # !,
   (skim) 2drop flag # @, ;
 
-: (strlen)
+: (strlen)  ( a-na )
   repeat dup, @, 0; drop, next-set again ;
 
 : getLength ( $1 - n )
@@ -216,8 +216,8 @@ variable LATEST
   LATEST # @,
 ;
 
-: t-" char: " # accept TIB # tempString ;
-: t-s" 1 # t-, t-" keepString t-, ;
+: t-"  ( "-a )  char: " # accept TIB # tempString ;
+: t-s" ( "-a )  1 # t-, t-" keepString t-, ;
 #! ------------------------------------------------------------
 variable #value        variable num
 variable #ok           variable negate?
@@ -227,8 +227,8 @@ variable #ok           variable negate?
  dup, char: 0 # >if dup, char: 9 # <if drop, -1 # ; then then
  drop, 0 # ;
 
-: char>digit char: 0 # -, ;
-: digit>char char: 0 # +, ;
+: char>digit ( c-n )  char: 0 # -, ;
+: digit>char ( n-c )  char: 0 # +, ;
 
 : isNegative?
   ( a-a+1 )
@@ -239,7 +239,7 @@ variable #ok           variable negate?
   repeat dup, @, 0; char>digit #value # @, 10 # *, +,
          #value # !, 1+, again ;
 
-: >number
+: >number ( $-n )
   isNegative? 0 # #value # !, (convert) drop,
   #value # @, negate? # @, *, ;
 
@@ -264,7 +264,7 @@ variable #ok           variable negate?
   repeat flag # @, 0; drop, digit>char emit
          flag # @, 1-, flag # !, again ;
 
-: .
+: . ( n- )
   dup, 0 # <if dup, 0 # !if char: - # emit neg then then
   0 # flag # !, #value # !,
   number>digits digits>screen 32 # emit ;
@@ -282,27 +282,32 @@ variable found
 : search
   found # off last # @, (search) ;
 
-: t-'    32 # accept search
-         found # @, -1 # =if which # @, d->xt @, ; then 0 #
-         found # on ;
-: t-[']  1 # t-, t-' t-, ;
+: t-'    ( "-a )
+  32 # accept search
+  found # @, -1 # =if which # @, d->xt @, ; then 0 #
+  found # on ;
+: t-[']  ( "-a )
+  1 # t-, t-' t-, ;
 #! ------------------------------------------------------------
-: :devector dup, 0 # swap, !, 1+, 0 # swap, !, ;
-: :is       dup, 8 # swap, !, 1+, !, ;
-: devector  t-' :devector ;
-: is        t-' :is ;
+: :devector ( a-  )  dup, 0 # swap, !, 1+, 0 # swap, !, ;
+: :is       ( aa- )  dup, 8 # swap, !, 1+, !, ;
+: devector  ( "-  )  t-' :devector ;
+: is        ( a"- )  t-' :is ;
 #! ------------------------------------------------------------
-: save 1 # 4 # out, wait ;
-: bye jump, MAX-IMAGE , ;
-: words
+: save   ( - )  1 # 4 # out, wait ;
+: bye    ( - )  jump, MAX-IMAGE , ;
+: words  ( - )
   last # @, repeat dup, d->name type 32 # emit @, 0; again ;
-: depth -5 # 5 # out, wait, 5 # in, ;
-: reset depth : (reset) 0; push, drop, pop, 1-, (reset) ;
+: depth  ( -n )
+  -5 # 5 # out, wait, 5 # in, ;
+: reset  ( ...- )
+  depth : (reset) 0; push, drop, pop, 1-, (reset) ;
 #! ------------------------------------------------------------
 variable #mem   ( Amount of memory provided )
 
-: boot 0 # tx # !,  0 # ty # !, copytag # type cr ;
-: run-on-boot
+: boot ( - )
+  0 # tx # !,  0 # ty # !, copytag # type cr ;
+: run-on-boot ( - )
   -1 # 5 # out, wait 5 # in, #mem # !,  ( Memory Size )
   -2 # 5 # out, wait 5 # in, fb # !,    ( Framebuffer Addr )
   -3 # 5 # out, wait 5 # in, fw # !,    ( Framebuffer Width )
