@@ -248,24 +248,29 @@ variable LATEST
 : (save)     repeat @+ 0; SAFE # @, !, (next) again ;
 
 : tempString
+  ( a-a )
   (reset-$) (save) drop, 0 # SAFE # @, !, SCRATCH-START # ;
 : keepString
+  ( a-a )
   STRINGS # @, LATEST # !,
   STRINGS # @, SAFE # !, (save) drop, 0 # SAFE # @, !,
   SAFE # @, 1+, STRINGS # !,
   LATEST # @,
 ;
 
-: t-"  ( "-a )  char: " # accept TIB # tempString ;
-: t-s" ( "-a )  1 # t-, t-" keepString t-, ;
+: t-"  ( "-a )
+  char: " # accept TIB # tempString ;
+: t-s" ( R: -a  C: "- )
+  1 # t-, t-" keepString t-, ;
 #! ------------------------------------------------------------
 variable #value        variable num
 variable #ok           variable negate?
 
 
 : digit?
- dup, char: 0 # >if dup, char: 9 # <if drop, -1 # ; then then
- drop, 0 # ;
+  ( c-f )
+  dup, char: 0 # >if dup, char: 9 # <if drop, -1 # ; then then
+  drop, 0 # ;
 
 : char>digit ( c-n )  char: 0 # -, ;
 : digit>char ( n-c )  char: 0 # +, ;
@@ -326,7 +331,7 @@ variable found
   32 # accept search
   found # @, -1 # =if which # @, d->xt @, ; then 0 #
   found # on ;
-: t-[']  ( "-a )
+: t-[']  ( R: -a   C: "- )
   1 # t-, t-' t-, ;
 #! ------------------------------------------------------------
 : :devector ( a-  )  dup, 0 # swap, !, 1+, 0 # swap, !, ;
@@ -356,10 +361,10 @@ variable #mem   ( Amount of memory provided )
 #! ------------------------------------------------------------
 : with-class ( ac- ) execute ;
 
-: notfound cr nomatch # type cr ;
+: notfound ( - ) cr nomatch # type cr ;
 
-: the->xt      which # @, d->xt @, ;
-: the->class   which # @, d->class @, ;
+: the->xt      ( a-n ) which # @, d->xt @, ;
+: the->class   ( a-n ) which # @, d->class @, ;
 : tib->number? TIB # isnumber? ;
 : tib->number  TIB # >number .data ;
 
