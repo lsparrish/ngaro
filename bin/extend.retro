@@ -12,6 +12,7 @@
 ( ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ )
 
 
+
 ( ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ )
 ( These words provide a limited degree of control over the    )
 ( visibility of words.                                        )
@@ -31,10 +32,10 @@
 (                                                             )
 ( ... back to global scope ...                                )
 ( ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ )
-create <list>  ( -- a )
+create <list>  ( -a )
        0 , 0 , 0 , 0 , 0 ,
-: { ( -- ) last @ <list> @ 1+ <list> + ! 1 <list> +! ;
-: } ( -- ) 1 <list> -! <list> @ 1+ <list> + @ last ! ;
+: { ( - ) last @ <list> @ 1+ <list> + ! 1 <list> +! ;
+: } ( - ) 1 <list> -! <list> @ 1+ <list> + @ last ! ;
 
 
 ( ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ )
@@ -49,56 +50,58 @@ create <list>  ( -- a )
 ( ... global scope, local words not visible ...               )
 ( ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ )
 : find-last-visible last repeat @ dup @ <list> 1+ @ =if ;; then again ;
-: {{ last @ <list> ! ;
-: ---reveal--- last @ <list> 1+ ! ;
-: }} <list> @ find-last-visible ! ;
+: {{ ( - )  last @ <list> ! ;
+: ---reveal---  ( - ) last @ <list> 1+ ! ;
+: }} ( - )  <list> @ find-last-visible ! ;
 
 
 ( ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ )
 ( A simple word to allocate memory in a linear fashion. It's  )
 ( useful for arrays and similar things.                       )
 ( ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ )
-: allot  ( n -- )  heap +! ;
+: allot  ( n- )  heap +! ;
 
 
 ( ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ )
 ( These allow a more readable way to create variables and     )
 ( constants. It also makes constants more efficient.          )
 ( ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ )
-: variable:  ( n "name" -- )  create , ;
-: variable   ( "name" -- )    0 variable: ;
-: constant   ( n "name" -- )  create last @ d->xt ! ;
+: variable:  ( n"- )  create , ;
+: variable   ( "-  )  0 variable: ;
+: constant   ( n"- )  create last @ d->xt ! ;
 
 
 ( ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ )
 ( Shortcuts for incrementing and decrementing variables       )
 ( ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ )
-: ++  ( a -- )  1 swap +! ;
-: --  ( a -- )  1 swap -! ;
+: ++  ( a- )  1 swap +! ;
+: --  ( a- )  1 swap -! ;
 
 
 ( ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ )
 ( Copy memory from one location to another.                   )
+( Takes source, dest, and a count.                            )
 ( ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ )
-: copy ( src dest count -- ) ;
-{
+{{
   variable src
   variable dst
   : (copy) for src @ @ dst @ ! src ++ dst ++ next ;
-  here is copy ] push dst ! src ! pop (copy) ;
-}
+  ---reveal---
+  : copy ( aan- ) push dst ! src ! pop (copy) ;
+}}
 
 
 ( ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ )
 ( Fill a memory range with a specific value.                  )
+( Takes an address, a value, and a count.                     )
 ( ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ )
-: fill ( addr value count -- ) ;
-{
+{{
   variable dst
   variable val
   : (fill) for val @ dst @ ! dst ++ next ;
-  here is fill ] push val ! dst ! pop (fill) ;
-}
+---reveal---
+  : fill ( ann- ) push val ! dst ! pop (fill) ;
+}}
 
 
 ( ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ )
@@ -107,14 +110,14 @@ create <list>  ( -- a )
 (   ` wordname  =  ['] wordname compile                      )
 (   ` wordname  =  ['] wordname execute                      )
 ( ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ )
-compiler: `  ( "name" -- )  ' literal, which @ d->class @ compile ;
+compiler: `  ( "- )  ' literal, which @ d->class @ compile ;
 
 
 ( ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ )
 ( This is a rather common word that can be used to easily     )
 ( display a string.                                           )
 ( ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ )
-macro: ." ( "text" -- )
+macro: ." ( "- )
    compiler @ 0 =if " type ;; then ` s" ` type ;
 
 
@@ -124,19 +127,19 @@ macro: ." ( "text" -- )
 ( separate functions for the comparisons, so I define them    )
 ( here.                                                       )
 ( ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ )
--1 constant TRUE   ( -- flag )
- 0 constant FALSE  ( -- flag )
+-1 constant TRUE   ( -f )
+ 0 constant FALSE  ( -f )
 
-compiler: if    ( flag -- )
+compiler: if    ( f- )
        compiler @ 0; drop TRUE literal, ` =if ;
 
-compiler: ;then ( -- )
+compiler: ;then ( - )
        compiler @ 0; drop ` ;; ` then ;
 
-: =  ( x y -- flag )  =if TRUE ;then FALSE ;
-: <> ( x y -- flag )  !if TRUE ;then FALSE ;
-: >  ( x y -- flag )  >if TRUE ;then FALSE ;
-: <  ( x y -- flag )  <if TRUE ;then FALSE ;
+: =  ( xy-f )  =if TRUE ;then FALSE ;
+: <> ( xy-f )  !if TRUE ;then FALSE ;
+: >  ( xy-f )  >if TRUE ;then FALSE ;
+: <  ( xy-f )  <if TRUE ;then FALSE ;
 
 
 ( ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ )
@@ -178,17 +181,18 @@ variable blk
 
 : (v) ;
 : (e) ;
-: v   ( -- ) (v) ;
-: s   ( block -- ) blk ! v ;
-: d   ( line -- )  (line) 32 64 fill v ;
-: x   ( -- )       (block) 32 512 fill v ;
-: p   ( -- )       -1 blk +! v ;
-: n   ( -- )        1 blk +! v ;
-: ia  ( colunn line "text" -- )
-  (line) + push line-ending @ accept tib pop tib getLength copy v ;
-: i   ( line "text" -- ) 0 swap ia v ;
-: new ( -- ) offset 32 #-block-size #-blocks * fill ;
-: e   ( -- ) (e) ;
+: v   ( -  ) (v) ;
+: s   ( n- ) blk ! v ;
+: d   ( n- ) (line) 32 64 fill v ;
+: x   ( -  ) (block) 32 512 fill v ;
+: p   ( -  ) -1 blk +! v ;
+: n   ( -  ) 1 blk +! v ;
+: ia  ( nn"- )
+  (line) + push line-ending @ accept tib pop
+  tib getLength copy v ;
+: i   ( n"- ) 0 swap ia v ;
+: new ( -  ) offset 32 #-block-size #-blocks * fill ;
+: e   ( -  ) (e) ;
 
 
 ( ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ )
