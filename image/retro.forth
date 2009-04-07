@@ -41,9 +41,8 @@
 
 begin retroImage
 #! ------------------------------------------------------------
-mark-dictionary
-variable last      ( Pointer to the most recent dictionary )
-                   ( header )
+mark-dictionary    ( Pointer to the most recent dictionary )
+variable last      ( header )
 HEAP-START
 variable: heap     ( Starting address of the data/code heap )
 STRING-START variable: STRINGS
@@ -187,19 +186,22 @@ variable break-char  ( Holds the delimiter for 'accept' )
 : >tib ( c- )  TIB # >in # @, +, !, ;
 : ++   ( -  )  1 # >in # +! ;
 
-: (eat-leading) ( - )
-  repeat key dup, emit dup,
-         break-char # @, !if >tib ++ ; then drop, again ;
+: eat-leading ( "- )
+  repeat
+    key dup, emit dup,
+    break-char # @, !if >tib ++ ; then drop,
+  again ;
 
 : (accept) ( -c )
-  repeat key dup, emit dup,
-         break-char # @, =if ; then
-         dup, 8 # =if 1 # >in # -! drop, 8 , ' (accept) , then
-         >tib ++ again ;
+  repeat
+    key dup, emit dup,
+    break-char # @, =if drop, ; then
+    dup, 8 # =if 1 # >in # -! drop, 8 , ' (accept) , then
+    >tib ++
+  again ;
 
 : accept ( c- )
-  break-char # !, 0 # >in # !, (eat-leading) (accept) drop,
-  0 # >tib ;
+  break-char # !, 0 # >in # !, eat-leading (accept) 0 # >tib ;
 #! ------------------------------------------------------------
 : d->class ( a-a )  1+, ;
 : d->xt    ( a-a )  1+, 1+, ;
@@ -247,11 +249,9 @@ variable LATEST
 : (next)     1 # SAFE # +! ;
 : (save)     repeat @+ 0; SAFE # @, !, (next) again ;
 
-: tempString
-  ( a-a )
+: tempString  ( a-a )
   (reset-$) (save) drop, 0 # SAFE # @, !, SCRATCH-START # ;
-: keepString
-  ( a-a )
+: keepString  ( a-a )
   STRINGS # @, LATEST # !,
   STRINGS # @, SAFE # !, (save) drop, 0 # SAFE # @, !,
   SAFE # @, 1+, STRINGS # !,
@@ -281,8 +281,10 @@ variable #ok           variable negate?
   1 # negate? # !, ;
 
 : (convert)
-  repeat dup, @, 0; char>digit #value # @, 10 # *, +,
-         #value # !, 1+, again ;
+  repeat
+    dup, @, 0; char>digit #value # @, 10 # *, +,
+    #value # !, 1+,
+  again ;
 
 : >number ( $-n )
   isNegative? 0 # #value # !, (convert) drop,
@@ -297,17 +299,17 @@ variable #ok           variable negate?
   isNegative? -1 # flag # !, (isnumber) drop,
   flag # @, ;
 
-: number>digits
-  ( x-... )
+: number>digits  ( x-... )
   1 # flag # +!
   #value # @, 10 # /mod,
   dup, 0 # !if #value # !, jump, ' number>digits , then
   drop, ;
 
-: digits>screen
-  ( ...- )
-  repeat flag # @, 0; drop, digit>char emit
-         flag # @, 1-, flag # !, again ;
+: digits>screen  ( ...- )
+  repeat
+    flag # @, 0; drop, digit>char emit
+    flag # @, 1-, flag # !,
+  again ;
 
 : . ( n- )
   dup, 0 # <if dup, 0 # !if char: - # emit neg then then
@@ -359,21 +361,20 @@ variable #mem   ( Amount of memory provided )
   -4 # 5 # out, wait 5 # in, fh # !,    ( Framebuffer Height )
   boot ;
 #! ------------------------------------------------------------
-: with-class ( ac- ) execute ;
-
-: notfound ( - ) cr nomatch # type cr ;
-
+: with-class   ( ac- ) execute ;
+: notfound     ( -   ) cr nomatch # type cr ;
 : the->xt      ( a-n ) which # @, d->xt @, ;
 : the->class   ( a-n ) which # @, d->class @, ;
-: tib->number? TIB # isnumber? ;
-: tib->number  TIB # >number .data ;
+: tib->number? ( -f  ) TIB # isnumber? ;
+: tib->number  ( -n  ) TIB # >number .data ;
 
-: word?
+: word?   ( - )
   found # @, -1 # =if the->xt the->class with-class then ;
-: number?
+: number? ( - )
   found # @, 0 # =if tib->number? -1 # =if tib->number ; then
   notfound then ;
-: ok compiler # @, 0 # =if cr okmsg # type then ;
+: ok      ( - )
+  compiler # @, 0 # =if cr okmsg # type then ;
 : listen  ( - )
   repeat ok 32 # accept search word? number? again ;
 #! ----------------------------------------------------------
