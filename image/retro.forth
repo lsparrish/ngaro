@@ -31,6 +31,8 @@
 #!   Denotes runtime stack effects.
 #!
 #! If not specified, the stack comments are for runtime effects
+#! Words with no C: are assumed to have no stack impact during
+#! compilation.
 #! ------------------------------------------------------------
    5120 is-data SCRATCH-START
    6144 is-data TIB
@@ -97,21 +99,31 @@ label: okmsg     " ok " $,
 : t-;      ( -   )  t-;; t-[ ;
 : ($,)     ( a-a )  repeat dup, @, 0; t-, 1+, again ;
 : $        ( a-  )  ($,) drop, 0 # t-, ;
-: t-push   ( -   )  5 # t-, ;
-: t-pop    ( -   )  6 # t-, ;
+: t-push   ( n-  )  5 # t-, ;
+: t-pop    ( -n  )  6 # t-, ;
 : compile  ( a-  )  7 # t-, t-, ;
 : literal, ( n-  )  1 # t-, t-, ;
-: t-for    ( n-  )  t-here 5 # t-, ;
-: t-next   ( -   )  6 # t-, 27 # t-, 25 # t-, 8 # t-, t-, ;
-: (if)              t-here 0 # t-, ;
-: t-=if    ( xy- )  12 # t-, (if) ;
-: t->if    ( xy- )  11 # t-, (if) ;
-: t-<if    ( xy- )  10 # t-, (if) ;
-: t-!if    ( xy- )  13 # t-, (if) ;
-: t-then   ( -   )  t-here swap, !, 0 # t-, ;
-: t-repeat ( -   )  t-here ;
-: t-again  ( -   )  8 # t-, t-, ;
-: t-0;     ( n-n || n - )  25 # t-, ;
+: t-for    ( R: n-   C: -a )
+  t-here 5 # t-, ;
+: t-next   ( R: -    C: a- )
+  6 # t-, 27 # t-, 25 # t-, 8 # t-, t-, ;
+: (if)     ( -a )
+  t-here 0 # t-, ;
+: t-=if    ( R: xy-  C: -a )
+  12 # t-, (if) ;
+: t->if    ( R: xy-  C: -a )
+  11 # t-, (if) ;
+: t-<if    ( R: xy-  C: -a )
+  10 # t-, (if) ;
+: t-!if    ( R: xy-  C: -a )
+  13 # t-, (if) ;
+: t-then   ( R: -    C: a- )
+  t-here swap, !, 0 # t-, ;
+: t-repeat ( R: -    C: -a )
+  t-here ;
+: t-again  ( R: -    C: a- )
+  8 # t-, t-, ;
+: t-0;     ( n-n || n -  )  25 # t-, ;
 
 : .word   ( a- )
   compiler # @, -1 # =if 7 # t-, t-, ; then execute ;
