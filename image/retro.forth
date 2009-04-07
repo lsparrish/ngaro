@@ -4,6 +4,34 @@
 #! This code was written by Charles Childers and is gifted to
 #! the public domain.
 #! ------------------------------------------------------------
+#! Reading the stack comments:
+#!
+#! x, y, z, n
+#!   Generic numbers
+#! q, r
+#!   Quotient, Remainder (for division)
+#! "
+#!   Word parses for a string
+#! a
+#!   Address
+#! c
+#!   ASCII character
+#! $
+#!   Zero-terminated string
+#! f
+#!   Flag
+#! ...
+#!   Variable number of values on stack
+#!
+#! ||
+#!   Denotes two possible results
+#! C:
+#!   Denotes compile-time stack effects
+#! R:
+#!   Denotes runtime stack effects.
+#!
+#! If not specified, the stack comments are for runtime effects
+#! ------------------------------------------------------------
    5120 is-data SCRATCH-START
    6144 is-data TIB
    8192 is-data HEAP-START
@@ -136,7 +164,7 @@ variable break-char  ( Holds the delimiter for 'accept' )
 
 : (remap-keys) ( c-c ) ;
 
-: key ( -x )
+: key ( -c )
   repeat
     1 # 1 # out,
     wait 1 # in,
@@ -144,20 +172,20 @@ variable break-char  ( Holds the delimiter for 'accept' )
   again
 ;
 
-: >tib ( x- )  TIB # >in # @, +, !, ;
+: >tib ( c- )  TIB # >in # @, +, !, ;
 : ++   ( -  )  1 # >in # +! ;
 
 : (eat-leading) ( - )
   repeat key dup, emit dup,
          break-char # @, !if >tib ++ ; then drop, again ;
 
-: (accept) ( -x )
+: (accept) ( -c )
   repeat key dup, emit dup,
          break-char # @, =if ; then
          dup, 8 # =if 1 # >in # -! drop, 8 , ' (accept) , then
          >tib ++ again ;
 
-: accept ( x- )
+: accept ( c- )
   break-char # !, 0 # >in # !, (eat-leading) (accept) drop,
   0 # >tib ;
 #! ------------------------------------------------------------
@@ -190,14 +218,14 @@ variable break-char  ( Holds the delimiter for 'accept' )
   again
 ;
 
-: compare   ( $1 $2 -- flag )
+: compare   ( $$-f )
   -1 # flag # !,
   (skim) 2drop flag # @, ;
 
 : (strlen)  ( a-na )
   repeat dup, @, 0; drop, next-set again ;
 
-: getLength ( $1 - n )
+: getLength ( $-n )
   0 # swap, (strlen) drop, ;
 
 variable SAFE
