@@ -60,6 +60,7 @@
   var devOutput = " ";
   var output = document.getElementById("output");
   var lastKey = " ";
+  var width = 0;
 
 
 /**********************************************************************
@@ -73,6 +74,7 @@ function initVM()
   rsp = 0;
   ports[0] = 0;
   data[0] = 0;
+  width = 0;
 }
 
 
@@ -111,6 +113,7 @@ function handleDevices()
     {
       case 10:
               ch = "<br>\n";
+              width = 0;
               break;
       case 32:
               ch = "&nbsp;";
@@ -128,9 +131,20 @@ function handleDevices()
 
     /* Display the character */
     if (data[sp] < 0)
+    {
       clearDisplay();
+      width = 0;
+    }
     else
+    {
       devOutput += ch;
+      width++;
+      if (width > 80)
+      {
+        width = 0;
+        devOutput += "<br>\n";
+      }
+    }
 
     if (data[sp] == 8)
       devOutput = devOutput.substr(0, devOutput.length - 2);
