@@ -4,36 +4,6 @@
 #! This code was written by Charles Childers and is gifted to
 #! the public domain.
 #! ------------------------------------------------------------
-#! Reading the stack comments:
-#!
-#! x, y, z, n
-#!   Generic numbers
-#! q, r
-#!   Quotient, Remainder (for division)
-#! "
-#!   Word parses for a string
-#! a
-#!   Address
-#! c
-#!   ASCII character
-#! $
-#!   Zero-terminated string
-#! f
-#!   Flag
-#! ...
-#!   Variable number of values on stack
-#!
-#! ||
-#!   Denotes two possible results
-#! C:
-#!   Denotes compile-time stack effects
-#! R:
-#!   Denotes runtime stack effects.
-#!
-#! If not specified, the stack comments are for runtime effects
-#! Words with no C: are assumed to have no stack impact during
-#! compilation.
-#! ------------------------------------------------------------
    5120 is-data SCRATCH-START
    6144 is-data TIB
    8192 is-data HEAP-START
