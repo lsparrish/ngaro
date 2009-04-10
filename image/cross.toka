@@ -23,11 +23,11 @@ value| heap origin imageFile mapFile lastop |
 #! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #! Bits related to building the image map
 #! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-[ ( $ -- )
+[ ( $- )
   SPACE string.appendChar
   >r mapFile r> string.getLength file.write drop
 ] is $log
-[ ( -- )
+[ ( - )
   mapFile " \n" string.getLength file.write drop ] is \n
 #! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -35,9 +35,9 @@ value| heap origin imageFile mapFile lastop |
 #! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #! The assembler core
 #! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-[ ( n -- )
+[ ( n- )
   heap ! heap cell+ to heap ] is ,
-[ ( n "name" -- )
+[ ( n"- )
   [ dup to lastop , ] +action ] is vm:
 
  0 vm: nop,          1 vm: lit,          2 vm: dup,
@@ -52,18 +52,18 @@ value| heap origin imageFile mapFile lastop |
 27 vm: 1-,          28 vm: in,          29 vm: out,
 30 vm: wait,        98 vm: halt,
 #! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-[ ( -- n )
+[ ( -n )
   heap origin - cell-size / ] is here
-[ ( -- )
+[ ( - )
   here origin cell+ ! ] is main:
-[ ( "name" -- )
+[ ( "- )
   here is-data
   last @ :xt >string TAB string.appendChar $log
   " LABEL:" $log last @ :name $log \n
 ] is label:
-[ ( n -- )
+[ ( n- )
   lit, , ] is #
-[ ( $ -- )
+[ ( $- )
   string.getLength 0 swap [ dup c@ , char+ ] countedLoop
   drop 0 , ] is $,
 #! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -73,14 +73,14 @@ value| heap origin imageFile mapFile lastop |
 #! Assembler directives to mark the beginning and
 #! end of the assembly file.
 #! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-[ ( "NAME" -- )
+[ ( "- )
   MAX-IMAGE cells malloc keep to origin origin to heap
   wsparse dup "W" file.open to imageFile
   " .map" string.append "W" file.open to mapFile
   jump, 0 ,
 ] is begin
 
-[ ( -- )
+[ ( - )
   imageFile origin heap origin - file.write imageFile file.close
   heap origin - cell-size / . ." cells written. Goodbye!\n\n"
   mapFile file.close bye
