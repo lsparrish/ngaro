@@ -236,7 +236,6 @@ variable LATEST
 variable #value        variable num
 variable #ok           variable negate?
 
-
 : digit?
   ( c-f )
   dup, char: 0 # >if dup, char: 9 # <if drop, -1 # ; then then
