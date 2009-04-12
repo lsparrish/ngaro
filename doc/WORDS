@@ -1,28 +1,67 @@
 This document provides an overview of the words and variables
 that make up the core Retro language. All are defined in the
 retro.forth source file.
+
+This file is divded by word class.
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Inline
 
 1+             ( x-y )
+Increment TOS by 1.
+
 1-             ( x-y )
+Decrement TOS by 1.
+
 swap           ( xy-yx )
+Exchange TOS and NOS
+
 drop           ( xy-x )
+Drop the TOS
+
 and            ( xy-z )
+Bitwise AND operation
+
 or             ( xy-z )
+Bitwise OR operation
+
 xor            ( xy-z )
+Bitwise XOR operation
+
 @              ( a-n )
+Fetch a value from an address
+
 !              ( na- )
+Store a value to an address
+
 +              ( xy-z )
+Add two numbers
+
 -              ( xy-z )
+Subract Y from X
+
 *              ( xy-z )
+Multiply two numbers
+
 /mod           ( xy-qr )
+Divide X/Y leaving the quotient and remainder
+
 <<             ( xy-z )
+Shift Y left by X bits
+
 >>             ( xy-z )
+Shift Y right by X bits
+
 nip            ( xy-y )
+Drop the NOS
+
 dup            ( n-nn )
+Duplicate TOS
+
 in             ( n-n )
+Read a value from an I/O port
+
 out            ( xy- )
+Write a value to an I/O port
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Words
 
