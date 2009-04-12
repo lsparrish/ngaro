@@ -1,135 +1,131 @@
+This document provides an overview of the words and variables
+that make up the core Retro language. All are defined in the
+retro.forth source file.
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Inline
 
-1+          ( x-y )
-1-          ( x-y )
-swap        ( xy-yx )
-drop        ( xy-x )
-and         ( xy-z )
-or          ( xy-z )
-xor         ( xy-z )
-@           ( a-n )
-!           ( na- )
-+           ( xy-z )
--           ( xy-z )
-*           ( xy-z )
-/mod        ( xy-qr )
-<<          ( xy-z )
->>          ( xy-z )
-nip         ( xy-y )
-dup         ( n-nn )
-in          ( n-n )
-out         ( xy- )
-
-
-
+1+             ( x-y )
+1-             ( x-y )
+swap           ( xy-yx )
+drop           ( xy-x )
+and            ( xy-z )
+or             ( xy-z )
+xor            ( xy-z )
+@              ( a-n )
+!              ( na- )
++              ( xy-z )
+-              ( xy-z )
+*              ( xy-z )
+/mod           ( xy-qr )
+<<             ( xy-z )
+>>             ( xy-z )
+nip            ( xy-y )
+dup            ( n-nn )
+in             ( n-n )
+out            ( xy- )
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Words
 
-here        ( -a )
-,           ( n- )
-]           ( - )
-create      ( "- )
-:           ( "- )
-macro:      ( "- )
-compiler:   ( "- )
-accept      ( n- )
-cr          ( - )
-emit        ( n- )
-type        ( $- )
-clear       ( - )
-words       ( - )
-key         ( -n )
-over        ( xy-xyx )
-2drop       ( xy- )
-not         ( x-y )
-rot         ( xyz-yzx )
--rot        ( xyz-xzy )
-tuck        ( xy-yxy )
-2dup        ( xy-xyxy )
-on          ( a- )
-off         ( a- )
-/           ( xy-q )
-mod         ( xy-r )
-neg         ( x-y )
-execute     ( a- )
-.           ( n- )
-"           ( "-$ )
-compare     ( $$-f )
-wait        ( - )
-'           ( "-a )
-@+          ( a-an )
-!+
-+!
--!
-:is
-:devector
-is
-devector
-compile
-literal,
-tempString
-keepString
-redraw
-getLength
-bye
-(remap-keys)
-with-class
-.word
-.macro
-.data
-.inline
-.compiler
-d->class
-d->name
-d->xt
-boot
-depth
-reset
-notfound
-save
->number
-ok
-
-
-
+here           ( -a )
+,              ( n- )
+]              ( - )
+create         ( "- )
+:              ( "- )
+macro:         ( "- )
+compiler:      ( "- )
+accept         ( n- )
+cr             ( - )
+emit           ( n- )
+type           ( $- )
+clear          ( - )
+words          ( - )
+key            ( -n )
+over           ( xy-xyx )
+2drop          ( xy- )
+not            ( x-y )
+rot            ( xyz-yzx )
+-rot           ( xyz-xzy )
+tuck           ( xy-yxy )
+2dup           ( xy-xyxy )
+on             ( a- )
+off            ( a- )
+/              ( xy-q )
+mod            ( xy-r )
+neg            ( x-y )
+execute        ( a- )
+.              ( n- )
+"              ( "-$ )
+compare        ( $$-f )
+wait           ( - )
+'              ( "-a )
+@+             ( a-an )
+!+             ( na-a )
++!             ( na- )
+-!             ( na- )
+:is            ( aa- )
+:devector      ( a- )
+is             ( a"- )
+devector       ( "- )
+compile        ( a- )
+literal,       ( n- )
+tempString     ( $-$ )
+keepString     ( $-$ )
+redraw         ( - )
+getLength      ( $-n )
+bye            ( - )
+(remap-keys)   ( n-n )
+with-class     ( aa- )
+.word          ( a- )
+.macro         ( a- )
+.data          ( n- )
+.inline        ( a- )
+.compiler      ( a- )
+d->class       ( a-a )
+d->name        ( a-a )
+d->xt          ( a-a )
+boot           ( - )
+depth          ( -n )
+reset          ( ...- )
+notfound       ( - )
+save           ( - )
+>number        ( $-n )
+ok             ( - )
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Compiler
 
-s"
-[
-;
-;;
-=if
->if
-<if
-!if
-then
-repeat
-again
-0;
-push
-pop
-[']
-for
-next
-
-
-
+s"             ( R: -$   C: "- )
+[              ( - )
+;              ( - )
+;;             ( - )
+=if            ( R: nn-  C: -a )
+>if            ( R: nn-  C: -a )
+<if            ( R: nn-  C: -a )
+!if            ( R: nn-  C: -a )
+then           ( R: -    C: a- )
+repeat         ( R: -    C: -a )
+again          ( R: -    C: a- )
+0;             ( n-  ||  n-n )
+push           ( n- )
+pop            ( -n )
+[']            ( R: -n   C: "- )
+for            ( R: n-   C: -a )
+next           ( R: -    C: a- )
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Macro
 
-(
-
-
-
+(              ( "- )
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Data
 
-tx
-ty
-last
-compiler
-TIB
-update
-fb
-fw
-fh
-#mem
-heap
-which
+tx             ( -a )
+ty             ( -a )
+last           ( -a )
+compiler       ( -a )
+TIB            ( -a )
+update         ( -a )
+fb             ( -a )
+fw             ( -a )
+fh             ( -a )
+#mem           ( -a )
+heap           ( -a )
+which          ( -a )
