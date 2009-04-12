@@ -1,4 +1,90 @@
 This file is part of my ongoing efforts to document Retro. It
 will cover word classes.
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Retro’sinterpretermakesuseof animplementationtechniqueknown 
+aswordclasses. ThisapproachwascreatedbyHelmarWodtkeandallows 
+foraverycleaninterpreterandcompiler. Itmakesuseofspecial words, 
+calledclasshandlers, toprocessexecutiontokens. Eachwordinthedic- 
+tionaryhasaclasshandlerassociatedwithit. Whenbeingexecuted, the 
+address of the wordis pushedtothestackandthe class handler is 
+28
+invoked. The handlerthen does something with the address based 
+onvarious bits of state. 
+The standard Retro language has five classes defined. 
+•.forth 
+a — 
+— 
+If interpreting, call the word. If compiling, compile a call to the 
+word. 
+• .macro 
+a — 
+— 
+Always call the word. This is normally used for words that lay 
+down custom code at compile time, or which need to have differ- 
+entbehaviorsduring compilation. 
+.inline 
+a — 
+— 
+If interpreting, call the word. Ifcompiling, copy the first opcode of 
+theword into the target definition. This is only useful for use with 
+words that mapdirectly to processor opcodes. 
+•.data 
+a — a 
+— 
+If interpreting, leave the address on the stack. If compiling, com- 
+pile the address into the target definition as a literal. 
+•.compiler 
+a — 
+— 
+If compiling, execute the word. If interpreting, ignore the word. 
+Itispossibletodefinecustomclasses. Theeasiestwaytoshowhowto 
+addanewclass is withanexample. For this, we'll createaclass for 
+strings withthe following behavior: 
+•If interpreting, display the string 
+•If compiling, lay down the code needed to display the string 
+Retrohas aconventionof usinga. as thefirstcharacter of aclass 
+name. In continuing this tradition, we'll call our newclass.string 
+Tip: Onentrytoaclass, theaddressof thewordordatastructureisonthe 
+stack. Thecompilerstate(whichmostclasseswill needtocheck)isinavariable 
+namedcompiler. 
+Afirst stepis tolaydownasimpleskeleton. Sinceweneedtolay 
+downcustomcode at compile time, the class handler will have two 
+parts. 
+: .string( a—)compiler@0=if ( interpret time); then( compile 
+time ) 
+We'll start withtheinterpret timeaction. Wecanreplacethis with 
+type, since the whole point of this class is to display a string object. 
+: .string ( a — )compiler @ 0 =if type; then ( compile time ) 
+Thecompiletimeactionismorecomplex. Weneedtolaydownthe 
+machinecodetoleavetheaddressof thestringonthestackwhenthe 
+wordisrun, andthencompileacalltotype. Ifyoulookattheinstruction 
+setlisting, you'll seethatopcode1istheinstructionforputtingvalueson 
+thestack. Thisopcodetakesavaluefromthefollowingmemorylocation 
+and puts it on the stack. So the first part of the compile time action is: 
+: .string ( a — )compiler @ 0 =if type; then 1 , , ; 
+Tip: Use, toplacevaluesdirectlyintomemory. Thisisthecornerstoneof the 
+entire compiler. 
+Onemorethingremains. Westill havetocompileacall totype. We 
+can do this by passing the address oftypetocompile. 
+: .string ( a — )compiler @ 0 =if type; then1 , , ['] type compile 
+Andnowwehaveanewclasshandler. Thesecondpartistomakethis 
+useful. We'll makeacreatorwordcalleddisplayString: totakeastring 
+andmakeit intoanewwordusingour .stringclass. Thiswill takea 
+string from the stack, make it permanent, and give it a name. 
+Tip: Newdictionaryentriesaremadeusingcreate. Theclasscanbesetafter 
+creationbyaccessingtheproperfieldsinthedictionaryheader. Wordsstarting 
+withd->are used to access fields in the dictionary headers. 
+: displayString: ( "name" — )create ['] .string last @ d- 
+>class!keepString last @ d->xt! 
+Thisusescreatetomakeanewword, thensetstheclassto.stringand 
+thext of thewordtothestring.It alsomakesthestringpermanent us- 
+ingkeepString. last is avariablepointingtothemostrecentlycreated 
+dictionaryentry. Thetwowordsd->class andd->xt areas dictionary 
+fieldaccessors andareusedtoprovideportableaccess tofields inthe 
+dictionary. 
+We can now test the new class: 
+" hello, world!" displayString: hello 
+hello 
+: foo hello cr foo 
+You can use this approach to define as many classesas you want. 
 
