@@ -274,38 +274,105 @@ displays the "ok" prompt
 Compiler
 
 s"             ( R: -$   C: "- )
+Parse until " is encountered, make the string permanent, and
+compile the code to leave a pointer to it into the current
+definition. Like " but for use inside definitions
+
 [              ( - )
+Turn the compiler off
+
 ;              ( - )
+End a definition
+
 ;;             ( - )
+Compile the code to leave the current definition, but do not
+end the definition
+
 =if            ( R: nn-  C: -a )
->if            ( R: nn-  C: -a )
+Conditional. Check for equality
+
+>if ( R: nn- C: -a )
+Conditional. Check for greater than
+
 <if            ( R: nn-  C: -a )
+Conditional. Check for less than
+
 !if            ( R: nn-  C: -a )
+Conditional. Check for inequality
+
 then           ( R: -    C: a- )
+End a conditional
+
 repeat         ( R: -    C: -a )
+Start an unconditional loop
+
 again          ( R: -    C: a- )
+End an unconditional loop
+
 0;             ( n-  ||  n-n )
+A handy control structure. If TOS=0, drop TOS and exit the
+word. Otherwise leave TOS alone and continue executing the word
+
 push           ( n- )
+Move a value to the address stack
+
 pop            ( -n )
+Retrieve a value from the address stack
+
 [']            ( R: -n   C: "- )
+Get the address of a word and compile the code to leave it on
+the stack into the current defintion. Like ' but for use in
+definitions
+
 for            ( R: n-   C: -a )
+Start a simple countdown loop
+
 next           ( R: -    C: a- )
+End the simple countdown loop. Exits the current definition
+when the loop is finished
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Macro
 
 (              ( "- )
+Parse until ) is encounted, ignoring everything in between.
+Used for comments
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Data
 
 tx             ( -a )
+Text X coordinate (for framebuffer)
+
 ty             ( -a )
+Text Y coordinate (for framebuffer)
+
 last           ( -a )
+Pointer to the most recent dictionary header
+
 compiler       ( -a )
+Stores the compiler state
+
 TIB            ( -a )
+Start of the Text Input Buffer
+
 update         ( -a )
+Used to enable/disable video updates for caching/performance
+tunings
+
 fb             ( -a )
+Framebuffer address. May be outside the normal image memory
+range
+
 fw             ( -a )
+Framebuffer width
+
 fh             ( -a )
+Framebuffer height
+
 #mem           ( -a )
+Size of memory available to the Retro image
+
 heap           ( -a )
+Address of the next available address on the heap
+
 which          ( -a )
+Pointer to the most recently looked up dictionary entry
