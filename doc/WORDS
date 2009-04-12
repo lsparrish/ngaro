@@ -1,61 +1,62 @@
 Inline
 
-1+
-10
-swap
-drop
-and
-or
-xor
-@
-!
-+
--
-*
-/mod
-<<
->>
-nip
-dup
-in
-out
+1+          ( x-y )
+1-          ( x-y )
+swap        ( xy-yx )
+drop        ( xy-x )
+and         ( xy-z )
+or          ( xy-z )
+xor         ( xy-z )
+@           ( a-n )
+!           ( na- )
++           ( xy-z )
+-           ( xy-z )
+*           ( xy-z )
+/mod        ( xy-qr )
+<<          ( xy-z )
+>>          ( xy-z )
+nip         ( xy-y )
+dup         ( n-nn )
+in          ( n-n )
+out         ( xy- )
 
 
 
 Words
 
-here
-,
-]
-create
-:
-macro:
-compiler:
-accept
-cr
-emit
-type
-clear
-words
-key
-over
-2drop
-not
-rot
--rot tuck
-2dup
-on
-off
-/
-mod
-neg
-execute
-.
-"
-compare
-wait
-'
-@+
+here        ( -a )
+,           ( n- )
+]           ( - )
+create      ( "- )
+:           ( "- )
+macro:      ( "- )
+compiler:   ( "- )
+accept      ( n- )
+cr          ( - )
+emit        ( n- )
+type        ( $- )
+clear       ( - )
+words       ( - )
+key         ( -n )
+over        ( xy-xyx )
+2drop       ( xy- )
+not         ( x-y )
+rot         ( xyz-yzx )
+-rot        ( xyz-xzy )
+tuck        ( xy-yxy )
+2dup        ( xy-xyxy )
+on          ( a- )
+off         ( a- )
+/           ( xy-q )
+mod         ( xy-r )
+neg         ( x-y )
+execute     ( a- )
+.           ( n- )
+"           ( "-$ )
+compare     ( $$-f )
+wait        ( - )
+'           ( "-a )
+@+          ( a-an )
 !+
 +!
 -!
