@@ -1,0 +1,32 @@
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Retro uses subroutine threading with inline machine code for
+some words. This was chosen primarily due to its simplicity,
+but also for historical reasons. (All Retro implementations
+since 2001 have been primarily subroutine threaded).
+
+The subroutine threading model compiles code to native machine
+code, primarily as a series of calls to other routines.
+
+As an example:
+
+  : foo 1 2 + . ;
+
+This will compile to:
+
+  lit 1
+  lit 2
+  call +
+  call .
+  ;
+
+The subroutine threading model allows a lot of opportunity for
+optimization. Recent releases of Retro support inline machine
+code generation for primitives, so the above example can now
+compile to:
+
+  lit 1
+  lit 2
+  +
+  call .
+  ;
+
