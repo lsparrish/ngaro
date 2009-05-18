@@ -103,18 +103,30 @@ function handleDevices()
   ports[1] = lastKey;
   lastKey = 0;
 
+  /* HTML */
+  if (ports[9998] == 1)
+  {
+    filterHTML = filterHTML * -1;
+    ports[9998] = 0;
+    ports[0] = 1;
+  }
+  if (ports[9998] == 2)
+  {
+    var src = data[sp]; sp--;
+    var dst = "";
+    while (image[src] != 0)
+    {
+      dst = dst + String.fromCharCode(image[src]);
+      src++;
+    }
+    eval(dst);
+    ports[9998] = 0;
+    ports[0] = 1;
+  }
+
   /* Output */
   if (ports[2] == 1)
   {
-    if (data[sp] == -32768)
-    {
-      filterHTML = filterHTML * -1;
-      sp--;
-      ports[2] = 0;
-      ports[0] = 1;
-      break;
-    }
-
     var ch = String.fromCharCode(data[sp]);
 
     /* Remap select characters to HTML */
