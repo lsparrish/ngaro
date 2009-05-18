@@ -57,11 +57,11 @@
   var ports = new Array(1024);
   var image = new Array(IMAGE_SIZE);
   var interval;
-  var devOutput = " ";
+  var devOutput = "";
   var output = document.getElementById("output");
   var lastKey = " ";
   var width = 0;
-
+  var filterHTML = -1;
 
 /**********************************************************************
  * initVM()
@@ -106,29 +106,29 @@ function handleDevices()
   /* Output */
   if (ports[2] == 1)
   {
+    if (data[sp] == -32768)
+    {
+      filterHTML = filterHTML * -1;
+      sp--;
+      ports[2] = 0;
+      ports[0] = 1;
+      break;
+    }
+
     var ch = String.fromCharCode(data[sp]);
 
     /* Remap select characters to HTML */
+    if (filterHTML == -1)
+    {
     switch (data[sp])
     {
-      case 10:
-              ch = "<br>\n";
-              width = 0;
-              break;
-      case 32:
-              ch = "&nbsp;";
-              break;
-      case 38:
-              ch = "&amp;";
-              break;
-      case 60:
-              ch = "&lt;";
-              break;
-      case 62:
-              ch = "&gt;";
-              break;
+      case 10: ch = "<br>\n"; width = 0; break;
+      case 32: ch = "&nbsp;"; break;
+      case 38: ch = "&amp;";  break;
+      case 60: ch = "&lt;";   break;
+      case 62: ch = "&gt;";   break;
     }
-
+    }
     /* Display the character */
     if (data[sp] < 0)
     {
