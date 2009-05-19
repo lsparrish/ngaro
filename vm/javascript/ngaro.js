@@ -14,12 +14,6 @@
 
 /**********************************************************************
  * Symbolic constants for each instruction.
- *
- * I'm looking for a better approach for this, but haven't found one
- * yet.
- **********************************************************************
- * Internet Explorer does not support the 'const' keyword. Change all
- * references of 'const' to 'var' if you need to support IE.
  **********************************************************************/
   const VM_NOP = 0;       const VM_LIT = 1;         const VM_DUP = 2;
   const VM_DROP = 3;      const VM_SWAP = 4;        const VM_PUSH = 5;
@@ -48,20 +42,21 @@
 
 
 /**********************************************************************
- * Internal registers
+ * Internal registers, flags, and variables
  **********************************************************************/
   var sp = 0, rsp = 0, ip = 0;
   var trace = 0, run = 0;
-  var data = new Array(STACK_DEPTH);
+  var data    = new Array(STACK_DEPTH);
   var address = new Array(STACK_DEPTH);
-  var ports = new Array(1024);
-  var image = new Array(IMAGE_SIZE);
+  var ports   = new Array(1024);
+  var image   = new Array(IMAGE_SIZE);
   var interval;
   var devOutput = "";
   var output = document.getElementById("output");
   var lastKey = " ";
   var width = 0;
   var filterHTML = -1;
+
 
 /**********************************************************************
  * initVM()
@@ -103,26 +98,6 @@ function handleDevices()
   ports[1] = lastKey;
   lastKey = 0;
 
-  /* HTML */
-  if (ports[9998] == 1)
-  {
-    filterHTML = filterHTML * -1;
-    ports[9998] = 0;
-    ports[0] = 1;
-  }
-  if (ports[9998] == 2)
-  {
-    var src = data[sp]; sp--;
-    var dst = "";
-    while (image[src] != 0)
-    {
-      dst = dst + String.fromCharCode(image[src]);
-      src++;
-    }
-    eval(dst);
-    ports[9998] = 0;
-    ports[0] = 1;
-  }
 
   /* Output */
   if (ports[2] == 1)
@@ -132,15 +107,16 @@ function handleDevices()
     /* Remap select characters to HTML */
     if (filterHTML == -1)
     {
-    switch (data[sp])
-    {
-      case 10: ch = "<br>\n"; width = 0; break;
-      case 32: ch = "&nbsp;"; break;
-      case 38: ch = "&amp;";  break;
-      case 60: ch = "&lt;";   break;
-      case 62: ch = "&gt;";   break;
+      switch (data[sp])
+      {
+        case 10: ch = "<br>\n"; width = 0; break;
+        case 32: ch = "&nbsp;"; break;
+        case 38: ch = "&amp;";  break;
+        case 60: ch = "&lt;";   break;
+        case 62: ch = "&gt;";   break;
+      }
     }
-    }
+
     /* Display the character */
     if (data[sp] < 0)
     {
@@ -166,6 +142,7 @@ function handleDevices()
     ports[0] = 1;
   }
 
+
   /* Capabilities */
   if (ports[5] == -1)
   {
@@ -187,6 +164,28 @@ function handleDevices()
     ports[5] = rsp;
     ports[0] = 1;
   }
+
+
+  /* HTML */
+  if (ports[9998] == 1)
+  {
+    filterHTML = filterHTML * -1;
+    ports[9998] = 0;
+    ports[0] = 1;
+  }
+  if (ports[9998] == 2)
+  {
+    var src = data[sp]; sp--;
+    var dst = "";
+    while (image[src] != 0)
+    {
+      dst = dst + String.fromCharCode(image[src]);
+      src++;
+    }
+    eval(dst);
+    ports[9998] = 0;
+    ports[0] = 1;
+  }
 }
 
 
@@ -199,6 +198,7 @@ function clearDisplay()
 {
   devOutput = "";
   document.getElementById('output').innerHTML = devOutput;
+  width = 0;
 }
 
 
