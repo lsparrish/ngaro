@@ -1,6 +1,7 @@
 /**********************************************************************
  * Ngaro Virtual Machine
  * Written by Charles Childers
+ *
  * This code is gifted to the public domain.
  **********************************************************************
  * This implementation provides an environment very similar to a text
@@ -34,10 +35,11 @@
  *
  * If you have performance issues, try modifying CYLES_PER
  **********************************************************************/
-  const IMAGE_SIZE  = 5000000          /* Amount of memory to provide */
-  const STACK_DEPTH =     100          /* Depth of the stacks         */
-  const CYCLES_PER  =    2000          /* Instructions to run per     */
+  const IMAGE_SIZE  = 5000000;         /* Amount of memory to provide */
+  const STACK_DEPTH =     100;         /* Depth of the stacks         */
+  const CYCLES_PER  =    2000;         /* Instructions to run per     */
                                        /* clock cycle                 */
+  const TERM_WIDTH  =      80;         /* Width of emulated terminal  */
 
 
 
@@ -121,13 +123,12 @@ function handleDevices()
     if (data[sp] < 0)
     {
       clearDisplay();
-      width = 0;
     }
     else
     {
       devOutput += ch;
       width++;
-      if (width > 80)
+      if (width > TERM_WIDTH)
       {
         width = 0;
         devOutput += "<br>\n";
@@ -146,7 +147,7 @@ function handleDevices()
   /* Capabilities */
   if (ports[5] == -1)
   {
-    ports[5] = 5000000;
+    ports[5] = IMAGE_SIZE;
     ports[0] = 1;
   }
   if (ports[5] == -2 || ports[5] == -3 || ports[5] == -4)
@@ -424,6 +425,7 @@ function processImage()
     checkStack();
     ip++;
 
+    /* Update the display */
     if (ports[3] == 0)
     {
       ports[3] = 1;
@@ -432,4 +434,5 @@ function processImage()
   }
 }
 
+/* Enable our keyboard handler */
 document.onkeypress = readKeyboard;
