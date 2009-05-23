@@ -67,7 +67,7 @@ void vm_process(int opcode) {
     case VM_LIT:
          vm.sp++;
          vm.ip++;
-         TOS = vm.image[vm.ip];
+         TOS = VMOP;
          break;
 
     /***************************************************/
@@ -136,7 +136,7 @@ void vm_process(int opcode) {
     /* Opcode: 8 a       Stack: -       Address: -     */
     case VM_JUMP:
          vm.ip++;
-         vm.ip = vm.image[vm.ip] - 1;
+         vm.ip = VMOP - 1;
          break;
 
     /***************************************************/
@@ -156,7 +156,7 @@ void vm_process(int opcode) {
     case VM_GT_JUMP:
          vm.ip++;
          if(NOS > TOS)
-           vm.ip = vm.image[vm.ip] - 1;
+           vm.ip = VMOP - 1;
          DROP DROP
          break;
 
@@ -167,7 +167,7 @@ void vm_process(int opcode) {
     case VM_LT_JUMP:
          vm.ip++;
          if(NOS < TOS)
-           vm.ip = vm.image[vm.ip] - 1;
+           vm.ip = VMOP - 1;
          DROP DROP
          break;
 
@@ -178,7 +178,7 @@ void vm_process(int opcode) {
     case VM_NE_JUMP:
          vm.ip++;
          if(TOS != NOS)
-           vm.ip = vm.image[vm.ip] - 1;
+           vm.ip = VMOP - 1;
          DROP DROP
          break;
 
@@ -189,7 +189,7 @@ void vm_process(int opcode) {
     case VM_EQ_JUMP:
          vm.ip++;
          if(TOS == NOS)
-           vm.ip = vm.image[vm.ip] - 1;
+           vm.ip = VMOP - 1;
          DROP DROP
          break;
 

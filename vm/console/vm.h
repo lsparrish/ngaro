@@ -12,6 +12,8 @@
 #define TORS vm.address[vm.rsp]
 #define NORS vm.address[vm.rsp-1]
 
+#define VMOP vm.image[vm.ip]
+
 #define IMAGE_SIZE   5000000
 #define STACK_DEPTH      100
 #define ADDRESSES       1024

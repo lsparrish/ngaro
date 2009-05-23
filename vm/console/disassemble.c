@@ -23,7 +23,7 @@ extern VM_STATE vm;
  * instruction is reached.
  *
  * Output takes a form like:
- *   AAAAA:   BBBBB                 <C> DDDDD ---- <E> FFFFF
+ *   AAAAA:   BBBBB            <C> DDDDD ---- <E> FFFFF
  *
  * Where:
  *   AAAAA   IP Address
@@ -36,27 +36,26 @@ extern VM_STATE vm;
 void display_instruction()
 {
   int i;
-  char *instructions[] = { "nop",   "lit",   "dup",  "drop", "swap",  "push",         \
-                           "pop",   "call",  "jump", "ret",  ">jump", "<jump",        \
-                           "!jump", "=jump", "@",    "!",    "+",     "-",     "*",   \
-                           "/mod",  "and",   "or",   "xor",  "<<",    ">>",    "0;",  \
-                           "1+",    "1-",    "in",   "out",  "wait" };
-
+  char *names[] = { "nop",   "lit",   "dup",  "drop", "swap",  "push",         \
+                    "pop",   "call",  "jump", "ret",  ">jump", "<jump",        \
+                    "!jump", "=jump", "@",    "!",    "+",     "-",     "*",   \
+                    "/mod",  "and",   "or",   "xor",  "<<",    ">>",    "0;",  \
+                    "1+",    "1-",    "in",   "out",  "wait" };
   i = 0;
 
   /* Display the IP */
   fprintf(stderr, "%6i:   ", vm.ip);
 
   /* And the instruction, finding a name from the lookup table */
-  if(vm.image[vm.ip] <= NUM_OPS)
-    fprintf(stderr, "%5s", instructions[vm.image[vm.ip]]);
+  if(VMOP <= NUM_OPS)
+    fprintf(stderr, "%5s", names[VMOP]);
   else
     fprintf(stderr, "??? ");
 
   /* Some instructions take a following value. Display this if necessary. */
-  if (vm.image[vm.ip] == VM_LIT || vm.image[vm.ip] == VM_CALL || vm.image[vm.ip] == VM_JUMP || \
-      vm.image[vm.ip] == VM_LT_JUMP || vm.image[vm.ip] == VM_GT_JUMP || vm.image[vm.ip] == VM_EQ_JUMP || \
-      vm.image[vm.ip] == VM_NE_JUMP)
+  if (VMOP == VM_LIT || VMOP == VM_CALL || VMOP == VM_JUMP || \
+      VMOP == VM_LT_JUMP || VMOP == VM_GT_JUMP || VMOP == VM_EQ_JUMP || \
+      VMOP == VM_NE_JUMP)
   {
     fprintf(stderr, " %6i", vm.image[vm.ip+1]);
     i = 1;
