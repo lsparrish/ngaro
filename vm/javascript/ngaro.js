@@ -83,6 +83,8 @@ function readKeyboard(e)
 {
   var uni = e.keyCode ? e.keyCode : e.charCode;
   lastKey = uni;
+  if (uni == 8)
+    return false;
 }
 
 
