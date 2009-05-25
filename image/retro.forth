@@ -75,7 +75,7 @@ label: okmsg     " ok " $,
 : t-for    ( R: n-   C: -a )
   t-here 5 # t-, ;
 : t-next   ( R: -    C: a- )
-  6 # t-, 27 # t-, 25 # t-, 8 # t-, t-, ;
+  6 # t-, 27 # t-, 2 # t-, 1 # t-, 0 # t-, 12 # t-, t-, 3 # t-, ;
 : (if)     ( -a )
   t-here 0 # t-, ;
 : t-=if    ( R: xy-  C: -a )
