@@ -40,6 +40,7 @@ image: toka tools
 clean:
 	@rm -f bin/retro
 	@rm -f bin/retro-fast
+	@rm -f bin/retro-nocurses
 	@rm -f bin/retro-fb
 	@rm -f bin/retroImage.map
 	@rm -f bin/retroImage
