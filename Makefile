@@ -46,13 +46,15 @@ clean:
 	@rm -f toka/toka
 	@rm -f latest.tar.gz
 	@rm -f tools/fix-image
+	@rm -rf tools/build
 	@cd vm/console && make clean
 	@cd vm/framebuffer && make clean
 	@cd vm/java && make clean
-vm:
+vm: tools
 	@cd vm/console && make
 	@mv vm/console/retro bin
 	@mv vm/console/retro-fast bin
+	@mv vm/console/retro-nocurses bin
 fbvm:
 	@cd vm/framebuffer && make
 	@mv vm/framebuffer/retro-fb bin
