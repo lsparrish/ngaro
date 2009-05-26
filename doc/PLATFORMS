@@ -22,6 +22,9 @@ x86-64
 Alpha
   - Linux
 
+PowerPC
+  - AIX
+
 ARM
   - iPhoneOS (Jailbroken) 2.2.1
 
