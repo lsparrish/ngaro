@@ -28,7 +28,136 @@ Concepts
 Word Classes
 ------------
 
-Bah.
+Retro’s interpreter makes use of an implementation technique
+known as word classes. This approach was created by Helmar
+Wodtke and allows for a very clean interpreter and compiler. It
+makes use of special words, called class handlers, to process
+execution tokens. Each word in the dictionary has a class
+handler associated with it. When being executed, the address of
+the wordis pushed to the stack and the class handler is invoked.
+The handler then does something with the address based on
+various bits of state.
+
+The standard Retro language has five classes defined.
+
++-----------+------------+-----------------------------------------+
+| Name      | Data Stack | Address Stack                           |
++===========+============+=========================================+
+| .forth    | a -        | ``-``                                   |
++-----------+------------+-----------------------------------------+
+| If interpreting, call the word. If compiling, compile a call     |
+| to the word.                                                     |
++-----------+------------+-----------------------------------------+
+| .macro    | a -        | ``-``                                   |
++-----------+------------+-----------------------------------------+
+| Always call the word. This is normally used for words that lay   |
+| down custom code at compile time, or which need to have          |
+| different behaviors during compilation.                          |
++-----------+------------+-----------------------------------------+
+| .inline   | a -        | ``-``                                   |
++-----------+------------+-----------------------------------------+
+| If interpreting, call the word. If compiling, copy the first     |
+| opcode of the word into the target definition. This is only      |
+| useful for use with words that map directly to processor opcodes.|
++-----------+------------+-----------------------------------------+
+| .data     | a -        | ``-``                                   |
++-----------+------------+-----------------------------------------+
+| If interpreting, leave the address on the stack. If compiling,   |
+| compile the address into the target definition as a literal.     |
++-----------+------------+-----------------------------------------+
+| .compiler | a - a      | ``-``                                   |
++-----------+------------+-----------------------------------------+
+| If compiling, execute the word. If interpreting, ignore the      |
+| word.                                                            |
++-----------+------------+-----------------------------------------+
+
+It is possible to define custom classes. The easiest way to
+show how to add a new class is with an example. For this, we'll
+create a class for strings with the following behavior:
+
+  - If interpreting, display the string
+  - If compiling, lay down the code needed to display the
+    string
+
+Retro has a convention of using a . as the first character of a
+class name. In continuing this tradition, we'll call our new
+class .string
+
+Tip:
+  On entry to a class, the address of the word or data
+  structure is on the stack. The compiler state (which most
+  classes will need to check) is in a variable named compiler.
+
+A first step is to lay down a simple skeleton. Since we need to
+lay down custom code at compile time, the class handler will
+have two parts.
+
+|  : .string  ( a—)
+|    compiler @ 0 =if ( interpret time ) ;; then ( compile time )
+|  ;
+
+We'll start with the interpret time action. We can replace this
+with type, since the whole point of this class is to display a
+string object.
+
+|  : .string ( a — )
+|    compiler @ 0 =if type ;; then ( compile time ) ;
+
+The compile time action is more complex. We need to lay down
+the machine code to leave the address of the string on the
+stack when the word is run, and then compile a call to type. If
+you look at the instruction set listing, you'll see that opcode
+1 is the instruction for putting values on the stack. This
+opcode takes a value from the following memory location and
+puts it on the stack. So the first part of the compile time
+action is:
+
+|  : .string ( a — )
+|    compiler @ 0 =if type ;; then 1 , , ;
+
+Tip:
+  Use , to place values directly into memory. This is the
+  cornerstone of the entire compiler.
+
+One more thing remains. We still have to compile a call to
+type. We can do this by passing the address of type to
+compile.
+
+|  : .string ( a — )
+|    compiler @ 0 =if type ;; then 1 , , ['] type compile ;
+
+And now we have a new class handler. The second part is to make
+this useful. We'll make a creator word called displayString: to
+take a string and make it into a new word using our .string
+class. This will take a string from the stack, make it
+permanent, and give it a name.
+
+Tip:
+  New dictionary entries are made using create. The class can
+  be set after creation by accessing the proper fields in the
+  dictionary header. Words starting with d-> are used to access
+  fields in the dictionary headers.
+
+|  : displayString: ( "name" — )
+|    create ['] .string last @ d- >class ! keepString last @ d->xt ! ;
+
+This uses create to make a new word, then sets the class to
+.string and the xt of the word to the string. It also makes the
+string permanent using keepString. last is a variable pointing
+to the most recently created dictionary entry. The two words
+d->class and d->xt are dictionary field accessors and are used
+to provide portable access to fields in the dictionary.
+
+We can now test the new class:
+
+|  " hello, world!" displayString: hello
+|  hello
+|  : foo hello cr foo ;
+
+You can use this approach to define as many classesas you want.
+
+
+
 
 Interpreter
 -----------
@@ -55,3 +184,4 @@ The Words
 +======+=======+============+===============+=======+
 |      |       |            |               |       |
 +------+-------+------------+---------------+-------+
+
