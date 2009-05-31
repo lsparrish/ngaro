@@ -120,8 +120,26 @@ Building (Windows)
 - Go to Project -> Options and add the following to the Linker commands: **-lcurses**
 - Compile everything
 
-Running
--------
+Starting Retro
+--------------
+Just run the **retro** (or, on Windows, the **retro.exe**) binary and Retro
+will start. If you built a command line configuration (the default), you
+can load files into Retro using a command line option:
+
+::
+
+  --with filename
+
+Use *filename* as an input source. You can include multiple files by specifying
+more than one --with, but you should be aware that the files are included in
+reverse order. E.g.,
+
+::
+
+  ./retro --with file-a --with file-b --with file-c
+
+With this, *file-c* is included, then *file-b*, and finally *file-a*.
+
 
 ===================
 Section 3: Concepts
