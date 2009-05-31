@@ -1,6 +1,7 @@
 ================
 Welcome to Retro
 ================
+
 Retro is a small implementation of the Forth language. Running on
 a portable virtual machine, it is minimalistic in nature, yet has
 a number of interesting and useful features.
@@ -20,12 +21,55 @@ Getting Started
 Obtaining
 ---------
 
-Bah.
+Retro is generally distributed as source code and needs to be compiled
+before it can be used. The latest development snapshots and periodic
+stable release snapshots are provided at http://retroforth.org
 
-Building
---------
+Building (Unix-like host)
+-------------------------
 
-Bah.
+These instructions are for users of Linux, BSD, OS X, BeOS, AIX, etc.
+Windows users should see the next section.
+
+You'll need a few things:
+
+- GCC (4.x recommended)
+- Binutils
+- Make
+- Curses (curses, ncurses, and pdcurses all work fine) and/or libSDL
+
+Given these, try the following command:
+
+| make vm
+
+Or, if you want the framebuffer backend to be used:
+
+| make fbvm
+
+If you get any errors, check the **vm/console/retro.c** and
+**vm/console/retro-fast.c** and see if the **LIBS** line matches
+the Curses varient used on your system.
+
+
+Building (Windows)
+------------------
+
+- Install Dev C++ (http://prdownloads.sourceforge.net/dev-cpp/devcpp-4.9.9.2 setup.exe)
+- Install the Curses Devpack (http://devpaks.org/details.php?devpak=5)
+- Create an empty project and add the following files from **vm/console** to it:
+
+  - functions.h
+  - disassemble.c
+  - endian.c
+  - loader.c
+  - ngaro.c
+  - devices.c
+  - initial_image.c
+  - vm.c
+  - vm.h
+
+- Go to Project -> Options and add the following to the Linker commands: **-lcurses**
+- Compile everything
 
 Running
 -------
