@@ -141,6 +141,39 @@ reverse order. E.g.,
 With this, *file-c* is included, then *file-b*, and finally *file-a*.
 
 
+Interacting with Retro
+----------------------
+Unlike most Forths, Retro does not buffer on a line by line basis. Input
+is parsed as it is typed, and words are executed when the spacebar is
+hit.
+
+This is a significant source of confusion to users coming from other
+Forth systems. Just remember: only space is recognized by a default
+Retro system as a valid separator between words.
+
+Tip:
+  Although input is parsed as it is typed, backspace does work on
+  most systems, so you can correct the current word being typed if
+  you make a mistake.
+
+Leaving Retro
+-------------
+Just type **bye** and hit space.
+
+Images
+------
+The Retro language is stored in an image file. When you start Retro,
+the VM looks for a **retroImage** file. If if can't find one, it uses
+a minimal image that is built in instead.
+
+You can **save** your current Retro session to a retroImage by using
+the **save** word, and reload it later. All words/variables you have
+created will be kept and you can continue working without having to
+reload or retype everything.
+
+You can also use the vector functionality in Retro to replace/alter
+most of the existing words to meet your needs.
+
 ===================
 Section 3: Concepts
 ===================
@@ -957,3 +990,35 @@ with **osx.retro**. After building, extend your retroImage:
 Save your image, and you'll be able to use backspace in
 the future. This also remaps the Enter/Return key making it
 useable at the end of a line of input.
+
+Browser
+-------
+The JavaScript implementation of the Ngaro VM allows for some
+interaction with the browser. With a few simple words you can
+quickly take control of the browser (and the VM) by mixing
+JavaScript into your Forth code.
+
+::
+
+  : toggle-html ( - ) 1 9998 out wait ;
+
+When invoked, this will toggle the filtering of special characters
+by the console driver on and off. (By default the special
+characters are filtered. These include < > & and others). When
+the filter is off, you can use HTML to format the output in the
+console.
+
+::
+
+  : js ( $- ) 2 9998 out wait ;
+
+This is the more powerful of the two. It allows for passing a
+Retro string to the JavaScript eval() function. You can pass
+any valid JavaScript code and have it run. You can also access
+the variables and functions of the Ngaro VM using it.
+
+Something simple to try:
+
+::
+
+  : depth s" alert(sp);" js ;
