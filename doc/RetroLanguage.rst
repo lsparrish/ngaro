@@ -1144,3 +1144,46 @@ below. Some of the internal factors are not listed.
 +--------------+--------------+------------+---------------+
 | Check for inequality                                     |
 +--------------+--------------+------------+---------------+
+
+
+Block Editor
+------------
+The core extensions also include a small block editor. This
+is based on a series of earlier editors, and has a few nice
+features:
+
+- Blocks are stored in the image
+- External tools allow extracting and moving blocks to a
+  new image
+- All editing words are vectors allowing more control over
+  the editor
+
+Tip:
+  Line and column numbers start at 0
+
+Quick Reference:
+
++--------------+-------------------------------------+
+| Usage        | Description                         |
++==============+=====================================+
+|     # s      | Select a new block                  |
++--------------+-------------------------------------+
+|       p      | Previous block                      |
++--------------+-------------------------------------+
+|       n      | Next block                          |
++--------------+-------------------------------------+
+|     # i ..   | Insert .. into line                 |
++--------------+-------------------------------------+
+|  # #2 ia ..  | Insert .. into line [#2] starting at|
+|              | column [#]                          |
++--------------+-------------------------------------+
+|      x       | Erase the current block             |
++--------------+-------------------------------------+
+|    # d       | Erase the specified line            |
++--------------+-------------------------------------+
+|      v       | Display the current block           |
++--------------+-------------------------------------+
+|      e       | Evaluate Block                      |
++--------------+-------------------------------------+
+|      new     | Erase all blocks                    |
++--------------+-------------------------------------+
