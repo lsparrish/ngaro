@@ -1,5 +1,7 @@
 The Retro Language
 ==================
+:Author: Charles Childers
+:Version: 10.1-pre
 
 
 ===========================
