@@ -1144,6 +1144,11 @@ below. Some of the internal factors are not listed.
 +--------------+--------------+------------+---------------+
 | Check for inequality                                     |
 +--------------+--------------+------------+---------------+
+| forget       | .word        | "-         |               |
++--------------+--------------+------------+---------------+
+| Parse a word name, and remove that word and all words    |
+| defined after it from memory                             |
++--------------+--------------+------------+---------------+
 
 
 Block Editor
