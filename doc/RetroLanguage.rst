@@ -6,17 +6,58 @@ The Retro Language
 Section 1: Welcome to Retro
 ===========================
 
-Retro is a small implementation of the Forth language. Running on
-a portable virtual machine, it is minimalistic in nature, yet has
-a number of interesting and useful features.
+Introduction
+------------
+Retro is a small, minimalistic dialect of Forth.
 
-While this implementation is new, there is a lot of history behind
-the Retro name. It was originally developed in 1998 as a 16-bit
-bootable Forth, evolved into a 32-bit protected mode Forth that
-served as a prototype testbed for the Tunes project, and eventually
-picked up some ideas from colorForth before being rewritten to run
-on traditional operating systems. Along the way it has influenced
-the development of many other Forth systems.
+The Retro language has a rich history going back to 1998
+when it was first released as a 16-bit standalone Forth
+for x86 PC's. Since then it's evolved through use into its
+present form, which is a 32-bit implementation running on a
+portable virtual machine called Ngaro. Today Retro runs on
+all major operating systems, and thanks to a JavaScript
+implementation of the virtual machine, on any modern web
+browser.
+
+The code and documentation for Retro are gifted to the
+public domain. You may use them freely and without
+restriction.
+
+Platforms Supported
+-------------------
+- Alpha
+
+  - Linux
+
+- ARM
+
+  - iPhoneOS (iPhone, iPod Touch, 2.2.1; jailbroke)
+
+- PowerPC
+
+  - AIX
+
+- x86
+
+  - BeOS
+  - BSD (DragonFly, FreeBSD, NetBSD, OpenBSD)
+  - Haiku
+  - Linux
+  - MacOS X (10.5.x)
+  - Windows (XP, Vista)
+
+- x86-64
+
+  - Linux
+
+- Browsers
+
+  - Chrome
+  - FireFox (2 & 3)
+  - Opera
+  - Safari
+  - Safari Mobile (using form-based I/O)
+  - SongBird
 
 ==========================
 Section 2: Getting Started
