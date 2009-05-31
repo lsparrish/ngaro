@@ -20,14 +20,12 @@ Getting Started
 
 Obtaining
 ---------
-
 Retro is generally distributed as source code and needs to be compiled
 before it can be used. The latest development snapshots and periodic
 stable release snapshots are provided at http://retroforth.org
 
 Building (Unix-like host)
 -------------------------
-
 These instructions are for users of Linux, BSD, OS X, BeOS, AIX, etc.
 Windows users should see the next section.
 
@@ -52,7 +50,6 @@ the Curses varient used on your system.
 
 Building (Windows)
 ------------------
-
 - Install Dev C++ (http://prdownloads.sourceforge.net/dev-cpp/devcpp-4.9.9.2 setup.exe)
 - Install the Curses Devpack (http://devpaks.org/details.php?devpak=5)
 - Create an empty project and add the following files from **vm/console** to it:
@@ -79,7 +76,6 @@ Concepts
 
 Word Classes
 ------------
-
 Retro’s interpreter makes use of an implementation technique
 known as word classes. This approach was created by Helmar
 Wodtke and allows for a very clean interpreter and compiler. It
@@ -213,7 +209,6 @@ You can use this approach to define as many classesas you want.
 
 Interpreter
 -----------
-
 Retro has a simple interpreter. The interpreter calls accept,
 passing it the ascii value 32 (for space) as a delimiter. Input
 is accepted and added to the tib until the delimiter is
@@ -246,7 +241,6 @@ Tip:
 
 Threading
 ---------
-
 Retro uses subroutine threading with inline machine code for
 some words. This was chosen primarily due to its simplicity,
 but also for historical reasons. (All Retro implementations
@@ -281,7 +275,6 @@ compile to:
 
 Vectors
 -------
-
 Vectors are another important concept in Retro.
 
 Most Forth systems provide a way to define a word which can
@@ -310,6 +303,54 @@ These are :is and :devector.
 =========
 The Words
 =========
+
+Reading Stack Comments
+----------------------
+Stack comments in Retro are a compact form, using short codes
+in place of actual words. These codes are listed in the next
+section.
+
+A typical comment for a word that takes two arguments and
+leaves one will look like:
+
+|  ( xy-z )
+
+In a few cases, words may consume or leave a variable number
+of arguments. In this case, we denote it like:
+
+|  ( n-n || n- )
+
+There are two other modifiers in use. Some words have different
+compile-time and run-time stack use. We prefix the comment with
+C: for compile-time, and R: for run-time actions.
+
+If not specified, the stack comments are for runtime effects.
+Words with no C: are assumed to have no stack impact during
+compilation.
+
+Codes used in the stack comments:
+
++------------+------------------------------------+
+| x, y, z, n | Generic numbers                    |
++------------+------------------------------------+
+| q, r       | Quotient, Remainder (for division) |
++------------+------------------------------------+
+| ``"`` *    | Word parses for a string           |
++------------+------------------------------------+
+| a          | Address                            |
++------------+------------------------------------+
+| c          | ASCII character                    |
++------------+------------------------------------+
+| ``$``      | Zero-terminated string             |
++------------+------------------------------------+
+| f          | Flag                               |
++------------+------------------------------------+
+| ...        | Variable number of values on stack |
++------------+------------------------------------+
+
+
+List of Words by Class
+----------------------
 
 +------+--------------+------------+---------------+
 | Name | Class        | Data Stack | Address Stack |
