@@ -1,5 +1,5 @@
 default:
-	rst2html.py RetroLanguage.rst >RetroLanguage.html
+	rst2html.py --stylesheet-path=book.css RetroLanguage.rst >RetroLanguage.html
 
 clean:
 	rm -f RetroLanguage.html
