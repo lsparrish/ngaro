@@ -1,6 +1,10 @@
-================
-Welcome to Retro
-================
+The Retro Language
+==================
+
+
+===========================
+Section 1: Welcome to Retro
+===========================
 
 Retro is a small implementation of the Forth language. Running on
 a portable virtual machine, it is minimalistic in nature, yet has
@@ -14,9 +18,9 @@ picked up some ideas from colorForth before being rewritten to run
 on traditional operating systems. Along the way it has influenced
 the development of many other Forth systems.
 
-===============
-Getting Started
-===============
+==========================
+Section 2: Getting Started
+==========================
 
 Obtaining
 ---------
@@ -70,9 +74,9 @@ Building (Windows)
 Running
 -------
 
-========
-Concepts
-========
+===================
+Section 3: Concepts
+===================
 
 Word Classes
 ------------
@@ -300,9 +304,9 @@ These are :is and :devector.
 
 
 
-=========
-The Words
-=========
+====================
+Section 4: The Words
+====================
 
 Reading Stack Comments
 ----------------------
