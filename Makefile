@@ -17,17 +17,16 @@ default:
 	@echo other options are required to build a working Retro system.
 	@echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	@echo make vm
-	@echo - Build Ngaro \(the virtual machine\), console version
+	@echo - Compile the VM \(console version\)
 	@echo
 	@echo make fbvm
-	@echo - Build Ngaro \(the virtual machine\), framebuffer version
+	@echo - Build the VM \(with framebuffer\)
 	@echo
 	@echo make image
 	@echo - Rebuild the initial retroImage
-	@echo - Also builds Toka and the additional tools
 	@echo
 	@echo make clean
-	@echo - Remove temporary files, Ngaro binary
+	@echo - Remove temporary files, binaries
 	@echo
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 tools:
@@ -51,6 +50,7 @@ clean:
 	@cd vm/console && make clean
 	@cd vm/framebuffer && make clean
 	@cd vm/java && make clean
+	@cd doc && make clean
 vm: tools
 	@cd vm/console && make
 	@mv vm/console/retro bin
