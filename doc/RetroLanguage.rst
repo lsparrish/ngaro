@@ -69,6 +69,10 @@ Retro is generally distributed as source code and needs to be compiled
 before it can be used. The latest development snapshots and periodic
 stable release snapshots are provided at http://retroforth.org
 
+Developers who want to keep up with the latest changes are encouraged
+to use Git. We have a repository at http://github.com/crcx/retro10 which
+is kept up to date.
+
 Building (Unix-like host)
 -------------------------
 These instructions are for users of Linux, BSD, OS X, BeOS, AIX, etc.
@@ -83,11 +87,15 @@ You'll need a few things:
 
 Given these, try the following command:
 
-| make vm
+::
+
+   make vm
 
 Or, if you want the framebuffer backend to be used:
 
-| make fbvm
+::
+
+   make fbvm
 
 If you get any errors, check the **vm/console/retro.c** and
 **vm/console/retro-fast.c** and see if the **LIBS** line matches
@@ -185,16 +193,20 @@ A first step is to lay down a simple skeleton. Since we need to
 lay down custom code at compile time, the class handler will
 have two parts.
 
-|  : .string  ( a—)
-|    compiler @ 0 =if ( interpret time ) ;; then ( compile time )
-|  ;
+::
+
+  : .string  ( a—)
+    compiler @ 0 =if ( interpret time ) ;; then ( compile time )
+  ;
 
 We'll start with the interpret time action. We can replace this
 with type, since the whole point of this class is to display a
 string object.
 
-|  : .string ( a — )
-|    compiler @ 0 =if type ;; then ( compile time ) ;
+::
+
+  : .string ( a — )
+    compiler @ 0 =if type ;; then ( compile time ) ;
 
 The compile time action is more complex. We need to lay down
 the machine code to leave the address of the string on the
@@ -205,8 +217,10 @@ opcode takes a value from the following memory location and
 puts it on the stack. So the first part of the compile time
 action is:
 
-|  : .string ( a — )
-|    compiler @ 0 =if type ;; then 1 , , ;
+::
+
+  : .string ( a — )
+    compiler @ 0 =if type ;; then 1 , , ;
 
 Tip:
   Use , to place values directly into memory. This is the
@@ -216,8 +230,10 @@ One more thing remains. We still have to compile a call to
 type. We can do this by passing the address of type to
 compile.
 
-|  : .string ( a — )
-|    compiler @ 0 =if type ;; then 1 , , ['] type compile ;
+::
+
+  : .string ( a — )
+    compiler @ 0 =if type ;; then 1 , , ['] type compile ;
 
 And now we have a new class handler. The second part is to make
 this useful. We'll make a creator word called displayString: to
@@ -231,8 +247,10 @@ Tip:
   dictionary header. Words starting with d-> are used to access
   fields in the dictionary headers.
 
-|  : displayString: ( "name" — )
-|    create ['] .string last @ d- >class ! keepString last @ d->xt ! ;
+::
+
+  : displayString: ( "name" — )
+    create ['] .string last @ d- >class ! keepString last @ d->xt ! ;
 
 This uses create to make a new word, then sets the class to
 .string and the xt of the word to the string. It also makes the
@@ -243,11 +261,13 @@ to provide portable access to fields in the dictionary.
 
 We can now test the new class:
 
-|  " hello, world!" displayString: hello
-|  hello
-|  : foo hello cr foo ;
+::
 
-You can use this approach to define as many classesas you want.
+  " hello, world!" displayString: hello
+  hello
+  : foo hello cr foo ;
+
+You can use this approach to define as many classes as you want.
 
 
 
@@ -283,7 +303,6 @@ Tip:
 
 
 
-
 Threading
 ---------
 Retro uses subroutine threading with inline machine code for
@@ -296,26 +315,32 @@ code, primarily as a series of calls to other routines.
 
 As an example:
 
-|  : foo 1 2 + . ;
+::
+
+  : foo 1 2 + . ;
 
 This will compile to:
 
-|  lit 1
-|  lit 2
-|  call +
-|  call .
-|  ;
+::
+
+  lit 1
+  lit 2
+  call +
+  call .
+  ;
 
 The subroutine threading model allows a lot of opportunity for
 optimization. Recent releases of Retro support inline machine
 code generation for primitives, so the above example can now
 compile to:
 
-|  lit 1
-|  lit 2
-|  +
-|  call .
-|  ;
+::
+
+  lit 1
+  lit 2
+  +
+  call .
+  ;
 
 
 Vectors
@@ -330,13 +355,15 @@ Words which can be redefined are called vectors.
 Vectors can be replaced by using is, or returned to their
 original definition with devector. For instance:
 
-|  : foo 23 . ;
-|  foo
-|  : bar 99 . ;
-|  ' bar is foo
-|  foo
-|  devector foo
-|  foo
+::
+
+  : foo 23 . ;
+  foo
+  : bar 99 . ;
+  ' bar is foo
+  foo
+  devector foo
+  foo
 
 There are also variations of is and devector which take the
 addresses of the words rather than parsing for the word name.
