@@ -769,51 +769,57 @@ List of Words by Class
 +--------------+--------------+------------+---------------+
 | tx           | .data        | -a         |               |
 +--------------+--------------+------------+---------------+
-|                                                          |
+| Holds X coordinate for text output (framebuffer only)    |
 +--------------+--------------+------------+---------------+
 | ty           | .data        | -a         |               |
 +--------------+--------------+------------+---------------+
-|                                                          |
+| Holds Y coordinate for text output (framebuffer only)    |
 +--------------+--------------+------------+---------------+
 | last         | .data        | -a         |               |
 +--------------+--------------+------------+---------------+
-|                                                          |
+| Holds the address of the most recent dictionary header   |
 +--------------+--------------+------------+---------------+
 | compiler     | .data        | -a         |               |
 +--------------+--------------+------------+---------------+
-|                                                          |
+| Holds compiler state. 0 if off, -1 if on                 |
 +--------------+--------------+------------+---------------+
 | tib          | .data        | -a         |               |
 +--------------+--------------+------------+---------------+
-|                                                          |
+| The text input buffer                                    |
 +--------------+--------------+------------+---------------+
 | update       | .data        | -a         |               |
 +--------------+--------------+------------+---------------+
-|                                                          |
+| Used by redraw, this allows for caching output to improve|
+| performance. Set to 0 if no updates are waiting, or -1   |
+| if something is ready to be drawn on the screen.         |
 +--------------+--------------+------------+---------------+
 | fb           | .data        | -a         |               |
 +--------------+--------------+------------+---------------+
-|                                                          |
+| Holds address of framebuffer                             |
 +--------------+--------------+------------+---------------+
 | fw           | .data        | -a         |               |
 +--------------+--------------+------------+---------------+
-|                                                          |
+| Holds width of framebuffer                               |
 +--------------+--------------+------------+---------------+
 | fh           | .data        | -a         |               |
 +--------------+--------------+------------+---------------+
-|                                                          |
+| Holds height of framebuffer                              |
 +--------------+--------------+------------+---------------+
 | #mem         | .data        | -a         |               |
 +--------------+--------------+------------+---------------+
-|                                                          |
+| Holds the amount of memory provided by the VM. This may  |
+| or may not include the framebuffer memory, which can be  |
+| outside the normal range provided to a Retro image.      |
 +--------------+--------------+------------+---------------+
 | heap         | .data        | -a         |               |
 +--------------+--------------+------------+---------------+
-|                                                          |
+| Holds the address of the top of the heap. This can be    |
+| fetched using **here**                                   |
 +--------------+--------------+------------+---------------+
 | which        | .data        | -a         |               |
 +--------------+--------------+------------+---------------+
-|                                                          |
+| Holds the address of the most recently looked up         |
+| dictionary header.                                       |
 +--------------+--------------+------------+---------------+
 
 
