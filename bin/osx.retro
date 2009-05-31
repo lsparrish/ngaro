@@ -1,6 +1,4 @@
 ( Fixups for OSX keyboard oddities )
 
 : <bs>  dup 127 =if drop 8 then ;
-: <nl>  dup  13 =if drop 32 then ;
-: osx-keys <bs> <nl> ;
-' osx-keys is (remap-keys)
+: osx-keys ['] <bs> ['] (remap-keys) :is ;

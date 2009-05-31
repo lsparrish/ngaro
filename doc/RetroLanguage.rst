@@ -978,8 +978,7 @@ with **osx.retro**. After building, extend your retroImage:
   ./retro --with osx.retro
 
 Save your image, and you'll be able to use backspace in
-the future. This also remaps the Enter/Return key making it
-useable at the end of a line of input.
+the future.
 
 Browser
 -------
