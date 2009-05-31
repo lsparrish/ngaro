@@ -1,8 +1,17 @@
-========
-Overview
-========
+================
+Welcome to Retro
+================
+Retro is a small implementation of the Forth language. Running on
+a portable virtual machine, it is minimalistic in nature, yet has
+a number of interesting and useful features.
 
-Bah.
+While this implementation is new, there is a lot of history behind
+the Retro name. It was originally developed in 1998 as a 16-bit
+bootable Forth, evolved into a 32-bit protected mode Forth that
+served as a prototype testbed for the Tunes project, and eventually
+picked up some ideas from colorForth before being rewritten to run
+on traditional operating systems. Along the way it has influenced
+the development of many other Forth systems.
 
 ===============
 Getting Started
