@@ -938,3 +938,22 @@ List of Words by Class
 | Holds the address of the most recently looked up         |
 | dictionary header.                                       |
 +--------------+--------------+------------+---------------+
+
+
+==========================
+Section 5: Tips and Tricks
+==========================
+
+MacOS X
+-------
+The standard keymaps in the Terminal app don't report the
+normal ASCII codes for certain keys. This can be worked around
+with **osx.retro**. After building, extend your retroImage:
+
+::
+
+  ./retro --with osx.retro
+
+Save your image, and you'll be able to use backspace in
+the future. This also remaps the Enter/Return key making it
+useable at the end of a line of input.
