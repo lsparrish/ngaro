@@ -2,3 +2,4 @@
 
 : <bs>  dup 127 =if drop 8 then ;
 : osx-keys ['] <bs> ['] (remap-keys) :is ;
+osx-keys
