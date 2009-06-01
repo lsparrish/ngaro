@@ -1,7 +1,7 @@
 The Retro Language
 ==================
 :Author: Charles Childers
-:Version: 10.1-pre
+:Version: 10.2-dev
 
 
 ===========================
@@ -60,6 +60,9 @@ Platforms Supported
   - Safari
   - Safari Mobile (using form-based I/O)
   - SongBird
+
+- Java
+- .NET (console)
 
 ==========================
 Section 2: Getting Started
