@@ -18,7 +18,7 @@
     {
       char c = (char)data[sp];
       if (data[sp] < 0)
-        Console.WriteLine("\n\n\n");
+        Console.Clear();
       else
         Console.Write(c);
       sp--;
