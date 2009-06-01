@@ -9,11 +9,15 @@
 
     if (ports[0] == 0 && ports[1] == 1)
     {
-      char c;
       ConsoleKeyInfo cki = Console.ReadKey();
-      c = cki.KeyChar;
-      int a = (int)c;
-      Console.Write((char)8); // hack to do a backspace might cause problems when we fall off the end of a line
+      int a = (int)cki.KeyChar;
+      if (cki.Key == ConsoleKey.Backspace)
+      {
+        a = 8;
+        Console.Write('a');
+      }
+      if (a >= 32)
+        Console.Write((char)8);
       ports[1] = a;
       ports[0] = 1;
     }
