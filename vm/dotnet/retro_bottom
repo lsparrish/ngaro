@@ -54,8 +54,7 @@
 
   public void Process()
   {
-    int op = memory[ip];
-    int x, y, z;
+    int x, y;
 
     switch((OpCodes)memory[ip])
     {
