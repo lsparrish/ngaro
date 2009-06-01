@@ -125,6 +125,24 @@ Building (Windows)
 - Go to Project -> Options and add the following to the Linker commands: **-lcurses**
 - Compile everything
 
+Building (Java)
+---------------
+::
+
+  make image
+  cd vm/java
+  make applet
+  make app
+
+Building (.NET)
+---------------
+::
+
+  make image
+  cd vm/dotnet
+  make
+
+
 Starting Retro
 --------------
 Just run the **retro** (or, on Windows, the **retro.exe**) binary and Retro
