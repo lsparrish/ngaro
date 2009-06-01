@@ -1,0 +1,48 @@
+/*
+ Mono/.NET version of retroForth
+ Adapted from the Java Version (quick hack)
+ Gifted to the public domain by Simon Waite
+ ( opless@gmail.com ) on Sun 31 May 2009 23:56:24 BST
+ Please compile with gmcs as mcs seems to have a simple Console.in implementation
+ NB. This is a console app, and not tested under Windows .Net YMMV :-)
+*/
+using System;
+
+namespace Retro.Forth {
+public class VM {
+  int sp, rsp, ip;
+  int[] data;
+  int[] address;
+  int[] ports;
+  int[] memory;
+
+  enum OpCodes {
+    VM_NOP,       VM_LIT,       VM_DUP,
+    VM_DROP,      VM_SWAP,      VM_PUSH,
+    VM_POP,       VM_CALL,      VM_JUMP,
+    VM_RETURN,    VM_GT_JUMP,   VM_LT_JUMP,
+    VM_NE_JUMP,   VM_EQ_JUMP,   VM_FETCH,
+    VM_STORE,     VM_ADD,       VM_SUB,
+    VM_MUL,       VM_DIVMOD,    VM_AND,
+    VM_OR,        VM_XOR,       VM_SHL,
+    VM_SHR,       VM_ZERO_EXIT, VM_INC,
+    VM_DEC,       VM_IN,        VM_OUT,
+    VM_WAIT
+  }
+
+
+  public  VM()
+  {
+    sp = 0;
+    rsp = 0;
+    ip = 0;
+    data    = new int[100];
+    address = new int[100];
+    ports   = new int[1024];
+    memory  = new int[5000000];
+    Retro();
+  }
+
+     public void Retro()
+     {
+// end top

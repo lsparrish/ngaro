@@ -50,6 +50,7 @@ clean:
 	@cd vm/console && make clean
 	@cd vm/framebuffer && make clean
 	@cd vm/java && make clean
+	@cd vm/dotnet && make clean
 	@cd doc && make clean
 vm: tools
 	@cd vm/console && make

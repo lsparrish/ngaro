@@ -5,3 +5,4 @@ default:
 	@cd ../tools && ../toka/toka image2c.toka ../image/retroImage >../vm/console/initial_image.c
 	@cd ../tools && ../toka/toka image2c.toka ../image/retroImage >../vm/framebuffer/initial_image.c
 	@cd ../tools && ../toka/toka image2java.toka ../image/retroImage >../vm/java/retroImage.java
+	@cd ../tools && ../toka/toka image2java.toka ../image/retroImage >../vm/dotnet/retro_middle
