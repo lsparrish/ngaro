@@ -7,7 +7,6 @@
    5120 is-data SCRATCH-START
    6144 is-data TIB
    8192 is-data HEAP-START
-4000000 is-data STRING-START
 
 begin retroImage
 #! ------------------------------------------------------------
@@ -15,7 +14,6 @@ mark-dictionary    ( Pointer to the most recent dictionary )
 variable last      ( header )
 HEAP-START
 variable: heap     ( Starting address of the data/code heap )
-STRING-START variable: STRINGS
 #! ------------------------------------------------------------
 variable which     ( Pointer to dictionary header of the most )
                    ( recently looked up word )
@@ -213,7 +211,6 @@ variable break-char  ( Holds the delimiter for 'accept' )
   0 # swap, (strlen) drop, ;
 
 variable SAFE
-variable LATEST
 
 : (reset-$)  SCRATCH-START # SAFE # !, ;
 : (next)     1 # SAFE # +! ;
@@ -221,17 +218,21 @@ variable LATEST
 
 : tempString  ( a-a )
   (reset-$) (save) drop, 0 # SAFE # @, !, SCRATCH-START # ;
+
+: (save) dup, getLength repeat 0; push, @+ t-, pop, 1-, again ;
+
 : keepString  ( a-a )
-  STRINGS # @, LATEST # !,
-  STRINGS # @, SAFE # !, (save) drop, 0 # SAFE # @, !,
-  SAFE # @, 1+, STRINGS # !,
-  LATEST # @,
+  dup, getLength 1+, 1+, 1+, t-here +,
+  8 # t-, t-,
+  t-here push,
+  (save) drop, 0 # t-,
+  pop,
 ;
 
 : t-"  ( "-a )
   char: " # accept TIB # tempString ;
 : t-s" ( R: -a  C: "- )
-  1 # t-, t-" keepString t-, ;
+  t-" keepString 1 # t-, t-, ;
 #! ------------------------------------------------------------
 variable #value        variable num
 variable #ok           variable negate?
