@@ -13,7 +13,10 @@
 create *addr 0 ,
 : <<next>> 1 *addr +! ;
 : <<x>> type cr drop ;
-: <<xa>> type <<next>> *addr @ @ . cr drop ;
+
+: <<name>> 9 emit s" named: " type d->name type ;
+: <<resolve>> last @ repeat dup d->xt @ *addr @ @ =if <<name>> ;; then 0; @ again ;
+: <<xa>> type <<next>> *addr @ @ . <<resolve>> cr drop ;
 : .ascii dup 32 >if dup 128 <if 39 emit emit 39 emit 0 then then drop ;
 
 : <<decompile>>  ( - )
@@ -54,3 +57,4 @@ create *addr 0 ,
 
 : dump ( an- )  cr for @+ over 1- . . cr next drop ;
 : show ( an- ) swap *addr ! cr for *addr @ . <<decompile>> <<next>> next ;
+: see ' drop which @ d->xt @ swap show ;
