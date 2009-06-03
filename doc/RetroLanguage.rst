@@ -387,7 +387,7 @@ Tip:
 ::
 
   : displayString: ( "name" — )
-    create ['] .string last @ d- >class ! keepString last @ d->xt ! ;
+    create ['] .string last @ d->class ! keepString last @ d->xt ! ;
 
 This uses **create** to make a new word, then sets the class to
 **.string** and the xt of the word to the string. It also makes the
@@ -402,7 +402,8 @@ We can now test the new class:
 
   " hello, world!" displayString: hello
   hello
-  : foo hello cr foo ;
+  : foo hello cr ;
+  foo
 
 
 Vectors
