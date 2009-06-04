@@ -148,6 +148,11 @@ compiler: ;then ( - )
 : forget ( "- ) ' drop which @ dup heap ! @ last ! ;
 
 
+( ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ )
+( Allow changing the class of a word                          )
+( ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ )
+: reclass ( a"- ) ' drop which @ d->class ! ;
+
 
 ( ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ )
 ( This is a block editor that I've been using for many years. )
