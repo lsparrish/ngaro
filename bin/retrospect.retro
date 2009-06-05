@@ -54,8 +54,11 @@
     dup 29 =if s" out" <<x>> ;; then
     dup 30 =if s" wait" <<x>> ;; then
     s" unknown: " type dup . .ascii cr ;
+
+  : next? *addr @ @ 0 =if *addr @ 1+ @ 0 =if 0 ;; then then -1 ;
+
 ---reveal---
   : dump ( an- )  cr for @+ over 1- . . cr next drop ;
   : show ( an- ) swap *addr ! cr for *addr @ . <<decompile>> <<next>> next ;
-  : see ' drop which @ d->xt @ swap show ;
+  : see ' drop which @ d->xt @ *addr ! cr repeat *addr @ . <<decompile>> <<next>> next? 0; drop again ;
 }}
