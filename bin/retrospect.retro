@@ -11,54 +11,66 @@
 ( ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ )
 
 {{
-  create *addr 0 ,
-  : <<next>> 1 *addr +! ;
-  : <<x>> type cr drop ;
-  : <<name>> 9 emit s" named: " type d->name type ;
-  : <<resolve>> last @ repeat dup d->xt @ *addr @ @ =if <<name>> ;; then 0; @ again ;
-  : <<xa>> type <<next>> *addr @ @ . <<resolve>> cr drop ;
+  variable *addr
+
+  : nextOp 1 *addr +! ;
+  : @addr *addr @ @ ;
+  : .contents @addr . ;
+  : .addr *addr @ . ;
+
   : .ascii dup 32 >if dup 128 <if 39 emit emit 39 emit 0 then then drop ;
 
-  : <<decompile>>  ( - )
+  : render type cr drop ;
+  compiler: s:
+    32 accept tib keepString literal, ['] render compile ` ;; ;
+
+  : .name d->name type cr ;
+  : resolve -1 last @ repeat dup d->xt @ @addr =if .name drop 0 ;then 0; @ again ;
+  : render type 32 emit drop nextOp resolve 0; drop .contents cr ;
+  compiler: x:
+    32 accept tib keepString literal, ['] render compile ` ;; ;
+
+  : decompile
     32 emit
-    *addr @ @
-    dup  0 =if s" nop" <<x>> ;; then
-    dup  1 =if s" lit: " <<xa>> ;; then
-    dup  2 =if s" dup" <<x>> ;; then
-    dup  3 =if s" drop" <<x>> ;; then
-    dup  4 =if s" swap" <<x>> ;; then
-    dup  5 =if s" push" <<x>> ;; then
-    dup  6 =if s" pop" <<x>> ;; then
-    dup  7 =if s" call: " <<xa>> ;; then
-    dup  8 =if s" jump: " <<xa>> ;; then
-    dup  9 =if s" ;" <<x>> ;; then
-    dup 10 =if s" >jump: " <<xa>> ;; then
-    dup 11 =if s" <jump: " <<xa>> ;; then
-    dup 12 =if s" !jump: " <<xa>> ;; then
-    dup 13 =if s" =jump: " <<xa>> ;; then
-    dup 14 =if s" @" <<x>> ;; then
-    dup 15 =if s" !" <<x>> ;; then
-    dup 16 =if s" +" <<x>> ;; then
-    dup 17 =if s" -" <<x>> ;; then
-    dup 18 =if s" *" <<x>> ;; then
-    dup 19 =if s" /mod" <<x>> ;; then
-    dup 20 =if s" and" <<x>> ;; then
-    dup 21 =if s" or" <<x>> ;; then
-    dup 22 =if s" xor" <<x>> ;; then
-    dup 23 =if s" <<" <<x>> ;; then
-    dup 24 =if s" >>" <<x>> ;; then
-    dup 25 =if s" 0;" <<x>> ;; then
-    dup 26 =if s" 1+" <<x>> ;; then
-    dup 27 =if s" 1-" <<x>> ;; then
-    dup 28 =if s" in" <<x>> ;; then
-    dup 29 =if s" out" <<x>> ;; then
-    dup 30 =if s" wait" <<x>> ;; then
+    @addr
+    dup  0 =if s: nop    then
+    dup  1 =if x: lit    then
+    dup  2 =if s: dup    then
+    dup  3 =if s: drop   then
+    dup  4 =if s: swap   then
+    dup  5 =if s: push   then
+    dup  6 =if s: pop    then
+    dup  7 =if x: call   then
+    dup  8 =if x: jump   then
+    dup  9 =if s: ;      then
+    dup 10 =if x: >jump  then
+    dup 11 =if x: <jump  then
+    dup 12 =if x: !jump  then
+    dup 13 =if x: =jump  then
+    dup 14 =if s: @      then
+    dup 15 =if s: !      then
+    dup 16 =if s: +      then
+    dup 17 =if s: -      then
+    dup 18 =if s: *      then
+    dup 19 =if s: /mod   then
+    dup 20 =if s: and    then
+    dup 21 =if s: or     then
+    dup 22 =if s: xor    then
+    dup 23 =if s: <<     then
+    dup 24 =if s: >>     then
+    dup 25 =if s: 0;     then
+    dup 26 =if s: 1+     then
+    dup 27 =if s: 1-     then
+    dup 28 =if s: in     then
+    dup 29 =if s: out    then
+    dup 30 =if s: wait   then
     s" unknown: " type dup . .ascii cr ;
 
-  : next? *addr @ @ 0 =if *addr @ 1+ @ 0 =if 0 ;; then then -1 ;
+  : more? @addr 0 =if *addr @ 1+ @ 0 =if pop drop then then ;
+  : getWord ' drop which @ d->xt @ *addr ! ;
 
 ---reveal---
   : dump ( an- )  cr for @+ over 1- . . cr next drop ;
-  : show ( an- ) swap *addr ! cr for *addr @ . <<decompile>> <<next>> next ;
-  : see ' drop which @ d->xt @ *addr ! cr repeat *addr @ . <<decompile>> <<next>> next? 0; drop again ;
+  : show ( an- ) swap *addr ! cr for .addr decompile nextOp next ;
+  : see  ( "- ) getWord cr repeat .addr decompile nextOp more? again ;
 }}
