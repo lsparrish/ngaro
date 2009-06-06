@@ -49,6 +49,8 @@ clean:
 	@rm -f bin/retro-fb
 	@rm -f bin/retroImage.map
 	@rm -f bin/retroImage
+	@rm -f bin/retro.class
+	@rm -f bin/retro.exe
 	@rm -f toka/toka
 	@rm -f latest.tar.gz
 	@rm -f tools/fix-image
