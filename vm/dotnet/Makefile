@@ -3,4 +3,4 @@ default:
 	@gmcs retro.cs
 
 clean:
-	@rm -rf retro_middle retro.cs retro.exe
+	@rm -rf retro.cs retro.exe

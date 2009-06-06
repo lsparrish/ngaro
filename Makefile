@@ -22,6 +22,12 @@ default:
 	@echo make fbvm
 	@echo - Build the VM \(with framebuffer\)
 	@echo
+	@echo make dotnet
+	@echo - Build the VM \(For .NET, requires Mono\)
+	@echo
+	@echo make java
+	@echo - Build the VM \(for Java, requires JDK\)
+	@echo
 	@echo make image
 	@echo - Rebuild the initial retroImage
 	@echo
@@ -60,6 +66,12 @@ vm: tools
 fbvm:
 	@cd vm/framebuffer && make
 	@mv vm/framebuffer/retro-fb bin
+dotnet:
+	@cd vm/dotnet && make
+	@mv vm/dotnet/retro.exe bin
+java:
+	@cd vm/java && make
+	@mv vm/java/retro.class bin
 dist:
 	@git archive master | gzip -9 >latest.tar.gz
 	@mkdir retro-10.latest

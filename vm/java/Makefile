@@ -3,4 +3,4 @@ default:
 	javac retro.java
 
 clean:
-	@rm -rf retro_middle *.class *.java
+	@rm -rf *.class *.java
