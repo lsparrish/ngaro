@@ -30,5 +30,9 @@ app: retroImage.java
 	@cat app/Ngaro.top retroImage.java app/Ngaro.bottom >RetroApp.java
 	@javac RetroApp.java
 
+cli:
+	@cp retroImage.java console/retro_middle
+	@cd console && make
+
 clean:
 	@rm -f *.java *.class
