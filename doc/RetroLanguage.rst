@@ -1213,3 +1213,45 @@ Quick Reference:
 +--------------+-------------------------------------+
 |      new     | Erase all blocks                    |
 +--------------+-------------------------------------+
+
+
+
+=====================
+Section 7: Retrospect
+=====================
+
+Introduction
+------------
+Retrospect is a debugging aid. It provides a decompiler,
+memory dumper, and other tools that may prove useful in
+better understanding your code and the compiler.
+
+To load it:
+
+::
+
+  ./retro --with retrospect.retro --with extend.retro
+
+Retrospect requires the extend.retro package to be loaded
+before it will work.
+
+
+The Words
+---------
++--------------+--------------+------------+---------------+
+| Name         | Class        | Data Stack | Address Stack |
++==============+==============+============+===============+
+| dump         | .word        | an-        |               |
++--------------+--------------+------------+---------------+
+| Dump n values from the memory location starting at a     |
++--------------+--------------+------------+---------------+
+| show         | .word        | an-        |               |
++--------------+--------------+------------+---------------+
+| Decompile n instructions starting at address a           |
++--------------+--------------+------------+---------------+
+| see          | .word        | "-         |               |
++--------------+--------------+------------+---------------+
+| Decompile a word back to source. Parses for a word name, |
+| then attempts to detect the end of the word. May display |
+| the dictionary header for the following word as well...  |
++--------------+--------------+------------+---------------+
