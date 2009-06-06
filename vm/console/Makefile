@@ -14,4 +14,4 @@ default:
 	../../tools/build retro-nocurses
 
 clean:
-	rm -f *.o
+	@rm -f *.o
