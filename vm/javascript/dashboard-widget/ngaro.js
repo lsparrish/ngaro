@@ -1,6 +1,7 @@
 /**********************************************************************
  * Ngaro Virtual Machine
  * Written by Charles Childers
+ *
  * This code is gifted to the public domain.
  **********************************************************************
  * This implementation provides an environment very similar to a text
@@ -14,9 +15,6 @@
 
 /**********************************************************************
  * Symbolic constants for each instruction.
- *
- * I'm looking for a better approach for this, but haven't found one
- * yet.
  **********************************************************************/
   const VM_NOP = 0;       const VM_LIT = 1;         const VM_DUP = 2;
   const VM_DROP = 3;      const VM_SWAP = 4;        const VM_PUSH = 5;
@@ -37,26 +35,29 @@
  *
  * If you have performance issues, try modifying CYLES_PER
  **********************************************************************/
-  const IMAGE_SIZE  = 5000000          /* Amount of memory to provide */
-  const STACK_DEPTH =     100          /* Depth of the stacks         */
-  const CYCLES_PER  =    2000          /* Instructions to run per     */
+  const IMAGE_SIZE  = 5000000;         /* Amount of memory to provide */
+  const STACK_DEPTH =     100;         /* Depth of the stacks         */
+  const CYCLES_PER  =    2000;         /* Instructions to run per     */
                                        /* clock cycle                 */
+  const TERM_WIDTH  =      68;         /* Width of emulated terminal  */
 
 
 
 /**********************************************************************
- * Internal registers
+ * Internal registers, flags, and variables
  **********************************************************************/
   var sp = 0, rsp = 0, ip = 0;
   var trace = 0, run = 0;
-  var data = new Array(STACK_DEPTH);
+  var data    = new Array(STACK_DEPTH);
   var address = new Array(STACK_DEPTH);
-  var ports = new Array(1024);
-  var image = new Array(IMAGE_SIZE);
+  var ports   = new Array(1024);
+  var image   = new Array(IMAGE_SIZE);
   var interval;
-  var devOutput = " ";
+  var devOutput = "";
   var output = document.getElementById("output");
   var lastKey = " ";
+  var width = 0;
+  var filterHTML = -1;
 
 
 /**********************************************************************
@@ -70,6 +71,7 @@ function initVM()
   rsp = 0;
   ports[0] = 0;
   data[0] = 0;
+  width = 0;
 }
 
 
@@ -81,14 +83,14 @@ function readKeyboard(e)
 {
   var uni = e.keyCode ? e.keyCode : e.charCode;
   lastKey = uni;
+  if (uni == 8)
+    return false;
 }
 
 
 /**********************************************************************
  * handleDevices()
- * This handles the simulated hardware devices. Specifically, it tries
- * to approximate a console interface using HTML forms. It's not great,
- * but does work.
+ * This handles the simulated hardware devices.
  **********************************************************************/
 function handleDevices()
 {
@@ -96,40 +98,44 @@ function handleDevices()
     return;
 
   /* Input */
-  {
-    ports[0] = 1;
-    ports[1] = lastKey;
-    lastKey = 0;
-  }
+  ports[0] = 1;
+  ports[1] = lastKey;
+  lastKey = 0;
+
 
   /* Output */
   if (ports[2] == 1)
   {
     var ch = String.fromCharCode(data[sp]);
 
-    switch (data[sp])
+    /* Remap select characters to HTML */
+    if (filterHTML == -1)
     {
-      case 10:
-                ch = "<br>\n";
-                break;
-      case 32:
-                ch = "&nbsp;";
-                break;
-      case 38:
-                ch = "&amp;";
-                break;
-      case 60:
-                ch = "&lt;";
-                break;
-      case 62:
-                ch = "&gt;";
-                break;
+      switch (data[sp])
+      {
+        case 10: ch = "<br>\n"; width = 0; break;
+        case 32: ch = "&nbsp;"; break;
+        case 38: ch = "&amp;";  break;
+        case 60: ch = "&lt;";   break;
+        case 62: ch = "&gt;";   break;
+      }
     }
 
+    /* Display the character */
     if (data[sp] < 0)
+    {
       clearDisplay();
+    }
     else
+    {
       devOutput += ch;
+      width++;
+      if (width > TERM_WIDTH)
+      {
+        width = 0;
+        devOutput += "<br>\n";
+      }
+    }
 
     if (data[sp] == 8)
       devOutput = devOutput.substr(0, devOutput.length - 2);
@@ -139,10 +145,11 @@ function handleDevices()
     ports[0] = 1;
   }
 
+
   /* Capabilities */
   if (ports[5] == -1)
   {
-    ports[5] = 5000000;
+    ports[5] = IMAGE_SIZE;
     ports[0] = 1;
   }
   if (ports[5] == -2 || ports[5] == -3 || ports[5] == -4)
@@ -160,6 +167,28 @@ function handleDevices()
     ports[5] = rsp;
     ports[0] = 1;
   }
+
+
+  /* HTML */
+  if (ports[9998] == 1)
+  {
+    filterHTML = filterHTML * -1;
+    ports[9998] = 0;
+    ports[0] = 1;
+  }
+  if (ports[9998] == 2)
+  {
+    var src = data[sp]; sp--;
+    var dst = "";
+    while (image[src] != 0)
+    {
+      dst = dst + String.fromCharCode(image[src]);
+      src++;
+    }
+    eval(dst);
+    ports[9998] = 0;
+    ports[0] = 1;
+  }
 }
 
 
@@ -170,8 +199,9 @@ function handleDevices()
  **********************************************************************/
 function clearDisplay()
 {
-  devOutput = " ";
+  devOutput = "";
   document.getElementById('output').innerHTML = devOutput;
+  width = 0;
 }
 
 
@@ -333,7 +363,7 @@ function processOpcode()
       break;
     default:
       if (run == 1)
-        document.getElementById('output').innerHTML = "Fatal Error.<br>Press COMMAND+R to reload";
+        document.getElementById('output').innerHTML = "Fatal Error.<br>Press COMMAND+R or CTRL+R to reload";
       ip = IMAGE_SIZE;
       run = 0;
   }
@@ -366,13 +396,13 @@ function checkStack()
 {
   if (sp < 0 || rsp < 0)
   {
-    document.getElementById('output').innerHTML = "Stack Underflow.<br>Press COMMAND+R to reload";
+    document.getElementById('output').innerHTML = "Stack Underflow.<br>Press COMMAND+R or CTRL+R to reload";
     ip = IMAGE_SIZE;
     run = 0;
   }
   if (sp > STACK_DEPTH || rsp > STACK_DEPTH)
   {
-    document.getElementById('output').innerHTML = "Stack Overflow.<br>Press COMMAND+R to reload";
+    document.getElementById('output').innerHTML = "Stack Overflow.<br>Press COMMAND+R or CTRL+R to reload";
     ip = IMAGE_SIZE;
     run = 0;
   }
@@ -397,6 +427,7 @@ function processImage()
     checkStack();
     ip++;
 
+    /* Update the display */
     if (ports[3] == 0)
     {
       ports[3] = 1;
@@ -405,6 +436,5 @@ function processImage()
   }
 }
 
+/* Enable our keyboard handler */
 document.onkeypress = readKeyboard;
-widget.onshow = startVM;
-widget.onhide = stopVM;
