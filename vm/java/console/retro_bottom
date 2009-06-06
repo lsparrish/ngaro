@@ -25,7 +25,7 @@
 
     if (ports[0] == 0 && ports[1] == 1)
     {
-      try { System.in.read(b, 0, 1); } catch(Exception e) { } 
+      try { System.in.read(b, 0, 1); } catch(Exception e) { System.out.println(e); }
       ports[1] = (int)b[0];
       ports[0] = 1;
     }
@@ -43,27 +43,34 @@
       ports[2] = 0;
       ports[0] = 1;
     }
-  /* Capabilities */
-  if (ports[5] == -1)
-  {
-    ports[5] = 5000000;
-    ports[0] = 1;
-  }
-  if (ports[5] == -2 || ports[5] == -3 || ports[5] == -4)
-  {
-    ports[5] = 0;
-    ports[0] = 1;
-  }
-  if (ports[5] == -5)
-  {
-    ports[5] = sp;
-    ports[0] = 1;
-  }
-  if (ports[5] == -6)
-  {
-    ports[5] = rsp;
-    ports[0] = 1;
-  }
+    if (ports[4] == 1)
+    {
+      saveImage("retroImage");
+      ports[4] = 0;
+      ports[0] = 1;
+    }
+
+    /* Capabilities */
+    if (ports[5] == -1)
+    {
+      ports[5] = 5000000;
+      ports[0] = 1;
+    }
+    if (ports[5] == -2 || ports[5] == -3 || ports[5] == -4)
+    {
+      ports[5] = 0;
+      ports[0] = 1;
+    }
+    if (ports[5] == -5)
+    {
+      ports[5] = sp;
+      ports[0] = 1;
+    }
+    if (ports[5] == -6)
+    {
+      ports[5] = rsp;
+      ports[0] = 1;
+    }
   }
 
 
@@ -221,11 +228,19 @@
     }
   }
 
-  public static void main(String [] args)
+  public static void main(String[] args)
   {
     retro vm = new retro();
 
     vm.init();
+
+    if (args.length > 0)
+    {
+      int i;
+      for (i = 0; i < 5000000; i++)
+        vm.memory[i] = vm.switchEndian(vm.memory[i]);
+    }
+
     for (; vm.ip < 5000000; vm.ip++)
        vm.process();
   }
