@@ -129,25 +129,36 @@ Building (Java)
 ---------------
 ::
 
-  make image
-  cd vm/java
-  make applet
-  make app
+  make java
 
 Building (.NET)
 ---------------
 ::
 
-  make image
-  cd vm/dotnet
-  make
+  make dotnet
 
 
 Starting Retro
 --------------
-Just run the **retro** (or, on Windows, the **retro.exe**) binary and Retro
-will start. If you built a command line configuration (the default), you
-can load files into Retro using a command line option:
+How to start depends on which platform you build for. Enter the **bin** directory
+and try one of the following:
+
+::
+
+  # Console
+  ./retro
+  ./retro-fast
+
+  # Framebuffer
+  ./retro-fbvm
+
+  # .NET
+  mono retro.exe
+
+  # Java
+  ./retro-java.sh
+
+If you are using the *console* targets, you can use some command line arguments:
 
 ::
 
@@ -162,7 +173,6 @@ reverse order. E.g.,
   ./retro --with file-a --with file-b --with file-c
 
 With this, *file-c* is included, then *file-b*, and finally *file-a*.
-
 
 Interacting with Retro
 ----------------------
