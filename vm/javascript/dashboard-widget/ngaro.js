@@ -438,3 +438,6 @@ function processImage()
 
 /* Enable our keyboard handler */
 document.onkeypress = readKeyboard;
+widget.onshow = startVM;
+widget.onhide = stopVM;
+
