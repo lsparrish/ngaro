@@ -21,16 +21,14 @@
   : .ascii dup 32 >if dup 128 <if 39 emit emit 39 emit 0 then then drop ;
 
   : render type cr drop ;
-  compiler: s:
-    32 accept tib keepString literal, ['] render compile ` ;; ;
-  compiler: a: ` over ` =if ` s: ` then ;
+  : s: 32 accept tib keepString literal, ['] render compile ` ;; ;
+  compiler: a: ` over ` =if s: ` then ;
 
   : .name d->name type cr ;
   : resolve -1 last @ repeat dup d->xt @ @addr =if .name drop 0 ;then 0; @ again ;
   : render type 32 emit drop nextOp resolve 0; drop .contents cr ;
-  compiler: x:
-    32 accept tib keepString literal, ['] render compile ` ;; ;
-  compiler: b: ` over ` =if ` x: ` then ;
+  : x: 32 accept tib keepString literal, ['] render compile ` ;; ;
+  compiler: b: ` over ` =if x: ` then ;
 
   : decompile
     32 emit
