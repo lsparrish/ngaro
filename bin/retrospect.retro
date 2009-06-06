@@ -23,47 +23,26 @@
   : render type cr drop ;
   compiler: s:
     32 accept tib keepString literal, ['] render compile ` ;; ;
+  compiler: a: ` over ` =if ` s: ` then ;
 
   : .name d->name type cr ;
   : resolve -1 last @ repeat dup d->xt @ @addr =if .name drop 0 ;then 0; @ again ;
   : render type 32 emit drop nextOp resolve 0; drop .contents cr ;
   compiler: x:
     32 accept tib keepString literal, ['] render compile ` ;; ;
+  compiler: b: ` over ` =if ` x: ` then ;
 
   : decompile
     32 emit
     @addr
-    dup  0 =if s: nop    then
-    dup  1 =if x: lit    then
-    dup  2 =if s: dup    then
-    dup  3 =if s: drop   then
-    dup  4 =if s: swap   then
-    dup  5 =if s: push   then
-    dup  6 =if s: pop    then
-    dup  7 =if x: call   then
-    dup  8 =if x: jump   then
-    dup  9 =if s: ;      then
-    dup 10 =if x: >jump  then
-    dup 11 =if x: <jump  then
-    dup 12 =if x: !jump  then
-    dup 13 =if x: =jump  then
-    dup 14 =if s: @      then
-    dup 15 =if s: !      then
-    dup 16 =if s: +      then
-    dup 17 =if s: -      then
-    dup 18 =if s: *      then
-    dup 19 =if s: /mod   then
-    dup 20 =if s: and    then
-    dup 21 =if s: or     then
-    dup 22 =if s: xor    then
-    dup 23 =if s: <<     then
-    dup 24 =if s: >>     then
-    dup 25 =if s: 0;     then
-    dup 26 =if s: 1+     then
-    dup 27 =if s: 1-     then
-    dup 28 =if s: in     then
-    dup 29 =if s: out    then
-    dup 30 =if s: wait   then
+     0 a: nop      1 b: lit       2 a: dup       3 a: drop
+     4 a: swap     5 a: push      6 a: pop       7 b: call
+     8 b: jump     9 a: ;        10 b: >jump    11 b: <jump
+    12 b: !jump   13 b: =jump    14 a: @        15 a: !
+    16 a: +       17 a: -        18 a: *        19 a: /mod
+    20 a: and     21 a: or       22 a: xor      23 a: <<
+    24 a: >>      25 a: 0;       26 a: 1+       27 a: 1-
+    28 a: in      29 a: out      30 a: wait
     s" unknown: " type dup . .ascii cr ;
 
   : more? @addr 0 =if *addr @ 1+ @ 0 =if pop drop then then ;
