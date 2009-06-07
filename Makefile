@@ -37,9 +37,9 @@ default:
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 tools:
 	@cd tools && make
-toka:
+toka: tools
 	@cd toka && make
-image: toka tools
+image: tools toka
 	@cd image && make
 	@mv image/retroImage* bin
 clean:
@@ -59,6 +59,7 @@ clean:
 	@cd vm/framebuffer && make clean
 	@cd vm/java && make clean
 	@cd vm/dotnet && make clean
+	@cd toka && make clean
 	@cd doc && make clean
 vm: tools
 	@cd vm/console && make

@@ -24,16 +24,11 @@
  * OF THIS SOFTWARE.
  ******************************************************/
 
-/******************************************************
- * For rebuild:
- *
- * USES bits class cmdline conditionals console
- * USES data debug decompile dictionary ffi files
- * USES gc initial interpret math parser quotes
- * USES stack strings vm
- *
- * LINUX_LIBS dl
- ******************************************************/
+//FLAGS -O3 -fomit-frame-pointer -Wall
+//USES bits class cmdline conditionals console
+//USES data debug decompile dictionary errors
+//USES files gc initial interpret math parser
+//USES quotes stack strings vm
 
 #include <stdio.h>
 #include <stdlib.h>
