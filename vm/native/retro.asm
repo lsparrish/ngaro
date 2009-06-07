@@ -16,7 +16,7 @@ process:
   mul ebx
   mov ecx, dword image
   add ecx, eax
-  mov ecx, [ecx]
+  mov ecx, dword [ecx]
 
   cmp ecx, 0
   jz near op_nop
@@ -111,9 +111,12 @@ process:
   cmp ecx, 30
   jz near op_wait
 
-mov eax, dword [vm_ip]
-add eax, 48
-call emit
+;mov eax, dword [vm_ip]
+;  mov ebx, 4
+;mul ebx
+;add eax, 48
+;call emit
+jmp nextop
 
 hang:
   call key
@@ -122,8 +125,8 @@ hang:
 
 nextop:
   inc dword [vm_ip]
-  cmp dword [vm_ip], 5000000
-  jne near process
+  cmp dword [vm_ip], 2000
+  jl near process
   jmp hang
 ; -------------------------------------------------------------
 op_nop:
@@ -159,11 +162,28 @@ op_call:
   mov eax, 'h'
   call emit
   inc dword [vm_ip]
+  inc dword [vm_ip]
+  xor eax, eax
+  mov ebx, 4
+  mov eax, dword [vm_ip]
+  mul ebx
+  mov ecx, dword image
+  add ecx, eax
+  mov ecx, dword [ecx]
+  mov dword [vm_ip], ecx
   jmp nextop
 op_jump:
   mov eax, 'i'
   call emit
   inc dword [vm_ip]
+  xor eax, eax
+  mov ebx, 4
+  mov eax, dword [vm_ip]
+  mul ebx
+  mov ecx, dword image
+  add ecx, eax
+  mov ecx, dword [ecx]
+  mov dword [vm_ip], ecx
   jmp nextop
 op_ret
   mov eax, 'j'
