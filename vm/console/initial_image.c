@@ -1,6 +1,5 @@
 #include "functions.h"
 #include "vm.h"
-
 void initial_image(VM *vm)
 {
   vm->image[0]=8;

@@ -19,6 +19,9 @@ default:
 	@echo make vm
 	@echo - Compile the VM \(console version\)
 	@echo
+	@echo make fastvm
+	@echo - Compile the VM \(console version, Mat\'s implementation\)
+	@echo
 	@echo make fbvm
 	@echo - Build the VM \(with framebuffer\)
 	@echo
@@ -64,8 +67,10 @@ clean:
 vm: tools
 	@cd vm/console && make
 	@mv vm/console/retro bin
-	@mv vm/console/retro-fast bin
 	@mv vm/console/retro-nocurses bin
+fastvm: tools
+	@cd vm/console_fast && make
+	@mv vm/console_fast/retro-fast bin
 fbvm:
 	@cd vm/framebuffer && make
 	@mv vm/framebuffer/retro-fb bin
