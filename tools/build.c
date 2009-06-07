@@ -7,9 +7,7 @@
  *
  * //LIBS
  * //USES
- * //BSD_LIBS
- * //LINUX_LIBS
- * //CFLAGS
+ * //FLAGS
  *
  * It also looks at #include directives. Subdependencies
  * will be built first as necessary. You can nest the
