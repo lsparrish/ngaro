@@ -12,12 +12,10 @@
 #include "vm.h"
 
 
-
 /******************************************************
- *|F| void init_vm()
- *
- * This zeros out everything in the VM_STATE struct
- * to give us a known starting point.
+ * Initialize the VM
+ * This will clear the memory and stacks, and set the
+ * registers to zero.
  ******************************************************/
 void init_vm(VM *vm)
 {
@@ -36,14 +34,8 @@ void init_vm(VM *vm)
 }
 
 
-
 /******************************************************
- *|F| void vm_process()
- *
- * This is a simple switch-based processor with one
- * case for each opcode. It's not the fastest approach,
- * but is easy enough to follow, add on to, and works
- * well enough for my current needs.
+ * Process the current opcode
  ******************************************************/
 void vm_process(VM *vm)
 {

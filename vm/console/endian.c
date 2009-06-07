@@ -12,6 +12,10 @@
 #include "functions.h"
 #include "vm.h"
 
+/******************************************************
+ * Convert back and forth between big and little
+ * endian.
+ ******************************************************/
 void swapEndian(VM *vm)
 {
   int x, a;

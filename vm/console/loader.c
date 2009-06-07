@@ -14,10 +14,8 @@
 
 
 /******************************************************
- *|F| int vm_load_image(char *image)
- * Description:
- *   This is used to load an image to the vm->image[]
- *   buffer
+ * This is used to load an image to the vm->image[]
+ * buffer
  ******************************************************/
 int vm_load_image(VM *vm, char *image)
 {
@@ -37,10 +35,8 @@ int vm_load_image(VM *vm, char *image)
 
 
 /******************************************************
- *|F| int vm_save_image(char *image)
- * Description:
- *   This is used to save an image from the vm->image[]
- *   buffer
+ * This is used to save an image from the vm->image[]
+ * buffer
  ******************************************************/
 int vm_save_image(VM *vm, char *image)
 {

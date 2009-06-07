@@ -15,7 +15,7 @@
 
 
 /******************************************************
- *|F| int main(int argc, char **argv)
+ * Main entry point into the VM
  ******************************************************/
 int main(int argc, char **argv)
 {

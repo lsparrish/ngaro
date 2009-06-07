@@ -13,8 +13,6 @@
 
 
 /******************************************************
- *|F| void display_instruction()
- *
  * Attempt at writing some debugging functionality. This
  * is intended to display the current instruction and
  * the basic stack information as it exists when this
