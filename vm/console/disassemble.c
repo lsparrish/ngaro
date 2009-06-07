@@ -10,8 +10,6 @@
 #include "functions.h"
 #include "vm.h"
 
-extern VM_STATE vm;
-
 
 
 /******************************************************
@@ -33,7 +31,7 @@ extern VM_STATE vm;
  *   E       Depth of address stack
  *   FFFFF   Address stack contents
  ******************************************************/
-void display_instruction()
+void display_instruction(VM *vm)
 {
   int i;
   char *names[] = { "nop",   "lit",   "dup",  "drop", "swap",  "push",         \
@@ -44,7 +42,7 @@ void display_instruction()
   i = 0;
 
   /* Display the IP */
-  fprintf(stderr, "%6i:   ", vm.ip);
+  fprintf(stderr, "%6i:   ", vm->ip);
 
   /* And the instruction, finding a name from the lookup table */
   if(VMOP <= NUM_OPS)
@@ -57,7 +55,7 @@ void display_instruction()
       VMOP == VM_LT_JUMP || VMOP == VM_GT_JUMP || VMOP == VM_EQ_JUMP || \
       VMOP == VM_NE_JUMP)
   {
-    fprintf(stderr, " %6i", vm.image[vm.ip+1]);
+    fprintf(stderr, " %6i", vm->image[vm->ip+1]);
     i = 1;
   }
 
@@ -68,14 +66,14 @@ void display_instruction()
   fprintf(stderr, "\t\t");
 
   /* Display the data stack */
-  fprintf(stderr, "<%i> ", vm.sp);
-  for (i = vm.sp; i > 0; i--)
-    fprintf(stderr, "%i ", vm.data[(vm.sp-i)+1]);
+  fprintf(stderr, "<%i> ", vm->sp);
+  for (i = vm->sp; i > 0; i--)
+    fprintf(stderr, "%i ", vm->data[(vm->sp-i)+1]);
 
   /* And the address stack */
-  fprintf(stderr, " ----  <%i> ", vm.rsp);
-  for (i = vm.rsp; i > 0; i--)
-    fprintf(stderr, "%i ", vm.address[(vm.rsp-i)+1]);
+  fprintf(stderr, " ----  <%i> ", vm->rsp);
+  for (i = vm->rsp; i > 0; i--)
+    fprintf(stderr, "%i ", vm->address[(vm->rsp-i)+1]);
 
   /* Whew, all done! */
   fprintf(stderr, "\n\r");

@@ -12,17 +12,14 @@
 #include "functions.h"
 #include "vm.h"
 
-extern VM_STATE vm;
-
-
 
 /******************************************************
  *|F| int vm_load_image(char *image)
  * Description:
- *   This is used to load an image to the vm.image[]
+ *   This is used to load an image to the vm->image[]
  *   buffer
  ******************************************************/
-int vm_load_image(char *image)
+int vm_load_image(VM *vm, char *image)
 {
   FILE *fp;
   int x;
@@ -32,7 +29,7 @@ int vm_load_image(char *image)
     return -1;
   }
 
-  x = fread(&vm.image, sizeof(int), IMAGE_SIZE, fp);
+  x = fread(&vm->image, sizeof(int), IMAGE_SIZE, fp);
   fclose(fp);
 
   return x;
@@ -42,10 +39,10 @@ int vm_load_image(char *image)
 /******************************************************
  *|F| int vm_save_image(char *image)
  * Description:
- *   This is used to save an image from the vm.image[]
+ *   This is used to save an image from the vm->image[]
  *   buffer
  ******************************************************/
-int vm_save_image(char *image)
+int vm_save_image(VM *vm, char *image)
 {
   FILE *fp;
   int x;
@@ -57,7 +54,7 @@ int vm_save_image(char *image)
     exit(-1);
   }
 
-  x = fwrite(&vm.image, sizeof(int), IMAGE_SIZE, fp);
+  x = fwrite(&vm->image, sizeof(int), IMAGE_SIZE, fp);
   fclose(fp);
 
   return x;

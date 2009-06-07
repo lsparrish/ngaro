@@ -10,7 +10,6 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 default:
 	../../tools/build retro
-	../../tools/build retro-fast
 	../../tools/build retro-nocurses
 
 clean:

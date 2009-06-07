@@ -13,8 +13,6 @@
 #include "functions.h"
 #include "vm.h"
 
-extern VM_STATE vm;
-
 
 /******************************************************
  *|F| int main(int argc, char **argv)
@@ -23,12 +21,14 @@ int main(int argc, char **argv)
 {
   int a, i, trace, endian;
 
+  VM *vm = malloc(sizeof(VM));
+
   trace = 0;
   endian = 0;
 
-  strcpy(vm.filename, "retroImage");
+  strcpy(vm->filename, "retroImage");
 
-  init_vm();
+  init_vm(vm);
   dev_init(INPUT);
 
   /* Parse the command line arguments */
@@ -65,36 +65,36 @@ int main(int argc, char **argv)
     }
     else
     {
-      strcpy(vm.filename, argv[i]);
+      strcpy(vm->filename, argv[i]);
     }
   }
 
   dev_init(OUTPUT);
 
   /* Load the image */
-  a = vm_load_image(vm.filename);
+  a = vm_load_image(vm, vm->filename);
 
   if (a == -1)
-    initial_image();
+    initial_image(vm);
 
   /* Swap endian if --endian was passed */
   if (endian == 1)
-    swapEndian();
+    swapEndian(vm);
 
   /* Process the image */
   if (trace == 0)
   {
-    for (vm.ip = 0; vm.ip < IMAGE_SIZE; vm.ip++)
+    for (vm->ip = 0; vm->ip < IMAGE_SIZE; vm->ip++)
     {
-      vm_process(vm.image[vm.ip]);
+      vm_process(vm);
     }
   }
   else
   {
-    for (vm.ip = 0; vm.ip < IMAGE_SIZE; vm.ip++)
+    for (vm->ip = 0; vm->ip < IMAGE_SIZE; vm->ip++)
     {
-      display_instruction();
-      vm_process(vm.image[vm.ip]);
+      display_instruction(vm);
+      vm_process(vm);
     }
   }
 

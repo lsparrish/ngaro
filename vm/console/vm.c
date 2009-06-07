@@ -11,12 +11,6 @@
 #include "functions.h"
 #include "vm.h"
 
-/* Variables specific to the VM */
-VM_STATE vm;
-
-extern int isp;
-extern FILE *input[];
-
 
 
 /******************************************************
@@ -25,18 +19,20 @@ extern FILE *input[];
  * This zeros out everything in the VM_STATE struct
  * to give us a known starting point.
  ******************************************************/
-void init_vm()
+void init_vm(VM *vm)
 {
    int a;
-   vm.ip = vm.sp = vm.rsp = 0;
+   vm->ip = 0;
+   vm->sp = 0;
+   vm->rsp = 0;
    for (a = 0; a < STACK_DEPTH; a++)
-      vm.data[a] = 0;
+      vm->data[a] = 0;
    for (a = 0; a < ADDRESSES; a++)
-      vm.address[a] = 0;
+      vm->address[a] = 0;
    for (a = 0; a < IMAGE_SIZE; a++)
-      vm.image[a] = 0;
+      vm->image[a] = 0;
    for (a = 0; a < 1024; a++)
-      vm.ports[a] = 0;
+      vm->ports[a] = 0;
 }
 
 
@@ -49,8 +45,11 @@ void init_vm()
  * but is easy enough to follow, add on to, and works
  * well enough for my current needs.
  ******************************************************/
-void vm_process(int opcode) {
-  int a, b;
+void vm_process(VM *vm)
+{
+  int a, b, opcode;
+
+  opcode = vm->image[vm->ip];
 
   switch(opcode)
   {
@@ -65,8 +64,8 @@ void vm_process(int opcode) {
     /*        the stack                                */
     /* Opcode: 1 n      Stack: -n       Address: -     */
     case VM_LIT:
-         vm.sp++;
-         vm.ip++;
+         vm->sp++;
+         vm->ip++;
          TOS = VMOP;
          break;
 
@@ -75,8 +74,8 @@ void vm_process(int opcode) {
     /*        stack                                    */
     /* Opcode: 2        Stack: n-nn     Address: -     */
     case VM_DUP:
-         vm.sp++;
-         vm.data[vm.sp] = NOS;
+         vm->sp++;
+         vm->data[vm->sp] = NOS;
          break;
 
     /***************************************************/
@@ -101,7 +100,7 @@ void vm_process(int opcode) {
     /*        stack.                                   */
     /* Opcode: 5        Stack: n-       Address: -n    */
     case VM_PUSH:
-         vm.rsp++;
+         vm->rsp++;
          TORS = TOS;
          DROP
          break;
@@ -112,9 +111,9 @@ void vm_process(int opcode) {
     /*        the address stack.                       */
     /* Opcode: 6        Stack: -n       Address: n-    */
     case VM_POP:
-         vm.sp++;
+         vm->sp++;
          TOS = TORS;
-         vm.rsp--;
+         vm->rsp--;
          break;
 
     /***************************************************/
@@ -124,10 +123,10 @@ void vm_process(int opcode) {
     /*         stack.                                  */
     /* Opcode: 7 a       Stack: -      Address: -a     */
     case VM_CALL:
-         vm.ip++;
-         vm.rsp++;
-         TORS = vm.ip++;
-         vm.ip = vm.image[vm.ip-1] - 1;
+         vm->ip++;
+         vm->rsp++;
+         TORS = vm->ip++;
+         vm->ip = vm->image[vm->ip-1] - 1;
          break;
 
     /***************************************************/
@@ -135,8 +134,8 @@ void vm_process(int opcode) {
     /*        in the following cell.                   */
     /* Opcode: 8 a       Stack: -       Address: -     */
     case VM_JUMP:
-         vm.ip++;
-         vm.ip = VMOP - 1;
+         vm->ip++;
+         vm->ip = VMOP - 1;
          break;
 
     /***************************************************/
@@ -145,8 +144,8 @@ void vm_process(int opcode) {
     /*        address stack.                           */
     /* Opcode: 9         Stack: -       Address: a-    */
     case VM_RETURN:
-         vm.ip = TORS;
-         vm.rsp--;
+         vm->ip = TORS;
+         vm->rsp--;
          break;
 
     /***************************************************/
@@ -154,9 +153,9 @@ void vm_process(int opcode) {
     /*        cell if NOS > TOS.                       */
     /* Opcode: 10 a      Stack: xy-     Address: -     */
     case VM_GT_JUMP:
-         vm.ip++;
+         vm->ip++;
          if(NOS > TOS)
-           vm.ip = VMOP - 1;
+           vm->ip = VMOP - 1;
          DROP DROP
          break;
 
@@ -165,9 +164,9 @@ void vm_process(int opcode) {
     /*        cell if NOS < TOS.                       */
     /* Opcode: 11 a      Stack: xy-     Address: -     */
     case VM_LT_JUMP:
-         vm.ip++;
+         vm->ip++;
          if(NOS < TOS)
-           vm.ip = VMOP - 1;
+           vm->ip = VMOP - 1;
          DROP DROP
          break;
 
@@ -176,9 +175,9 @@ void vm_process(int opcode) {
     /*        cell if NOS <> TOS.                      */
     /* Opcode: 12 a      Stack: xy-     Address: -     */
     case VM_NE_JUMP:
-         vm.ip++;
+         vm->ip++;
          if(TOS != NOS)
-           vm.ip = VMOP - 1;
+           vm->ip = VMOP - 1;
          DROP DROP
          break;
 
@@ -187,9 +186,9 @@ void vm_process(int opcode) {
     /*        cell if NOS = TOS.                       */
     /* Opcode: 13 a      Stack: xy-     Address: -     */
     case VM_EQ_JUMP:
-         vm.ip++;
+         vm->ip++;
          if(TOS == NOS)
-           vm.ip = VMOP - 1;
+           vm->ip = VMOP - 1;
          DROP DROP
          break;
 
@@ -197,14 +196,14 @@ void vm_process(int opcode) {
     /* @      Fetch a value from a memory location     */
     /* Opcode: 14        Stack: a-n     Address: -     */
     case VM_FETCH:
-         TOS = vm.image[TOS];
+         TOS = vm->image[TOS];
          break;
 
     /***************************************************/
     /* !      Store a value to a memory location       */
     /* Opcode: 15        Stack: na-     Address: -     */
     case VM_STORE:
-         vm.image[TOS] = NOS;
+         vm->image[TOS] = NOS;
          DROP DROP
          break;
 
@@ -306,8 +305,8 @@ void vm_process(int opcode) {
          if (TOS == 0)
          {
            DROP
-           vm.ip = TORS;
-           vm.rsp--;
+           vm->ip = TORS;
+           vm->rsp--;
          }
          break;
 
@@ -330,16 +329,16 @@ void vm_process(int opcode) {
     /* Opcode: 28        Stack: p-n     Address: -     */
     case VM_IN:
          a = TOS;
-         TOS = vm.ports[a];
-         vm.ports[a] = 0;
+         TOS = vm->ports[a];
+         vm->ports[a] = 0;
          break;
 
     /***************************************************/
     /* OUT   Send a value to an I/O port               */
     /* Opcode: 29        Stack: np-     Address: -     */
     case VM_OUT:
-         vm.ports[0] = 0;
-         vm.ports[TOS] = NOS;
+         vm->ports[0] = 0;
+         vm->ports[TOS] = NOS;
          DROP DROP
          break;
 
@@ -347,56 +346,56 @@ void vm_process(int opcode) {
     /* WAIT  Wait for an I/O event to occur.           */
     /* Opcode: 30        Stack: -       Address: -     */
     case VM_WAIT:
-         if (vm.ports[0] == 1)
+         if (vm->ports[0] == 1)
            break;
 
          /* Input */
-         if (vm.ports[0] == 0 && vm.ports[1] == 1)
+         if (vm->ports[0] == 0 && vm->ports[1] == 1)
          {
-           vm.ports[1] = dev_getch();
-           vm.ports[0] = 1;
+           vm->ports[1] = dev_getch();
+           vm->ports[0] = 1;
          }
 
          /* Output (character generator) */
-         if (vm.ports[2] == 1)
+         if (vm->ports[2] == 1)
          {
            dev_putch(TOS); DROP
-           vm.ports[2] = 0;
-           vm.ports[0] = 1;
+           vm->ports[2] = 0;
+           vm->ports[0] = 1;
          }
 
          /* Save Image */
-         if (vm.ports[4] == 1)
+         if (vm->ports[4] == 1)
          {
-           vm_save_image(vm.filename);
-           vm.ports[4] = 0;
-           vm.ports[0] = 1;
+           vm_save_image(vm, vm->filename);
+           vm->ports[4] = 0;
+           vm->ports[0] = 1;
          }
 
          /* Capabilities */
-         if (vm.ports[5] == -1)
+         if (vm->ports[5] == -1)
          {
-           vm.ports[5] = IMAGE_SIZE;
-           vm.ports[0] = 1;
+           vm->ports[5] = IMAGE_SIZE;
+           vm->ports[0] = 1;
          }
 
          /* The framebuffer related bits aren't supported, so return 0 for them. */
-         if (vm.ports[5] == -2 || vm.ports[5] == -3 || vm.ports[5] == -4)
+         if (vm->ports[5] == -2 || vm->ports[5] == -3 || vm->ports[5] == -4)
          {
-           vm.ports[5] = 0;
-           vm.ports[0] = 1;
+           vm->ports[5] = 0;
+           vm->ports[0] = 1;
          }
 
          /* Data & Return Stack Depth */
-         if (vm.ports[5] == -5)
+         if (vm->ports[5] == -5)
          {
-           vm.ports[5] = vm.sp;
-           vm.ports[0] = 1;
+           vm->ports[5] = vm->sp;
+           vm->ports[0] = 1;
          }
-         if (vm.ports[5] == -6)
+         if (vm->ports[5] == -6)
          {
-           vm.ports[5] = vm.rsp;
-           vm.ports[0] = 1;
+           vm->ports[5] = vm->rsp;
+           vm->ports[0] = 1;
          }
          break;
 
@@ -404,12 +403,12 @@ void vm_process(int opcode) {
     /* ----  Any other opcodes are invalid, suspend    */
     /*       execution if encountered.                 */
     default:
-         vm.ip = IMAGE_SIZE;
+         vm->ip = IMAGE_SIZE;
          break;
   }
-  if (vm.ports[3] == 0)
+  if (vm->ports[3] == 0)
   {
-    vm.ports[3] = 1;
+    vm->ports[3] = 1;
     dev_refresh();
   }
 }
