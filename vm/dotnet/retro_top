@@ -1,11 +1,15 @@
-/*
- Mono/.NET version of retroForth
- Adapted from the Java Version (quick hack)
- Gifted to the public domain by Simon Waite
- ( opless@gmail.com ) on Sun 31 May 2009 23:56:24 BST
- Please compile with gmcs as mcs seems to have a simple Console.in implementation
- NB. This is a console app, and not tested under Windows .Net YMMV :-)
-*/
+/******************************************************
+ * Ngaro for Mono / .NET
+ *
+ * Written by Simon Waite and Charles Childers
+ * This code is gifted to the public domain.
+ *
+ * Please compile with `gmcs` as `mcs` seems to have a
+ * simple Console.in implementation.
+ *
+ * NB. This is a console app, and has received only
+ * limited testing under Windows .NET. YMMV :-)
+ ******************************************************/
 
 using System;
 using System.IO;
