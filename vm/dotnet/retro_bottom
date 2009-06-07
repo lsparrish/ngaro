@@ -1,5 +1,6 @@
 // start of bottom
-  }
+      }
+    }
 
 
   public void HandleDevices()
@@ -30,6 +31,12 @@
         Console.Write(c);
       sp--;
       ports[2] = 0;
+      ports[0] = 1;
+    }
+    if (ports[4] == 1)
+    {
+      saveImage();
+      ports[4] = 0;
       ports[0] = 1;
     }
     /* Capabilities */
