@@ -1,0 +1,98 @@
+#! /usr/bin/toka
+#! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#! This is a Toka script to convert a Retro image into a source
+#! file capable of being added to the various VM implementations.
+#! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#! Requires:
+#!  - Toka
+#!  - Retro image file ("retroImage")
+#! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#! This code was written by Charles Childers for use with Retro
+#!
+#! It is gifted to the public domain. In the event that your
+#! country does not allow a direct dedication to the public
+#! domain, the author voluntarily gives up all rights to the
+#! extent permitted by law.
+#! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#! Languages Supported:
+#!   C   (console)
+#!   C   (framebuffer)
+#!   C#  (dotnet)
+#!   Java
+#!   JavaScript
+#! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+value| fid size image |
+#! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ vm
+[
+  ." #include \"functions.h\"\n"
+  ." #include \"vm.h\"\n"
+  ." void initial_image(VM *vm)\n{\n"
+] is c-console-header
+[ ." }\n" ] is c-console-footer
+[ ."   vm->image[" i >string type ." ]=" >string type ." ;\n" ] is c-console-line
+[
+  0 size
+  [
+    image i cell-size * + @ dup 0 <> [ c-console-line ] [ drop ] ifTrueFalse
+  ] countedLoop
+] is c-console-process
+[ c-console-header c-console-process c-console-footer ] is vm
+#! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ fbvm
+[
+  ." #include \"functions.h\"\n"
+  ." #include \"vm.h\"\n"
+  ." extern VM_STATE vm;\n\n"
+  ." void initial_image()\n{\n"
+] is c-fb-header
+[ ." }\n" ] is c-fb-footer
+[ ."   vm.image[" i >string type ." ]=" >string type ." ;\n" ] is c-fb-line
+[
+  0 size
+  [
+    image i cell-size * + @ dup 0 <> [ c-fb-line ] [ drop ] ifTrueFalse
+  ] countedLoop
+] is c-fb-process
+[ c-fb-header c-fb-process c-fb-footer ] is fbvm
+#! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Java and .NET
+[ ." memory[" i >string type ." ]=" >string type ." ;\n" ] is java-line
+[
+  0 size
+  [
+    image i cell-size * + @ dup 0 <> [ java-line ] [ drop ] ifTrueFalse
+  ] countedLoop
+] is java-process
+[ java-process ] is java
+[ java-process ] is dotnet
+#! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ JavaScript
+[
+  ." function loadImage()\n{\n"
+  ."   var a; for (a = 0; a < 5000000; a++) image[a]=0;\n"
+] is js-header
+[ ." }\n" ] is js-footer
+[ ." image[" i >string type ." ]=" >string type ." ;\n" ] is js-line
+[
+  0 size
+  [
+    image i cell-size * + @ dup 0 <> [ js-line ] [ drop ] ifTrueFalse
+  ] countedLoop
+] is js-process
+[ js-header js-process js-footer ] is javascript
+#! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ JavaScript
+
+( Exit if no arguments were passed                 )
+#args 2 > [ ." Try:\n  image2any.toka port imagename\n" bye ] ifFalse
+
+2 arglist array.get "R" file.open to fid
+fid file.size cell-size / to size
+fid file.close
+2 arglist array.get file.slurp keep to image
+
+1 arglist array.get " vm" string.compare [ vm ] ifTrue
+1 arglist array.get " fbvm" string.compare [ fbvm ] ifTrue
+1 arglist array.get " java" string.compare [ java ] ifTrue
+1 arglist array.get " dotnet" string.compare [ dotnet ] ifTrue
+1 arglist array.get " javascript" string.compare [ javascript ] ifTrue
+
+bye
