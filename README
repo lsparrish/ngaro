@@ -1,12 +1,5 @@
- .----,   .-----  -------  .----,    ,---,
- |     \  |          |     |     \  |     |
- |-----/  |---       |     |-----/  |     |
- |  \     |          |     |  \     |     |
- |   \    |          |     |   \    |     |
- |    \   `-----     |     |    \    `---'
+RETRO
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Welcome!
-
 This is a small dialect of Forth. It's minimalistic in nature
 and is designed to be fairly easy to learn and customize for
 specific needs.
