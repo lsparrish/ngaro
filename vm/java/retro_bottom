@@ -1,3 +1,6 @@
+      /* Convert above to big endian */
+      for (i = 0; i < 5000000; i++)
+        memory[i] = switchEndian(memory[i]);
     }
   }
 
@@ -10,7 +13,7 @@
     address = new int[100];
     ports   = new int[1024];
     memory  = new int[5000000];
-    retro();
+    initial_image();
   }
 
 
@@ -224,6 +227,7 @@
       handleDevices();
       break;
     default:
+      System.out.println("Invalid Opcode at " + ip + " : " + switchEndian(op));
       ip = 5000000;
     }
   }
@@ -241,7 +245,7 @@
         vm.memory[i] = vm.switchEndian(vm.memory[i]);
     }
 
-    for (; vm.ip < 5000000; vm.ip++)
+    for (vm.ip = 0; vm.ip < 5000000; vm.ip++)
        vm.process();
   }
 }
