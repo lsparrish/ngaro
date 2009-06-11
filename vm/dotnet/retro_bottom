@@ -222,9 +222,20 @@
     for (; ip < 5000000; ip++)
        Process();
   }
+
   public static void Main(string [] args)
   {
     VM vm = new VM();
+
+    foreach(string arg in args)
+    {
+      if (arg == "--endian")
+      {
+        for (int i = 0; i < 5000000; i++)
+          vm.memory[i] = vm.switchEndian(vm.memory[i]);
+      }
+    }
+
     vm.Execute();
   }
 }
