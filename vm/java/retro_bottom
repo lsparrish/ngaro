@@ -4,6 +4,10 @@
     }
   }
 
+/**
+ * Initialize the Ngaro VM. Should this be merged into
+ * the constructor?
+ */
   public void init()
   {
     sp = 0;
@@ -17,6 +21,9 @@
   }
 
 
+ /**
+  * Handler for the emulated hardware devices
+  */
   public void handleDevices()
   {
     byte[] b = { 0, 0, 0 };
@@ -77,6 +84,9 @@
   }
 
 
+ /**
+  * Process a single opcode
+  */
   public void process()
   {
     int op = memory[ip];
@@ -232,6 +242,10 @@
     }
   }
 
+
+ /**
+  * The main entry point. What else needs to be said?
+  */
   public static void main(String[] args)
   {
     retro vm = new retro();

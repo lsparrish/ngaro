@@ -97,10 +97,18 @@ public class retro {
   }
 
 
+ /**
+  * Generic constructor
+  */
   public void retro()
   {
   }
 
+
+ /**
+  * Attempt to load the initial image. This tries to load a
+  * file (retroImage). If that fails, it uses a built-in one.
+  */
   public void initial_image()
   {
     int i;
