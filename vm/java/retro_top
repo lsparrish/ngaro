@@ -1,5 +1,5 @@
 import java.*;
-import java.io.RandomAccessFile;
+import java.io.*;
 
 public class retro {
   int sp, rsp, ip;
@@ -30,10 +30,13 @@ public class retro {
   public void loadImage(String name)
   {
     int i;
+    RandomAccessFile in = null;
 
+    boolean exists = (new File(name)).exists();
+    if (exists) {
     try
     {
-      RandomAccessFile in = new RandomAccessFile(name, "r");
+      in = new RandomAccessFile(name, "r");
       i = 0;
 
       while (i < 5000000)
@@ -44,7 +47,10 @@ public class retro {
         in.close();
     }
     catch(Exception e) { System.out.println(e); }
-  }
+    } else {
+      memory[0] = 0;
+    }
+ }
 
 
   public void saveImage(String name)
@@ -69,11 +75,14 @@ public class retro {
 
   public void retro()
   {
+  }
+
+  public void initial_image()
+  {
     int i;
     for(i = 0; i < 5000000; i++)
       memory[i] = 0;
 
     loadImage("retroImage");
-
     if (memory[0] == 0)
     {
