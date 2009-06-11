@@ -1,6 +1,13 @@
 import java.*;
 import java.io.*;
 
+
+/**
+ * @author Charles Childers
+ *
+ * The retro class contains the Ngaro VM and an initial
+ * image file for the Retro language.
+ */
 public class retro {
   int sp, rsp, ip;
   int data[], address[], ports[];
@@ -18,6 +25,12 @@ public class retro {
   public static final int VM_DEC = 27;      public static final int VM_IN = 28;       public static final int VM_OUT = 29;
   public static final int VM_WAIT = 30;
 
+
+ /**
+  * Returns the value in the opposite endian
+  *
+  * @return int
+  */
   public int switchEndian(int value)
   {
     int b1 = (value >>  0) & 0xff;
@@ -27,32 +40,43 @@ public class retro {
     return b1 << 24 | b2 << 16 | b3 << 8 | b4 << 0;
   }
 
+
+ /**
+  * Load an image file. Will do nothing if the file does
+  * not exist.
+  */
   public void loadImage(String name)
   {
     int i;
     RandomAccessFile in = null;
 
     boolean exists = (new File(name)).exists();
-    if (exists) {
-    try
+    if (exists)
     {
-      in = new RandomAccessFile(name, "r");
-      i = 0;
-
-      while (i < 5000000)
+      try
       {
-        memory[i] = in.readInt(); i++;
+        in = new RandomAccessFile(name, "r");
+        i = 0;
+
+        while (i < 5000000)
+        {
+          memory[i] = in.readInt(); i++;
+        }
+        if (in != null)
+          in.close();
       }
-      if (in != null)
-        in.close();
+      catch(Exception e) { System.out.println(e); }
     }
-    catch(Exception e) { System.out.println(e); }
-    } else {
+    else
+    {
       memory[0] = 0;
     }
- }
+  }
 
 
+ /**
+  * Save the current image to a file.
+  */
   public void saveImage(String name)
   {
     int i;
