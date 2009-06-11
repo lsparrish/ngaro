@@ -105,6 +105,20 @@ public class retro {
   }
 
 
+  public static void set_tty(boolean on) { 
+    try { 
+      String[] cmd = { 
+        "/bin/sh", 
+        "-c", 
+        "/bin/stty " + (on ? "-echo -icanon min 1" : "echo") + " < /dev/tty" 
+      }; 
+      Process p = Runtime.getRuntime().exec(cmd); 
+      p.waitFor(); 
+    } 
+    catch (IOException e) { } 
+    catch (InterruptedException e) { } 
+  } 
+
  /**
   * Attempt to load the initial image. This tries to load a
   * file (retroImage). If that fails, it uses a built-in one.

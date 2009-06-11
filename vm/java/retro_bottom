@@ -251,6 +251,7 @@
     retro vm = new retro();
 
     vm.init();
+    vm.set_tty(true);
 
     if (args.length > 0)
     {
@@ -261,5 +262,7 @@
 
     for (vm.ip = 0; vm.ip < 5000000; vm.ip++)
        vm.process();
+
+    vm.set_tty(false);
   }
 }
