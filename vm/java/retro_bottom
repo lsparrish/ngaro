@@ -245,6 +245,11 @@
   */
   public static void main(String[] args)
   {
+    if (System.getProperty("os.name").startsWith("Windows"))
+    {
+      System.out.println("Windows is not supported!");
+      System.exit(-1);
+    }
     retro vm = new retro();
 
     vm.init();
