@@ -1,6 +1,3 @@
-      /* Convert above to big endian */
-      for (i = 0; i < 5000000; i++)
-        memory[i] = switchEndian(memory[i]);
     }
   }
 
@@ -255,9 +252,15 @@
 
     if (args.length > 0)
     {
-      int i;
-      for (i = 0; i < 5000000; i++)
-        vm.memory[i] = vm.switchEndian(vm.memory[i]);
+      int x, i;
+      for (i = 0; i < args.length; i++)
+      {
+        if (args[i].equals("--endian"))
+        {
+          for (i = 0; i < 5000000; i++)
+            vm.memory[i] = vm.switchEndian(vm.memory[i]);
+        }
+      }
     }
 
     for (vm.ip = 0; vm.ip < 5000000; vm.ip++)

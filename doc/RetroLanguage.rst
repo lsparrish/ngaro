@@ -147,7 +147,6 @@ and try one of the following:
 
   # Console
   ./retro
-  ./retro-fast
 
   # Framebuffer
   ./retro-fbvm
@@ -156,7 +155,7 @@ and try one of the following:
   mono retro.exe
 
   # Java
-  ./retro-java.sh
+  java retro
 
 If you are using the *console* targets, you can use some command line arguments:
 

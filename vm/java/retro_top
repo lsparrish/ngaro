@@ -105,19 +105,24 @@ public class retro {
   }
 
 
-  public static void set_tty(boolean on) { 
-    try { 
-      String[] cmd = { 
-        "/bin/sh", 
-        "-c", 
-        "/bin/stty " + (on ? "-echo -icanon min 1" : "echo") + " < /dev/tty" 
-      }; 
-      Process p = Runtime.getRuntime().exec(cmd); 
-      p.waitFor(); 
-    } 
-    catch (IOException e) { } 
-    catch (InterruptedException e) { } 
-  } 
+ /**
+  * Setup and restore the terminal for key breaking and
+  * no echoing of the characters being read. This *requires*
+  * a Unix-like host. This is one place .NET is better than
+  * Java: it at least tries to provide real console access.
+  */
+  public static void set_tty(boolean on)
+  {
+    try
+    {
+      String[] cmd = { "/bin/sh", "-c", "/bin/stty " + (on ? "-echo -icanon min 1" : "echo") + " < /dev/tty" };
+      Process p = Runtime.getRuntime().exec(cmd);
+      p.waitFor();
+    }
+    catch (IOException e) { }
+    catch (InterruptedException e) { }
+  }
+
 
  /**
   * Attempt to load the initial image. This tries to load a
