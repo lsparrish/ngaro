@@ -169,14 +169,14 @@ function handleDevices()
   }
 
 
-  /* HTML */
-  if (ports[9998] == 1)
+  /* Browser Interfacing */
+  if (ports[1024] == 1)
   {
     filterHTML = filterHTML * -1;
-    ports[9998] = 0;
+    ports[1024] = 0;
     ports[0] = 1;
   }
-  if (ports[9998] == 2)
+  if (ports[1024] == 2)
   {
     var src = data[sp]; sp--;
     var dst = "";
@@ -186,7 +186,7 @@ function handleDevices()
       src++;
     }
     eval(dst);
-    ports[9998] = 0;
+    ports[1024] = 0;
     ports[0] = 1;
   }
 }

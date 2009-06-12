@@ -1024,7 +1024,7 @@ JavaScript into your Forth code.
 
 ::
 
-  : toggle-html ( - ) 1 9998 out wait ;
+  : toggle-html ( - ) 1 1024 out wait ;
 
 When invoked, this will toggle the filtering of special characters
 by the console driver on and off. (By default the special
@@ -1034,7 +1034,7 @@ console.
 
 ::
 
-  : js ( $- ) 2 9998 out wait ;
+  : js ( $- ) 2 1024 out wait ;
 
 This is the more powerful of the two. It allows for passing a
 Retro string to the JavaScript eval() function. You can pass
@@ -1266,5 +1266,5 @@ The Words
 +--------------+--------------+------------+---------------+
 | Decompile a word back to source. Parses for a word name, |
 | then attempts to detect the end of the word. May display |
-| the dictionary header for the following word as well...  |
+| the dictionary header for the following word as well.    |
 +--------------+--------------+------------+---------------+
