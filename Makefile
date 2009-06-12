@@ -13,8 +13,7 @@
 
 default:
 	@clear
-	@echo For most people, a simple \'make vm\' will suffice. None of the
-	@echo other options are required to build a working Retro system.
+	@echo Try one of the following:
 	@echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	@echo make vm
 	@echo - Compile the VM \(console version\)
@@ -32,11 +31,12 @@ default:
 	@echo - Build the VM \(for Java, requires JDK\)
 	@echo
 	@echo make image
-	@echo - Rebuild the initial retroImage
+	@echo - Rebuild the initial retroImage. Only needed if you customize
+	@echo \ \ the original image.
 	@echo
 	@echo make clean
 	@echo - Remove temporary files, binaries
-	@echo
+	@echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 tools:
 	@cd tools && make
