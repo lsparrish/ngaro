@@ -6,9 +6,6 @@
  *
  * Please compile with `gmcs` as `mcs` seems to have a
  * simple Console.in implementation.
- *
- * NB. This is a console app, and has received only
- * limited testing under Windows .NET. YMMV :-)
  ******************************************************/
 
 using System;

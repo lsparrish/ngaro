@@ -234,6 +234,12 @@
         for (int i = 0; i < 5000000; i++)
           vm.memory[i] = vm.switchEndian(vm.memory[i]);
       }
+      if (arg == "--about")
+      {
+        Console.Write("Written by Charles Childers and Simon Waite\n");
+        Console.Write("This is released into the public domain\n");
+        Environment.Exit(0);
+      }
     }
 
     vm.Execute();
