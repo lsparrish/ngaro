@@ -58,6 +58,13 @@ int main(int argc, char **argv)
       fprintf(stderr, "   --endian   Load an image with a different endianness\n");
       exit(0);
     }
+    else if (strcmp(argv[i], "--about") == 0)
+    {
+      fprintf(stderr, "Retro Language  [VM: C, framebuffer]\n");
+      fprintf(stderr, "The Retro language and documentation have been gifted to the\n");
+      fprintf(stderr, "public domain. Use it as you see fit.\n\n");
+      exit(0);
+    }
     else
     {
       strcpy(vm.filename, argv[i]);

@@ -236,8 +236,9 @@
       }
       if (arg == "--about")
       {
-        Console.Write("Written by Charles Childers and Simon Waite\n");
-        Console.Write("This is released into the public domain\n");
+        Console.Write("Retro Language  [VM: C#, .NET]\n");
+        Console.Write("The Retro language and documentation have been gifted to the\n");
+        Console.Write("public domain. Use it as you see fit.\n\n");
         Environment.Exit(0);
       }
     }

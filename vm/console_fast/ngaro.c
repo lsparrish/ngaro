@@ -58,9 +58,9 @@ int main(int argc, char **argv)
     }
     else if (strcmp(argv[i], "--about") == 0)
     {
-      fprintf(stderr, "Ngaro, a simple virtual machine\n\r");
-      fprintf(stderr, "Built on %s\n\r", __DATE__);
-      fprintf(stderr, "Ngaro is released into the public domain. Use it as you see fit.\n\r");
+      fprintf(stderr, "Retro Language  [VM: C, console]\n");
+      fprintf(stderr, "The Retro language and documentation have been gifted to the\n");
+      fprintf(stderr, "public domain. Use it as you see fit.\n\n");
       exit(0);
     }
     else

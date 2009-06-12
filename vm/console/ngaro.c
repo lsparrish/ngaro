@@ -53,19 +53,19 @@ int main(int argc, char **argv)
     }
     else if (strcmp(argv[i], "--help") == 0)
     {
-      fprintf(stderr, "%s [options] [imagename]\n\r", argv[0]);
-      fprintf(stderr, "Valid options are:\n\r");
-      fprintf(stderr, "   --about        Display some information about Ngaro\n\r");
-      fprintf(stderr, "   --trace        Execution trace\n\r");
-      fprintf(stderr, "   --endian       Load an image with a different endianness\n\r");
-      fprintf(stderr, "   --with [file]  Treat [file] as an input source\n\r");
+      fprintf(stderr, "%s [options] [imagename]\n", argv[0]);
+      fprintf(stderr, "Valid options are:\n");
+      fprintf(stderr, "   --about        Display some information about Ngaro\n");
+      fprintf(stderr, "   --trace        Execution trace\n");
+      fprintf(stderr, "   --endian       Load an image with a different endianness\n");
+      fprintf(stderr, "   --with [file]  Treat [file] as an input source\n");
       exit(0);
     }
     else if (strcmp(argv[i], "--about") == 0)
     {
-      fprintf(stderr, "Ngaro, a simple virtual machine\n\r");
-      fprintf(stderr, "Built on %s\n\r", __DATE__);
-      fprintf(stderr, "Ngaro is released into the public domain. Use it as you see fit.\n\r");
+      fprintf(stderr, "Retro Language  [VM: C, console]\n");
+      fprintf(stderr, "The Retro language and documentation have been gifted to the\n");
+      fprintf(stderr, "public domain. Use it as you see fit.\n\n");
       exit(0);
     }
     else

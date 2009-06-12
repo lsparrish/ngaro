@@ -253,7 +253,6 @@
     retro vm = new retro();
 
     vm.init();
-    vm.set_tty(true);
 
     if (args.length > 0)
     {
@@ -265,8 +264,17 @@
           for (i = 0; i < 5000000; i++)
             vm.memory[i] = vm.switchEndian(vm.memory[i]);
         }
+        if (args[i].equals("--about"))
+        {
+          System.out.println("Retro Language  [VM: java]");
+          System.out.println("The Retro language and documentation have been gifted to the");
+          System.out.println("public domain. Use it as you see fit.");
+          System.exit(0);
+        }
       }
     }
+
+    vm.set_tty(true);
 
     for (vm.ip = 0; vm.ip < 5000000; vm.ip++)
        vm.process();
