@@ -59,6 +59,7 @@ clean:
 	@rm -f tools/fix-image
 	@rm -rf tools/build
 	@cd vm/console && make clean
+	@cd vm/console_fast && make clean
 	@cd vm/framebuffer && make clean
 	@cd vm/java && make clean
 	@cd vm/dotnet && make clean
