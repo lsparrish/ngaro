@@ -153,6 +153,14 @@ public void handleDevices() {
     ports[5] = 0;                         /* height of framebuffer */
     ports[0] = 1;
   }
+  if (ports[5] == -5) {
+    ports[5] = sp;                        /* items on data stack */
+    ports[0] = 1;
+  }
+  if (ports[5] == -6) {
+    ports[5] = rsp;                       /* items on address stack */
+    ports[0] = 1;
+  }
 }
 /**********************************************************************
  * processOpcode()
@@ -348,11 +356,9 @@ public void processImage() {
     return;
   }
 
-  //if (trace == 1)
-  //  disassemble();
-
   for (int a = CYCLES_PER; a > 0; a--)
   {
+    System.out.println(ip);
     processOpcode();
     ip++;
   }
