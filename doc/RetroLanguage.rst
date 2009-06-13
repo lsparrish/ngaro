@@ -62,6 +62,10 @@ Platforms Supported
   - SongBird
 
 - Java
+
+  - Console
+  - MIDP
+
 - .NET (console)
 
 ==========================
@@ -127,9 +131,25 @@ Building (Windows)
 
 Building (Java)
 ---------------
+There are two Java implementations. The first, a console based implementation, should
+work on all common Unix-like OSes. (Due to poor console API support in Java, it does
+not work on Windows) To build this port, ensure that you have the JDK installed and
+do:
+
 ::
 
   make java
+
+The second implementation is for MIDP compatible devices. You'll need Ant, the MPP SDK,
+and the JDK to build it.
+
+::
+
+  cd vm/midp
+  ant
+
+Before building the MIDP version, you should adjust the paths in **build.xml** to match
+your systems configuration.
 
 Building (.NET)
 ---------------
