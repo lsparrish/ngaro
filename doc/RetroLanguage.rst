@@ -1037,7 +1037,7 @@ with **osx.retro**. After building, extend your retroImage:
 
 ::
 
-  ./retro --with osx.retro
+  ./retro --with extras/osx.retro
 
 Save your image, and you'll be able to use backspace in
 the future.
@@ -1092,7 +1092,7 @@ This can be found in the **bin** directory. Load it by doing:
 
 ::
 
-  ./retro --with extend.retro
+  ./retro --with extras/extend.retro
 
 Save, and the extensions will remain present in future sessions.
 
@@ -1232,7 +1232,7 @@ To load it:
 
 ::
 
-  ./retro --with editor.retro --with extend.retro
+  ./retro --with extras/editor.retro --with extras/extend.retro
 
 
 Tip:
@@ -1281,7 +1281,7 @@ To load it:
 
 ::
 
-  ./retro --with retrospect.retro --with extend.retro
+  ./retro --with extras/retrospect.retro --with extras/extend.retro
 
 Retrospect requires the extend.retro package to be loaded
 before it will work.
