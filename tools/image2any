@@ -79,8 +79,25 @@ value| fid size image |
   ] countedLoop
 ] is js-process
 [ js-header js-process js-footer ] is javascript
-#! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ JavaScript
-
+#! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ midp
+[
+  ." package Retro;\n"
+  ." public class Img {\n"
+  ."   public Img() {\n"
+  ."     loadImage();\n"
+  ."   }\n\n"
+  ."   public void loadImage() {\n"
+] is midp-header
+[ ." }\n}\n" ] is midp-footer
+[ ."   Retroforth.image[" i >string type ." ]=" >string type ." ;\n" ] is midp-line
+[
+  0 size
+  [
+    image i cell-size * + @ dup 0 <> [ midp-line ] [ drop ] ifTrueFalse
+  ] countedLoop
+] is midp-process
+[ midp-header midp-process midp-footer ] is midp
+#! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ main code follows
 ( Exit if no arguments were passed                 )
 #args 2 > [ ." Try:\n  image2any.toka port imagename\n" bye ] ifFalse
 
@@ -94,5 +111,6 @@ fid file.close
 1 arglist array.get " java" string.compare [ java ] ifTrue
 1 arglist array.get " dotnet" string.compare [ dotnet ] ifTrue
 1 arglist array.get " javascript" string.compare [ javascript ] ifTrue
+1 arglist array.get " midp" string.compare [ midp ] ifTrue
 
 bye

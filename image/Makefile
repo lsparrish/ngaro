@@ -7,3 +7,4 @@ default:
 	@cd ../tools && ../toka/toka image2any java ../image/retroImage >../vm/java/retro_middle
 	@cd ../tools && ../toka/toka image2any dotnet ../image/retroImage >../vm/dotnet/retro_middle
 	@cd ../tools && ../toka/toka image2any javascript ../image/retroImage >../vm/javascript/retroImage.js
+	@cd ../tools && ../toka/toka image2any midp ../image/retroImage >../vm/midp/src/Retro/Img.java
