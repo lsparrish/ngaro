@@ -1212,11 +1212,15 @@ below. Some of the internal factors are not listed.
 +--------------+--------------+------------+---------------+
 
 
-Block Editor
+
+=======================
+Section 7: Block Editor
+=======================
+
+Introduction
 ------------
-The core extensions also include a small block editor. This
-is based on a series of earlier editors, and has a few nice
-features:
+Retro ships with a small block editor. This is based on a
+series of earlier editors, and has a few nice features:
 
 - Blocks are stored in the image
 - External tools allow extracting and moving blocks to a
@@ -1224,11 +1228,18 @@ features:
 - All editing words are vectors allowing more control over
   the editor
 
+To load it:
+
+::
+
+  ./retro --with editor.retro --with extend.retro
+
+
 Tip:
   Line and column numbers start at 0
 
-Quick Reference:
-
+The Words
+---------
 +--------------+-------------------------------------+
 | Usage        | Description                         |
 +==============+=====================================+
@@ -1257,7 +1268,7 @@ Quick Reference:
 
 
 =====================
-Section 7: Retrospect
+Section 8: Retrospect
 =====================
 
 Introduction
