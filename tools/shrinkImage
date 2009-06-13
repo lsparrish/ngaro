@@ -15,9 +15,15 @@
 #! extent permitted by law.
 #! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-include image-lib.toka
+value| INPUT OUTPUT WHERE |
 
-value WHERE
+[ ( "file" -- )
+  ( Open "file" as the input and read the contents into an array )
+  wsparse file.slurp keep to INPUT ] is input:
+
+[ ( "file" -- )
+  ( Open "file" as the output file )
+  wsparse "W" file.open to OUTPUT ] is output:
 
 [ ( -- )
   ( Find the location of the blocks and store it )
