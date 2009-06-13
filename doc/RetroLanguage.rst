@@ -102,8 +102,13 @@ Given these, try the following command:
 
 If you get any errors, check the **vm/console/retro.c** and make
 sure the **LIBS** line matches the curses varient on your system.
-NetBSD users will need to change this line to **-lcurses** before
-building.
+
+If you are using NetBSD, you can either change the **LIBS** to
+**-lcurses** or use the following command to build against ncurses:
+
+::
+
+  make LIBRARY_PATH="/usr/pkg/lib" vm
 
 Or, if you want the framebuffer backend to be used:
 
