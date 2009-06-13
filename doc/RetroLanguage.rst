@@ -100,15 +100,17 @@ Given these, try the following command:
 
    make vm
 
+If you get any errors, check the **vm/console/retro.c** and make
+sure the **LIBS** line matches the curses varient on your system.
+NetBSD users will need to change this line to **-lcurses** before
+building.
+
 Or, if you want the framebuffer backend to be used:
 
 ::
 
    make fbvm
 
-If you get any errors, check the **vm/console/retro.c** and
-**vm/console/retro-fast.c** and see if the **LIBS** line matches
-the Curses varient used on your system.
 
 Building (Windows)
 ------------------
