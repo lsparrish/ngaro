@@ -7,7 +7,7 @@ void initial_image()
   vm.image[0]=8;
   vm.image[1]=1700;
   vm.image[2]=2607;
-  vm.image[3]=8192;
+  vm.image[3]=5120;
   vm.image[7]=82;
   vm.image[8]=69;
   vm.image[9]=84;
@@ -544,7 +544,7 @@ void initial_image()
   vm.image[735]=8;
   vm.image[736]=716;
   vm.image[739]=1;
-  vm.image[740]=6144;
+  vm.image[740]=4096;
   vm.image[741]=1;
   vm.image[742]=709;
   vm.image[743]=14;
@@ -655,7 +655,7 @@ void initial_image()
   vm.image[870]=7;
   vm.image[871]=813;
   vm.image[872]=1;
-  vm.image[873]=6144;
+  vm.image[873]=4096;
   vm.image[874]=7;
   vm.image[875]=289;
   vm.image[876]=7;
@@ -766,7 +766,7 @@ void initial_image()
   vm.image[1010]=3;
   vm.image[1011]=9;
   vm.image[1015]=1;
-  vm.image[1016]=5120;
+  vm.image[1016]=3072;
   vm.image[1017]=1;
   vm.image[1018]=1012;
   vm.image[1019]=15;
@@ -799,7 +799,7 @@ void initial_image()
   vm.image[1053]=14;
   vm.image[1054]=15;
   vm.image[1055]=1;
-  vm.image[1056]=5120;
+  vm.image[1056]=3072;
   vm.image[1057]=9;
   vm.image[1060]=2;
   vm.image[1061]=7;
@@ -845,7 +845,7 @@ void initial_image()
   vm.image[1106]=7;
   vm.image[1107]=813;
   vm.image[1108]=1;
-  vm.image[1109]=6144;
+  vm.image[1109]=4096;
   vm.image[1110]=8;
   vm.image[1111]=1042;
   vm.image[1114]=7;
@@ -1040,7 +1040,7 @@ void initial_image()
   vm.image[1344]=7;
   vm.image[1345]=840;
   vm.image[1346]=1;
-  vm.image[1347]=6144;
+  vm.image[1347]=4096;
   vm.image[1348]=7;
   vm.image[1349]=978;
   vm.image[1350]=1;
@@ -1262,11 +1262,11 @@ void initial_image()
   vm.image[1612]=14;
   vm.image[1613]=9;
   vm.image[1616]=1;
-  vm.image[1617]=6144;
+  vm.image[1617]=4096;
   vm.image[1618]=8;
   vm.image[1619]=1241;
   vm.image[1622]=1;
-  vm.image[1623]=6144;
+  vm.image[1623]=4096;
   vm.image[1624]=7;
   vm.image[1625]=1204;
   vm.image[1626]=8;
@@ -2080,7 +2080,7 @@ void initial_image()
   vm.image[2554]=114;
   vm.image[2556]=2544;
   vm.image[2557]=482;
-  vm.image[2558]=6144;
+  vm.image[2558]=4096;
   vm.image[2559]=116;
   vm.image[2560]=105;
   vm.image[2561]=98;

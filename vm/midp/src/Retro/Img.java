@@ -8,7 +8,7 @@ public class Img {
   Retroforth.image[0]=8;
   Retroforth.image[1]=1700;
   Retroforth.image[2]=2607;
-  Retroforth.image[3]=8192;
+  Retroforth.image[3]=5120;
   Retroforth.image[7]=82;
   Retroforth.image[8]=69;
   Retroforth.image[9]=84;
@@ -545,7 +545,7 @@ public class Img {
   Retroforth.image[735]=8;
   Retroforth.image[736]=716;
   Retroforth.image[739]=1;
-  Retroforth.image[740]=6144;
+  Retroforth.image[740]=4096;
   Retroforth.image[741]=1;
   Retroforth.image[742]=709;
   Retroforth.image[743]=14;
@@ -656,7 +656,7 @@ public class Img {
   Retroforth.image[870]=7;
   Retroforth.image[871]=813;
   Retroforth.image[872]=1;
-  Retroforth.image[873]=6144;
+  Retroforth.image[873]=4096;
   Retroforth.image[874]=7;
   Retroforth.image[875]=289;
   Retroforth.image[876]=7;
@@ -767,7 +767,7 @@ public class Img {
   Retroforth.image[1010]=3;
   Retroforth.image[1011]=9;
   Retroforth.image[1015]=1;
-  Retroforth.image[1016]=5120;
+  Retroforth.image[1016]=3072;
   Retroforth.image[1017]=1;
   Retroforth.image[1018]=1012;
   Retroforth.image[1019]=15;
@@ -800,7 +800,7 @@ public class Img {
   Retroforth.image[1053]=14;
   Retroforth.image[1054]=15;
   Retroforth.image[1055]=1;
-  Retroforth.image[1056]=5120;
+  Retroforth.image[1056]=3072;
   Retroforth.image[1057]=9;
   Retroforth.image[1060]=2;
   Retroforth.image[1061]=7;
@@ -846,7 +846,7 @@ public class Img {
   Retroforth.image[1106]=7;
   Retroforth.image[1107]=813;
   Retroforth.image[1108]=1;
-  Retroforth.image[1109]=6144;
+  Retroforth.image[1109]=4096;
   Retroforth.image[1110]=8;
   Retroforth.image[1111]=1042;
   Retroforth.image[1114]=7;
@@ -1041,7 +1041,7 @@ public class Img {
   Retroforth.image[1344]=7;
   Retroforth.image[1345]=840;
   Retroforth.image[1346]=1;
-  Retroforth.image[1347]=6144;
+  Retroforth.image[1347]=4096;
   Retroforth.image[1348]=7;
   Retroforth.image[1349]=978;
   Retroforth.image[1350]=1;
@@ -1263,11 +1263,11 @@ public class Img {
   Retroforth.image[1612]=14;
   Retroforth.image[1613]=9;
   Retroforth.image[1616]=1;
-  Retroforth.image[1617]=6144;
+  Retroforth.image[1617]=4096;
   Retroforth.image[1618]=8;
   Retroforth.image[1619]=1241;
   Retroforth.image[1622]=1;
-  Retroforth.image[1623]=6144;
+  Retroforth.image[1623]=4096;
   Retroforth.image[1624]=7;
   Retroforth.image[1625]=1204;
   Retroforth.image[1626]=8;
@@ -2081,7 +2081,7 @@ public class Img {
   Retroforth.image[2554]=114;
   Retroforth.image[2556]=2544;
   Retroforth.image[2557]=482;
-  Retroforth.image[2558]=6144;
+  Retroforth.image[2558]=4096;
   Retroforth.image[2559]=116;
   Retroforth.image[2560]=105;
   Retroforth.image[2561]=98;
