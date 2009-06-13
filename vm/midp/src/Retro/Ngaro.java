@@ -86,23 +86,10 @@ public void handleDevices() {
 
   /* Output */
   if (ports[2] == 1) {
-    if ((char) data[sp] == (char) 27) {
-      escape = true;
+    if (data[sp] == -1) {
+      this.evalForm.siOut.setText("");
     } else {
-      if (escape == true) {
-        escSeq.append((char) data[sp]);
-        if (escSeq.toString().equals("[2J")) {
-          this.evalForm.siOut.setText(" ");
-          escSeq = new StringBuffer();
-          escape = false;
-        } else if (escSeq.toString().equals("[1;1H")) {
-          this.evalForm.siOut.setText(" ");
-          escSeq = new StringBuffer();
-          escape = false;
-        }
-      } else {
         this.evalForm.siOut.setText(this.evalForm.siOut.getText() + (char) data[sp]);
-      }
     }
     sp--;
     ports[2] = 0;
@@ -358,7 +345,7 @@ public void processImage() {
 
   for (int a = CYCLES_PER; a > 0; a--)
   {
-    System.out.println(ip);
+    System.out.println(a);
     processOpcode();
     ip++;
   }
