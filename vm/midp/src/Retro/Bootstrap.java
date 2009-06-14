@@ -42,7 +42,7 @@ public class Bootstrap extends Object {
     boot[28] = " 48 constant #-blocks";
     boot[29] = " 256 constant #-block-size";
     boot[30] = "32000 #-block-size #-blocks * - constant offset";
-    boot[31] = "167 variable: line-ending";
+    boot[31] = "96 variable: line-ending";
     boot[32] = "variable blk";
     boot[33] = ": block     256 * offset + ;";
     boot[34] = ": (block)   blk @ block ;";
