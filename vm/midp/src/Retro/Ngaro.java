@@ -15,6 +15,7 @@ import javax.microedition.rms.*;
 public class Ngaro {
 
   private EvalForm evalForm;
+  private Retroforth root;
 
   /**********************************************************************
    * Symbolic constants for each instruction.
@@ -53,9 +54,10 @@ public class Ngaro {
   StringBuffer escSeq = new StringBuffer("");
   boolean escape = false;
 
-  public Ngaro(EvalForm evalForm) {
+  public Ngaro(EvalForm evalForm, Retroforth root) {
     this.evalForm = evalForm;
-	}
+    this.root = root;
+}
 
 /**********************************************************************
  * initVM()
@@ -86,7 +88,7 @@ public void handleDevices() {
 
   /* Output */
   if (ports[2] == 1) {
-    if (data[sp] == -1) {
+    if (data[sp] < 0) {
       this.evalForm.siOut.setText("");
     } else {
         this.evalForm.siOut.setText(this.evalForm.siOut.getText() + (char) data[sp]);
@@ -107,7 +109,7 @@ public void handleDevices() {
         ByteArrayOutputStream output = new ByteArrayOutputStream();
         DataOutputStream os = new DataOutputStream(output);
         for (int i = j * 1000; i < (j * 1000 + 1000); i++) {
-          os.writeInt(Retroforth.image[i]);
+          os.writeInt(root.image[i]);
         }
         byte[] bytes = output.toByteArray();
         rstore.addRecord(bytes, 0, bytes.length);
@@ -148,6 +150,36 @@ public void handleDevices() {
     ports[5] = rsp;                       /* items on address stack */
     ports[0] = 1;
   }
+
+  /* Reading file. On stack ( addrName addrDest -- status = if ok, # of cells readed else -1 failed) */
+  if (ports[0] == 0 && ports[5555] == 1) {
+    ports[0] = 1;
+    int ch;
+    int destination = data[sp];
+    sp--;
+    int name = data[sp];
+    sp--;
+    StringBuffer sbName = new StringBuffer();
+    while ((ch = root.image[name]) != 0) {
+      sbName.append((char) ch);
+      name++;
+    }
+    sbName.deleteCharAt(sbName.length() - 1);
+    System.out.println(sbName.length());
+    StringBuffer sb = new StringBuffer();
+    try {
+      InputStreamReader str = new InputStreamReader(getClass().getResourceAsStream(sbName.toString()));
+      int i = 0;
+      while ((ch = str.read()) != -1) {
+        root.image[destination] = ch;
+        destination++;
+        i++;
+      }
+      data[sp] = i;
+    } catch (Exception e) {
+      data[sp] = -1;
+    }
+  }
 }
 /**********************************************************************
  * processOpcode()
@@ -158,13 +190,13 @@ public void handleDevices() {
  **********************************************************************/
 public void processOpcode() {
   int x, y, z, op;
-  op = Retroforth.image[ip];
+  op = root.image[ip];
   switch(op)
   {
     case VM_NOP:
       break;    
     case VM_LIT:
-      sp++; ip++; data[sp] = Retroforth.image[ip];
+      sp++; ip++; data[sp] = root.image[ip];
       break;
     case VM_DUP:
       sp++; data[sp] = data[sp-1];
@@ -191,11 +223,11 @@ public void processOpcode() {
     case VM_CALL:
       ip++; rsp++;
       address[rsp] = ip++;
-      ip = Retroforth.image[ip-1] - 1;
+      ip = root.image[ip-1] - 1;
       break;    
     case VM_JUMP:
       ip++;
-      ip = Retroforth.image[ip] - 1;
+      ip = root.image[ip] - 1;
       break;    
     case VM_RETURN:
       ip = address[rsp]; rsp--;
@@ -203,33 +235,33 @@ public void processOpcode() {
     case VM_GT_JUMP:
       ip++;
       if (data[sp-1] > data[sp])
-        ip = Retroforth.image[ip] - 1;
+        ip = root.image[ip] - 1;
       sp = sp - 2;
       break;    
     case VM_LT_JUMP:
       ip++;
       if (data[sp-1] < data[sp])
-        ip = Retroforth.image[ip] - 1;
+        ip = root.image[ip] - 1;
       sp = sp - 2;
       break;    
     case VM_NE_JUMP:
       ip++;
       if (data[sp-1] != data[sp])
-        ip = Retroforth.image[ip] - 1;
+        ip = root.image[ip] - 1;
       sp = sp - 2;
       break;    
     case VM_EQ_JUMP:
       ip++;
       if (data[sp-1] == data[sp])
-        ip = Retroforth.image[ip] - 1;
+        ip = root.image[ip] - 1;
       sp = sp - 2;
       break;    
     case VM_FETCH:
       x = data[sp];
-      data[sp] = Retroforth.image[x];
+      data[sp] = root.image[x];
       break;    
     case VM_STORE:
-      Retroforth.image[data[sp]] = data[sp-1];
+      root.image[data[sp]] = data[sp-1];
       sp = sp - 2;
       break;    
     case VM_ADD:
@@ -304,7 +336,7 @@ public void processOpcode() {
       handleDevices();
       break;    
     default:
-      this.evalForm.siOut.setText(this.evalForm.siOut.getText() + "ERROR: IP: " + ip + " op: " + Retroforth.image[ip] + "\n");
+      this.evalForm.siOut.setText(this.evalForm.siOut.getText() + "ERROR: IP: " + ip + " op: " + root.image[ip] + "\n");
       ip = Retroforth.IMAGE_SIZE;
       run = 0;
   }
@@ -337,17 +369,19 @@ public void startVM() {
  * executed by this code per call.
  **********************************************************************/
 public void processImage() {
-  if (evalForm.buffer.length() <= 0 || run == 0)
-  {
+  if (evalForm.buffer.length() <= 0 || run == 0) {
     run = 0;
     return;
   }
 
-  for (int a = CYCLES_PER; a > 0; a--)
-  {
-    System.out.println(a);
-    processOpcode();
-    ip++;
+  //if (trace == 1)
+  //  disassemble();
+
+  for (int a = CYCLES_PER; a > 0; a--) {
+	try {
+		processOpcode();
+		ip++;
+	} catch (Exception e) {Retroforth.quitApp();}
   }
 }
 }

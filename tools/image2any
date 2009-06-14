@@ -18,7 +18,8 @@
 #!   C   (console)
 #!   C   (framebuffer)
 #!   C#  (dotnet)
-#!   Java
+#!   Java (console)
+#!   Java (MIDP)
 #!   JavaScript
 #! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -83,13 +84,15 @@ value| fid size image |
 [
   ." package Retro;\n"
   ." public class Img {\n"
-  ."   public Img() {\n"
+  ."   private Retroforth root;\n"
+  ."   public Img(Retroforth root) {\n"
+  ."     this.root = root;\n"
   ."     loadImage();\n"
   ."   }\n\n"
   ."   public void loadImage() {\n"
 ] is midp-header
 [ ." }\n}\n" ] is midp-footer
-[ ."   Retroforth.image[" i >string type ." ]=" >string type ." ;\n" ] is midp-line
+[ ."   root.image[" i >string type ." ]=" >string type ." ;\n" ] is midp-line
 [
   0 size
   [

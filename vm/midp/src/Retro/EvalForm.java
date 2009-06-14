@@ -15,33 +15,42 @@ public class EvalForm extends Form implements CommandListener, Runnable {
   StringBuffer buffer = new StringBuffer(" ");
   StringItem siOut;
   Ngaro ngarovm;
+  Retroforth root;
   boolean saving = false;
+  private Bootstrap btst;
+  private int bootI = 0;
 
-  public EvalForm(Display mainDisplay) {
+  public EvalForm(Display mainDisplay, Retroforth root) {
     super ("RETRO");
     this.mainDisplay = mainDisplay;
+    this.root = root;
+    this.append(siOut = new StringItem("", ""));
     this.append(tfIn = new TextField("", "", 1024, TextField.ANY));
     addCommand(new Command("Enter", Command.OK, 1));
-    addCommand(new Command("Quit", Command.BACK, 3));
-    this.append(siOut = new StringItem("", ""));
-    ngarovm = new Ngaro(this);
+    addCommand(new Command("Bootstrap", Command.SCREEN, 4));
+    ngarovm = new Ngaro(this, root);
     ngarovm.initVM();
     ngarovm.runImage();
     Thread T = new Thread(this);
     T.start();
+    this.btst = new Bootstrap();
     setCommandListener(this);
   }
 
   public void commandAction(Command command, Displayable displayable) {
-    if(command.getCommandType() == Command.BACK) {
-      Retroforth.quitApp();
-    }
     if(command.getCommandType() == Command.OK) {
+      buffer = new StringBuffer(tfIn.getString());
+      buffer.append("    ");
+      tfIn.setString("");
+    }
+    if(command.getCommandType() == Command.SCREEN) {
+      tfIn.setString(btst.boot[bootI]);
       buffer = new StringBuffer(tfIn.getString());
       buffer.append("   ");
       tfIn.setString("");
+      bootI++;
     }
-  }
+}
 
   public void run() {
     while(true) {

@@ -14,8 +14,10 @@ import javax.microedition.rms.*;
 
 public class Retroforth extends MIDlet {
   public static Retroforth instance;
+  public static Framebuffer fb;
   public static final int IMAGE_SIZE = 36000;
-  public static int [] image = new int[IMAGE_SIZE + (320 * 240)];
+  public static boolean fbOn = false;
+  public int [] image = new int [IMAGE_SIZE];
   Display mainDisplay;
 
   public Retroforth() {
@@ -30,18 +32,19 @@ public class Retroforth extends MIDlet {
         byte[] bytes = rstore.getRecord(j + 1);
         DataInputStream s = new DataInputStream(new ByteArrayInputStream(bytes));
         for (int i = j * 1000; i < (j * 1000 + 1000); i++) {
-          Retroforth.image[i] = s.readInt();
+          this.image[i] = s.readInt();
         }
       }
     } catch (Exception e) {
-      Img im = new Img();
+      Img im = new Img(this);
     } finally {
       try {
         rstore.closeRecordStore();
       } catch (Exception e1) { }
     }
     mainDisplay = Display.getDisplay(this);
-    mainDisplay.setCurrent(new EvalForm(mainDisplay));
+    fb = new Framebuffer(mainDisplay);
+    mainDisplay.setCurrent(new EvalForm(mainDisplay, this));
   }
 
   public void pauseApp() {
