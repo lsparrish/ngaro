@@ -16,7 +16,7 @@
   <target name="compile">
     <mkdir dir="classes"/>
     <javac destdir="classes" srcdir="src"
-        classpath="${mppdev}/cldc.jar:${mppdev}/midp.jar" target="1.1"/>
+        classpath="${mppdev}/cldc.jar:${mppdev}/midp.jar" target="1.1" source="1.2"/>
   </target>
 
   <!-- The preverify target is set up for Mac OS X -->
