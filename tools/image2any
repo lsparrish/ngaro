@@ -69,7 +69,7 @@ value| fid size image |
 #! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ JavaScript
 [
   ." function loadImage()\n{\n"
-  ."   var a; for (a = 0; a < 5000000; a++) image[a]=0;\n"
+  ."   var a; for (a = 0; a < 32768; a++) image[a]=0;\n"
 ] is js-header
 [ ." }\n" ] is js-footer
 [ ." image[" i >string type ." ]=" >string type ." ;\n" ] is js-line

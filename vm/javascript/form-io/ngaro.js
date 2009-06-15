@@ -30,9 +30,9 @@
 /**********************************************************************
  * Some constants useful to us for dealing with the VM settings.
  **********************************************************************/
-  const IMAGE_SIZE  = 5000000
-  const STACK_DEPTH =     100
-  const CYCLES_PER  =     100
+  const IMAGE_SIZE  = 32768
+  const STACK_DEPTH =   100
+  const CYCLES_PER  =   100
 
 
 

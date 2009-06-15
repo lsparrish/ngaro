@@ -1,6 +1,6 @@
 function loadImage()
 {
-  var a; for (a = 0; a < 5000000; a++) image[a]=0;
+  var a; for (a = 0; a < 32768; a++) image[a]=0;
 image[0]=8;
 image[1]=1700;
 image[2]=2607;

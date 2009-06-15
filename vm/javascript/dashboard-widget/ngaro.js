@@ -35,7 +35,7 @@
  *
  * If you have performance issues, try modifying CYLES_PER
  **********************************************************************/
-  const IMAGE_SIZE  = 5000000;         /* Amount of memory to provide */
+  const IMAGE_SIZE  =   32768;         /* Amount of memory to provide */
   const STACK_DEPTH =     100;         /* Depth of the stacks         */
   const CYCLES_PER  =    2000;         /* Instructions to run per     */
                                        /* clock cycle                 */
