@@ -25,6 +25,8 @@ extern VM_STATE vm;
 typedef struct {
   SDL_Surface *screen;
   SDL_Surface *font;
+  int mouse_x;
+  int mouse_y;
 } DEVICES;
 
 DEVICES io;
@@ -88,6 +90,10 @@ int handle_devices(void *unused)
              vm.ip = IMAGE_SIZE;
              vm.ports[0] = 1;
              break;
+        case SDL_MOUSEMOTION:
+             io.mouse_x = event.motion.x;
+             io.mouse_y = event.motion.y;
+             break;
       }
     }
     if (vm.ports[2] == 1)
@@ -140,6 +146,15 @@ int handle_devices(void *unused)
       vm.ports[5] = vm.rsp;
       vm.ports[0] = 1;
     }
+
+    /* Mouse Events */
+    if (vm.ports[12] == -1)
+    {
+      vm.sp++; vm.data[vm.sp] = io.mouse_x;
+      vm.sp++; vm.data[vm.sp] = io.mouse_y;
+      vm.ports[12] = 0;
+      vm.ports[0] = 1;
+    }
   }
   return 0;
 }
@@ -179,6 +194,9 @@ void init_devices()
 
   io.font = SDL_ConvertSurface(temp, io.screen->format, SDL_SWSURFACE);
   SDL_FreeSurface(temp);
+
+  io.mouse_x = 0;
+  io.mouse_y = 0;
 }
 
 
