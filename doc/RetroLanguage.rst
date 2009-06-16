@@ -1044,6 +1044,9 @@ the future.
 
 Browser
 -------
+**This is still early, and is not officially supported. The
+ports, commands, and return codes may change in the future.**
+
 The JavaScript implementation of the Ngaro VM allows for some
 interaction with the browser. With a few simple words you can
 quickly take control of the browser (and the VM) by mixing
@@ -1074,6 +1077,17 @@ Something simple to try:
 
   : depth s" alert(sp);" js ;
 
+Framebuffer
+-----------
+**This is still early, and is not officially supported. The
+ports, commands, and return codes may change in the future.**
+
+The framebuffer backed VM has some limited support for using a
+mouse.
+
+::
+
+  : get-coords ( -xy ) -1 12 out wait ;
 
 ==========================
 Section 6: Core Extensions
