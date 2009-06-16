@@ -27,6 +27,7 @@ typedef struct {
   SDL_Surface *font;
   int mouse_x;
   int mouse_y;
+  int mouse_b;
 } DEVICES;
 
 DEVICES io;
@@ -94,6 +95,23 @@ int handle_devices(void *unused)
              io.mouse_x = event.motion.x;
              io.mouse_y = event.motion.y;
              break;
+        case SDL_MOUSEBUTTONDOWN:
+             switch(event.button.button)
+             {
+               case SDL_BUTTON_LEFT:
+                    io.mouse_b = 1;
+                    break;
+               case SDL_BUTTON_RIGHT:
+                    io.mouse_b = 2;
+                    break;
+               case SDL_BUTTON_MIDDLE:
+                    io.mouse_b = 3;
+                    break;
+             }
+             break;
+        case SDL_MOUSEBUTTONUP:
+             io.mouse_b = 0;
+             break;
       }
     }
     if (vm.ports[2] == 1)
@@ -152,6 +170,12 @@ int handle_devices(void *unused)
     {
       vm.sp++; vm.data[vm.sp] = io.mouse_x;
       vm.sp++; vm.data[vm.sp] = io.mouse_y;
+      vm.ports[12] = 0;
+      vm.ports[0] = 1;
+    }
+    if (vm.ports[12] == -2)
+    {
+      vm.sp++; vm.data[vm.sp] = io.mouse_b;
       vm.ports[12] = 0;
       vm.ports[0] = 1;
     }

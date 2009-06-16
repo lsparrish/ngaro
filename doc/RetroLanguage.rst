@@ -1088,6 +1088,8 @@ mouse.
 ::
 
   : get-coords ( -xy ) -1 12 out wait ;
+  : button? ( -n ) -2 12 out wait ;
+
 
 ==========================
 Section 6: Core Extensions
