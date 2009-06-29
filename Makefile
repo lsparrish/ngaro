@@ -21,9 +21,6 @@ default:
 	@echo make fastvm
 	@echo - Compile the VM \(console version, Mat\'s implementation\)
 	@echo
-	@echo make fbvm
-	@echo - Build the VM \(with framebuffer\)
-	@echo
 	@echo make dotnet
 	@echo - Build the VM \(For .NET, requires Mono\)
 	@echo
@@ -60,7 +57,6 @@ clean:
 	@rm -rf tools/build
 	@cd vm/console && make clean
 	@cd vm/console_fast && make clean
-	@cd vm/framebuffer && make clean
 	@cd vm/java && make clean
 	@cd vm/dotnet && make clean
 	@cd toka && make clean
@@ -72,9 +68,6 @@ vm: tools
 fastvm: tools
 	@cd vm/console_fast && make
 	@mv vm/console_fast/retro-fast bin
-fbvm:
-	@cd vm/framebuffer && make
-	@mv vm/framebuffer/retro-fb bin
 dotnet:
 	@cd vm/dotnet && make
 	@mv vm/dotnet/retro.exe bin

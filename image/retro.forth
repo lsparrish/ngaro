@@ -112,7 +112,6 @@ variable fb     ( canvas present?    )
 variable fw     ( framebuffer width  )
 variable fh     ( framebuffer height )
 -1 variable: update
-
 : redraw  ( - )  update # @, 0; drop, 0 # 3 # out, ;
 
 : emit ( c- )  1 # 2 # out, wait redraw ;
@@ -310,9 +309,9 @@ variable #mem   ( Amount of memory provided )
   copytag # type cr ;
 : run-on-boot ( - )
   -1 # 5 # out, wait 5 # in, #mem # !,  ( Memory Size )
-  -2 # 5 # out, wait 5 # in, fb # !,    ( Framebuffer Addr )
-  -3 # 5 # out, wait 5 # in, fw # !,    ( Framebuffer Width )
-  -4 # 5 # out, wait 5 # in, fh # !,    ( Framebuffer Height )
+  -2 # 5 # out, wait 5 # in, fb # !,    ( Canvas Present? )
+  -3 # 5 # out, wait 5 # in, fw # !,    ( Canvas Width )
+  -4 # 5 # out, wait 5 # in, fh # !,    ( Canvas Height )
   boot ;
 #! ------------------------------------------------------------
 : with-class   ( ac- ) execute ;
