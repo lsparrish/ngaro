@@ -91,9 +91,9 @@ dist:
 	@rm -rf retro-10.latest
 bootstrap:
 	./toka/toka tools/image2any vm bin/retroImage >vm/console/initial_image.c
-	./toka/toka tools/image2any fbvm bin/retroImage >vm/framebuffer/initial_image.c
 	./toka/toka tools/image2any fbvm bin/retroImage >vm/console_fast/initial_image.c
 	./toka/toka tools/image2any java bin/retroImage >vm/java/retro_middle
 	./toka/toka tools/image2any dotnet bin/retroImage >vm/dotnet/retro_middle
 	./toka/toka tools/image2any javascript bin/retroImage >vm/javascript/retroImage.js
+	./toka/toka tools/image2any javascript bin/retroImage >vm/canvas/retroImage.js
 	./toka/toka tools/image2any midp bin/retroImage >vm/midp/src/Retro/Img.java
