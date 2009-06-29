@@ -969,12 +969,6 @@ List of Words by Class
 | Parse until ) is encounterd, ignoring everything. This is|
 | used for comments.                                       |
 +--------------+--------------+------------+---------------+
-| tx           | .data        | -a         |               |
-+--------------+--------------+------------+---------------+
-| Holds X coordinate for text output (framebuffer only)    |
-+--------------+--------------+------------+---------------+
-| ty           | .data        | -a         |               |
-+--------------+--------------+------------+---------------+
 | Holds Y coordinate for text output (framebuffer only)    |
 +--------------+--------------+------------+---------------+
 | last         | .data        | -a         |               |
@@ -997,15 +991,15 @@ List of Words by Class
 +--------------+--------------+------------+---------------+
 | fb           | .data        | -a         |               |
 +--------------+--------------+------------+---------------+
-| Holds address of framebuffer                             |
+| Holds a flag indicating the presence of a canvas device  |
 +--------------+--------------+------------+---------------+
 | fw           | .data        | -a         |               |
 +--------------+--------------+------------+---------------+
-| Holds width of framebuffer                               |
+| Holds width of canvas                                    |
 +--------------+--------------+------------+---------------+
 | fh           | .data        | -a         |               |
 +--------------+--------------+------------+---------------+
-| Holds height of framebuffer                              |
+| Holds height of canvas                                   |
 +--------------+--------------+------------+---------------+
 | #mem         | .data        | -a         |               |
 +--------------+--------------+------------+---------------+

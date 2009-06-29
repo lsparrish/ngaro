@@ -108,32 +108,16 @@ label: okmsg     " ok " $,
 ' .data     to 'DATA      ' .inline to 'INLINE
 ' .compiler to 'COMPILER
 #! ------------------------------------------------------------
-variable tx     ( framebuffer text x coordinate  )
-variable ty     ( framebuffer text y coordinate  )
-variable fb     ( framebuffer addr   )
+variable fb     ( canvas present?    )
 variable fw     ( framebuffer width  )
 variable fh     ( framebuffer height )
 -1 variable: update
 
 : redraw  ( - )  update # @, 0; drop, 0 # 3 # out, ;
-: fb:cr   ( - )  0 # tx # !, ty # @, 16 # +, ty # !, ;
-: move    ( - )
-  tx # @, 16 # +, dup, tx # !, fw # @, >if fb:cr then ;
-: fb:emit ( c- )
-  dup,  8 # =if 16 # tx # -! ; then
-  dup, 10 # =if fb:cr drop, ; then
-  dup, 13 # =if fb:cr drop, ; then
-  push, tx # @, ty # @, pop,
-  1 # 2 # out, wait move
-  redraw
-;
 
-: tty:emit ( c- )  1 # 2 # out, wait redraw ;
-: tty:cr   ( -  )  10 # tty:emit ;
-
-: emit     ( c-  )  fb # @, 0 # !if fb:emit  ; then tty:emit ;
-: cr       ( -   )  fb # @, 0 # !if fb:cr    ; then tty:cr ;
-: clear    ( -   )  -1 # emit 0 # tx # !, 0 # ty # !, ;
+: emit ( c- )  1 # 2 # out, wait redraw ;
+: cr   ( -  )  10 # emit ;
+: clear    ( -   )  -1 # emit ;
 
 : (type) ( a-a ) repeat @+ 0; emit again ;
 : type   ( a-  ) update # off (type) drop, update # on redraw ;
@@ -323,7 +307,7 @@ variable found
 variable #mem   ( Amount of memory provided )
 
 : boot ( - )
-  0 # tx # !,  0 # ty # !, copytag # type cr ;
+  copytag # type cr ;
 : run-on-boot ( - )
   -1 # 5 # out, wait 5 # in, #mem # !,  ( Memory Size )
   -2 # 5 # out, wait 5 # in, fb # !,    ( Framebuffer Addr )
@@ -413,7 +397,6 @@ main:
 ' t-(          macro: (
 
 ( Data )
-  tx           data: tx            ty           data: ty
   last         data: last          compiler     data: compiler
   TIB          data: tib           update       data: update
   fb           data: fb            fw           data: fw
