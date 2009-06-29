@@ -295,28 +295,6 @@ function handleDevices()
     ports[0] = 1;
   }
 
-
-  /* Browser Interfacing */
-  if (ports[1024] == 1)
-  {
-    filterHTML = filterHTML * -1;
-    ports[1024] = 0;
-    ports[0] = 1;
-  }
-  if (ports[1024] == 2)
-  {
-    var src = data[sp]; sp--;
-    var dst = "";
-    while (image[src] != 0)
-    {
-      dst = dst + String.fromCharCode(image[src]);
-      src++;
-    }
-    eval(dst);
-    ports[1024] = 0;
-    ports[0] = 1;
-  }
-
   if (ports[6] == 1)
   {
     video_color(data[sp]); sp--;
@@ -394,6 +372,7 @@ function handleDevices()
     ports[6] = 0;
     ports[0] = 1;
   }
+
   if (ports[7] == 1)
   {
     sp++; data[sp] = mx;
