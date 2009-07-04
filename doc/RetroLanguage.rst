@@ -74,9 +74,17 @@ Section 2: Getting Started
 
 Obtaining
 ---------
-Retro is generally distributed as source code and needs to be compiled
-before it can be used. The latest development snapshots and periodic
-stable release snapshots are provided at http://retroforth.org
+Retro can be obtained as either source code or as a precompiled
+binary.
+
+For those who just want to get started quickly, the binaries are
+recommended. They are already built and confirmed to work. The
+most recent binaries can be obtained from http://retroforth.org/binaries
+
+Those wanting a bit more control, or who use a platform binaries
+are not offered for will need to build from source. The latest
+source snapshots (both development and stable) can be found at
+http://retroforth.org
 
 Developers who want to keep up with the latest changes are encouraged
 to use Git. We have a repository at http://github.com/crcx/retro10 which
@@ -109,13 +117,6 @@ If you are using NetBSD, you can either change the **LIBS** to
 ::
 
   make LIBRARY_PATH="/usr/pkg/lib" vm
-
-Or, if you want the framebuffer backend to be used:
-
-::
-
-   make fbvm
-
 
 Building (Windows)
 ------------------
@@ -160,6 +161,9 @@ your systems configuration.
 
 Building (.NET)
 ---------------
+The build process is only tested under Unix-like OSes running Mono. You will likely
+need to make some changes in the Makefiles to use Microsoft's C# compiler.
+
 ::
 
   make dotnet
@@ -174,9 +178,6 @@ and try one of the following:
 
   # Console
   ./retro
-
-  # Framebuffer
-  ./retro-fbvm
 
   # .NET
   mono retro.exe
@@ -200,6 +201,16 @@ reverse order. E.g.,
 
 With this, *file-c* is included, then *file-b*, and finally *file-a*.
 
+The *console*, *java*, and *mono* targets also support one other argument:
+
+::
+
+  --endian
+
+This will convert the image to the host endian format. It may be necessary if
+you are using an image provided by someone else, or when moving from a *java*
+target to one of the others.
+
 Interacting with Retro
 ----------------------
 Unlike most Forths, Retro does not buffer on a line by line basis. Input
@@ -214,6 +225,16 @@ Tip:
   Although input is parsed as it is typed, backspace does work on
   most systems, so you can correct the current word being typed if
   you make a mistake.
+
+If you don't like this behavior, try the following:
+
+::
+
+  : crlf dup 10 =if drop 32 ;; then dup 13 =if drop 32 ;; then ;
+  ' crlf is (remap-keys)
+
+This won't disable the execution as you type, but will allow you to use
+enter at the end of a line.
 
 Leaving Retro
 -------------
@@ -232,6 +253,10 @@ reload or retype everything.
 
 You can also use the vector functionality in Retro to replace/alter
 most of the existing words to meet your needs.
+
+Tip:
+  The JavaScript implementation does not support saving images at
+  this time.
 
 =========================
 Section 3: Implementation
@@ -469,6 +494,85 @@ addresses of the words rather than parsing for the word name.
 These are **:is** and **:devector**.
 
 
+I/O Devices
+-----------
+Retro runs on a portable virtual machine. This machine provides a
+few I/O devices that can be accessed.
+
+- keyboard
+- text display
+- graphical canvas
+- mouse
+
+Please note that the only target currently supporting the canvas and
+mouse is *javascript*.
+
+When talking to an I/O device, set the stack as instructed, then
+write a value to the port using **out**. You then **wait**, and,
+depending on the device, may *read* a value back.
+
++-----------+------------+-----------------------------------------+
+| Port      | Send       | Stack Effect                            |
++===========+============+=========================================+
+| 0         | 0          | ``-``                                   |
++-----------+------------+-----------------------------------------+
+| Tell the computer that an I/O request has been made. This is done|
+| by **wait**.                                                     |
++-----------+------------+-----------------------------------------+
+| 1         | 1          | ``-``                                   |
++-----------+------------+-----------------------------------------+
+| Wait for a keypress. Read this port after a **wait** to get the  |
+| key.                                                             |
++-----------+------------+-----------------------------------------+
+| 2         | 1          | ``c-``                                  |
++-----------+------------+-----------------------------------------+
+| Display a character. Put the character on the stack, then        |
+| **wait**.                                                        |
++-----------+------------+-----------------------------------------+
+| 3         | 0          | ``-``                                   |
++-----------+------------+-----------------------------------------+
+| Send 0 to force a video update. This does not require **wait**   |
++-----------+------------+-----------------------------------------+
+| 4         | 1          | ``-``                                   |
++-----------+------------+-----------------------------------------+
+| Save the image.                                                  |
++-----------+------------+-----------------------------------------+
+| 5         | See Notes  | ``-``                                   |
++-----------+------------+-----------------------------------------+
+| This is the capabilities query port. An image can use this to    |
+| check the hardware supported by the VM.                          |
+|                                                                  |
+| Send one of the following, **wait**, then read back to get the   |
+| result.                                                          |
+|                                                                  |
+| - -1 : Amount of memory provided                                 |
+| - -2 : Is Canvas present?  0 if not, -1 if yes                   |
+| - -3 : Canvas Width                                              |
+| - -4 : Canvas Height                                             |
+| - -5 : Stack Depth                                               |
+| - -6 : Address Stack Depth                                       |
+| - -7 : Is Mouse supported? 0 if not, -1 if yes                   |
++-----------+------------+-----------------------------------------+
+| 6         | See Notes  | See Notes                               |
++-----------+------------+-----------------------------------------+
+| This is the canvas display driver. It has multiple operations.   |
+|                                                                  |
+| - 1 : n- : Change color                                          |
+| - 2 : xy- : Set pixel                                            |
+| - 3 : xyhw- : Draw a rectangle                                   |
+| - 4 : xyhw- : Draw a solid rectangle                             |
+| - 5 : xyh- : Draw a vertical line                                |
+| - 6 : xyw- : Draw a horizontal line                              |
+| - 7 : xyw- : Draw a circle                                       |
+| - 8 : xyw- : Draw a solid circle                                 |
++-----------+------------+-----------------------------------------+
+| 7         | See Notes  | See Notes                               |
++-----------+------------+-----------------------------------------+
+| This is the mouse device.                                        |
+|                                                                  |
+| - 1 : -xy : Get mouse x, y coords                                |
+| - 2 : -f : Get a flag indicating the up/down state of the button |
++-----------+------------+-----------------------------------------+
 
 
 ====================
@@ -1035,54 +1139,6 @@ with **osx.retro**. After building, extend your retroImage:
 
 Save your image, and you'll be able to use backspace in
 the future.
-
-Browser
--------
-**This is still early, and is not officially supported. The
-ports, commands, and return codes may change in the future.**
-
-The JavaScript implementation of the Ngaro VM allows for some
-interaction with the browser. With a few simple words you can
-quickly take control of the browser (and the VM) by mixing
-JavaScript into your Forth code.
-
-::
-
-  : toggle-html ( - ) 1 1024 out wait ;
-
-When invoked, this will toggle the filtering of special characters
-by the console driver on and off. (By default the special
-characters are filtered. These include < > & and others). When
-the filter is off, you can use HTML to format the output in the
-console.
-
-::
-
-  : js ( $- ) 2 1024 out wait ;
-
-This is the more powerful of the two. It allows for passing a
-Retro string to the JavaScript eval() function. You can pass
-any valid JavaScript code and have it run. You can also access
-the variables and functions of the Ngaro VM using it.
-
-Something simple to try:
-
-::
-
-  : depth s" alert(sp);" js ;
-
-Framebuffer
------------
-**This is still early, and is not officially supported. The
-ports, commands, and return codes may change in the future.**
-
-The framebuffer backed VM has some limited support for using a
-mouse.
-
-::
-
-  : get-coords ( -xy ) -1 12 out wait ;
-  : button? ( -n ) -2 12 out wait ;
 
 
 ==========================
