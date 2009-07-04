@@ -40,6 +40,8 @@
   const CYCLES_PER  =    2000;         /* Instructions to run per     */
                                        /* clock cycle                 */
   const TERM_WIDTH  =      80;         /* Width of emulated terminal  */
+  const FB_WIDTH    =     800;         /* Canvas Width                */
+  const FB_HEIGHT   =     400;         /* Canvas Height               */
 
 
 
@@ -47,7 +49,7 @@
  * Internal registers, flags, and variables
  **********************************************************************/
   var sp = 0, rsp = 0, ip = 0;
-  var trace = 0, run = 0;
+  var run = 0;
   var data    = new Array(STACK_DEPTH);
   var address = new Array(STACK_DEPTH);
   var ports   = new Array(1024);
@@ -57,11 +59,7 @@
   var output = document.getElementById("output");
   var lastKey = " ";
   var width = 0;
-  var filterHTML = -1;
-
   var mx, my, mb;
-
-  // Get a reference to the element.
   var fbraw, fb;
 
 function init_fb()
@@ -221,16 +219,13 @@ function handleDevices()
     var ch = String.fromCharCode(data[sp]);
 
     /* Remap select characters to HTML */
-    if (filterHTML == -1)
+    switch (data[sp])
     {
-      switch (data[sp])
-      {
-        case 10: ch = "<br>\n"; width = 0; break;
-        case 32: ch = "&nbsp;"; break;
-        case 38: ch = "&amp;";  break;
-        case 60: ch = "&lt;";   break;
-        case 62: ch = "&gt;";   break;
-      }
+      case 10: ch = "<br>\n"; width = 0; break;
+      case 32: ch = "&nbsp;"; break;
+      case 38: ch = "&amp;";  break;
+      case 60: ch = "&lt;";   break;
+      case 62: ch = "&gt;";   break;
     }
 
     /* Display the character */
@@ -271,12 +266,12 @@ function handleDevices()
   }
   if (ports[5] == -3)
   {
-    ports[5] = 800;
+    ports[5] = FB_WIDTH;
     ports[0] = 1;
   }
   if (ports[5] == -4)
   {
-    ports[5] = 400;
+    ports[5] = FB_HEIGHT;
     ports[0] = 1;
   }
   if (ports[5] == -5)
