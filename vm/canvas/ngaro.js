@@ -111,12 +111,12 @@ function video_pixel(x, y)
   fb.fillRect(x, y, 2, 2);
 }
 
-function video_rect(x, y, h, w)
+function video_rect(x, y, w, h)
 {
   fb.strokeRect(x, y, w, h);
 }
 
-function video_fillRect(x, y, h, w)
+function video_fillRect(x, y, w, h)
 {
   fb.fillRect(x, y, w, h);
 }
