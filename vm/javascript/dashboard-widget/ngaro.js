@@ -40,6 +40,8 @@
   const CYCLES_PER  =    2000;         /* Instructions to run per     */
                                        /* clock cycle                 */
   const TERM_WIDTH  =      68;         /* Width of emulated terminal  */
+  const FB_WIDTH    =     590;         /* Canvas Width                */
+  const FB_HEIGHT   =     290;         /* Canvas Height               */
 
 
 
@@ -47,7 +49,7 @@
  * Internal registers, flags, and variables
  **********************************************************************/
   var sp = 0, rsp = 0, ip = 0;
-  var trace = 0, run = 0;
+  var run = 0;
   var data    = new Array(STACK_DEPTH);
   var address = new Array(STACK_DEPTH);
   var ports   = new Array(1024);
@@ -57,7 +59,94 @@
   var output = document.getElementById("output");
   var lastKey = " ";
   var width = 0;
-  var filterHTML = -1;
+  var mx, my, mb;
+  var fbraw, fb;
+
+function init_fb()
+{
+ fbraw = document.getElementById("framebuffer");
+ fb = fbraw.getContext("2d");
+}
+
+function video_color(c)
+{
+  if (c == 0)
+    fb.fillStyle = "black";
+  if (c == 1)
+    fb.fillStyle = "darkblue";
+  if (c == 2)
+    fb.fillStyle = "darkgreen";
+  if (c == 3)
+    fb.fillStyle = "darkcyan";
+  if (c == 4)
+    fb.fillStyle = "darkred";
+  if (c == 5)
+    fb.fillStyle = "purple";
+  if (c == 6)
+    fb.fillStyle = "brown";
+  if (c == 7)
+    fb.fillStyle = "darkgray";
+  if (c == 8)
+    fb.fillStyle = "gray";
+  if (c == 9)
+    fb.fillStyle = "blue";
+  if (c == 10)
+    fb.fillStyle = "green";
+  if (c == 11)
+    fb.fillStyle = "cyan";
+  if (c == 12)
+    fb.fillStyle = "red";
+  if (c == 13)
+    fb.fillStyle = "magenta";
+  if (c == 14)
+    fb.fillStyle = "yellow";
+  if (c == 15)
+    fb.fillStyle = "white";
+  if (c < 0 || c > 15)
+    fb.fillStyle = "black";
+}
+
+function video_pixel(x, y)
+{
+  fb.fillRect(x, y, 2, 2);
+}
+
+function video_rect(x, y, w, h)
+{
+  fb.strokeRect(x, y, w, h);
+}
+
+function video_fillRect(x, y, w, h)
+{
+  fb.fillRect(x, y, w, h);
+}
+
+function video_hline(x, y, w)
+{
+  fb.fillRect(x, y, w, 2);
+}
+
+function video_vline(x, y, h)
+{
+  fb.fillRect(x, y, 2, h);
+}
+
+function video_circle(x, y, w)
+{
+  fb.beginPath();
+  fb.arc(x, y, w, 0, Math.PI*2, true);
+  fb.closePath();
+  fb.stroke();
+}
+
+function video_fillCircle(x, y, w)
+{
+  fb.beginPath();
+  fb.arc(x, y, w, 0, Math.PI*2, true);
+  fb.closePath();
+  fb.fill();
+}
+
 
 
 /**********************************************************************
@@ -72,6 +161,7 @@ function initVM()
   ports[0] = 0;
   data[0] = 0;
   width = 0;
+  mx = 0; my = 0; mb = 0;
 }
 
 
@@ -86,6 +176,26 @@ function readKeyboard(e)
   if (uni == 8)
     return false;
 }
+
+function readMouse(e)
+{
+  mx = e.pageX;
+  my = e.pageY;
+  return true;
+}
+
+function setButton(e)
+{
+  mb = 1;
+  return true;
+}
+
+function releaseButton(e)
+{
+  mb = 0;
+  return true;
+}
+
 
 
 /**********************************************************************
@@ -109,16 +219,13 @@ function handleDevices()
     var ch = String.fromCharCode(data[sp]);
 
     /* Remap select characters to HTML */
-    if (filterHTML == -1)
+    switch (data[sp])
     {
-      switch (data[sp])
-      {
-        case 10: ch = "<br>\n"; width = 0; break;
-        case 32: ch = "&nbsp;"; break;
-        case 38: ch = "&amp;";  break;
-        case 60: ch = "&lt;";   break;
-        case 62: ch = "&gt;";   break;
-      }
+      case 10: ch = "<br>\n"; width = 0; break;
+      case 32: ch = "&nbsp;"; break;
+      case 38: ch = "&amp;";  break;
+      case 60: ch = "&lt;";   break;
+      case 62: ch = "&gt;";   break;
     }
 
     /* Display the character */
@@ -152,9 +259,19 @@ function handleDevices()
     ports[5] = IMAGE_SIZE;
     ports[0] = 1;
   }
-  if (ports[5] == -2 || ports[5] == -3 || ports[5] == -4)
+  if (ports[5] == -2)
   {
-    ports[5] = 0;
+    ports[5] = -1;
+    ports[0] = 1;
+  }
+  if (ports[5] == -3)
+  {
+    ports[5] = FB_WIDTH;
+    ports[0] = 1;
+  }
+  if (ports[5] == -4)
+  {
+    ports[5] = FB_HEIGHT;
     ports[0] = 1;
   }
   if (ports[5] == -5)
@@ -167,26 +284,101 @@ function handleDevices()
     ports[5] = rsp;
     ports[0] = 1;
   }
-
-
-  /* HTML */
-  if (ports[9998] == 1)
+  if (ports[5] == -7)
   {
-    filterHTML = filterHTML * -1;
-    ports[9998] = 0;
+    ports[5] = -1;
     ports[0] = 1;
   }
-  if (ports[9998] == 2)
+
+  if (ports[6] == 1)
   {
-    var src = data[sp]; sp--;
-    var dst = "";
-    while (image[src] != 0)
-    {
-      dst = dst + String.fromCharCode(image[src]);
-      src++;
-    }
-    eval(dst);
-    ports[9998] = 0;
+    video_color(data[sp]); sp--;
+    ports[6] = 0;
+    ports[0] = 1;
+  }
+  if (ports[6] == 2)
+  {
+    var x, y;
+    y = data[sp]; sp--;
+    x = data[sp]; sp--;
+    video_pixel(x, y);
+    ports[6] = 0;
+    ports[0] = 1;
+  }
+  if (ports[6] == 3)
+  {
+    var x, y, h, w;
+    w = data[sp]; sp--;
+    h = data[sp]; sp--;
+    y = data[sp]; sp--;
+    x = data[sp]; sp--;
+    video_rect(x, y, h, w);
+    ports[6] = 0;
+    ports[0] = 1;
+  }
+  if (ports[6] == 4)
+  {
+    var x, y, h, w;
+    w = data[sp]; sp--;
+    h = data[sp]; sp--;
+    y = data[sp]; sp--;
+    x = data[sp]; sp--;
+    video_fillRect(x, y, h, w);
+    ports[6] = 0;
+    ports[0] = 1;
+  }
+  if (ports[6] == 5)
+  {
+    var x, y, h;
+    h = data[sp]; sp--;
+    y = data[sp]; sp--;
+    x = data[sp]; sp--;
+    video_vline(x, y, h);
+    ports[6] = 0;
+    ports[0] = 1;
+  }
+  if (ports[6] == 6)
+  {
+    var x, y, w;
+    w = data[sp]; sp--;
+    y = data[sp]; sp--;
+    x = data[sp]; sp--;
+    video_hline(x, y, w);
+    ports[6] = 0;
+    ports[0] = 1;
+  }
+  if (ports[6] == 7)
+  {
+    var x, y, w;
+    w = data[sp]; sp--;
+    y = data[sp]; sp--;
+    x = data[sp]; sp--;
+    video_circle(x, y, w);
+    ports[6] = 0;
+    ports[0] = 1;
+  }
+  if (ports[6] == 8)
+  {
+    var x, y, w;
+    w = data[sp]; sp--;
+    y = data[sp]; sp--;
+    x = data[sp]; sp--;
+    video_fillCircle(x, y, w);
+    ports[6] = 0;
+    ports[0] = 1;
+  }
+
+  if (ports[7] == 1)
+  {
+    sp++; data[sp] = mx;
+    sp++; data[sp] = my;
+    ports[7] = 0;
+    ports[0] = 1;
+  }
+  if (ports[7] == 2)
+  {
+    sp++; data[sp] = mb;
+    ports[7] = 0;
     ports[0] = 1;
   }
 }
@@ -202,6 +394,7 @@ function clearDisplay()
   devOutput = "";
   document.getElementById('output').innerHTML = devOutput;
   width = 0;
+  fb.clearRect(0, 0, 800, 400);
 }
 
 
@@ -438,6 +631,10 @@ function processImage()
 
 /* Enable our keyboard handler */
 document.onkeypress = readKeyboard;
+document.onmousemove = readMouse;
+document.onmousedown = setButton;
+document.onmouseup = releaseButton;
+
 widget.onshow = startVM;
 widget.onhide = stopVM;
 

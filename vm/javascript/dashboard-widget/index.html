@@ -5,29 +5,23 @@
 body
   {
     background: url(Default.png) no-repeat;
-    height: 300px;
   }
 
-#front
- {
-   display: block;
- }
-#back
- {
- }
+  .canvas
+  {
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    width: 590px;
+    height: 290x;
+  }
 
-#flip {
-    z-index: 99;
-    color: #FFFFFF;
-    font-family: "Monaco", monospace;
-    position:absolute;
-    bottom:5px;
-    right: 20px;
-}
-
-.display
+ .output
  {
-   color: #FFFFFF;
+   position: absolute;
+   top: 5px;
+   left: 5px;
+   color: #000;
    font-family: "Monaco", monospace;
    font-style: normal;
    font-variant: normal;
@@ -40,51 +34,23 @@ body
    text-transform: none;
    text-align: left;
    text-indent: 0ex;
-   padding: 10px;
-   height: 280px;
-   overflow: none;
+   width: 590px;
+   height: 290px;
+   overflow: auto;
  }
 </style>
 
 <script src="ngaro.js"></script>
 <script src="retroImage.js"></script>
 <script>
-function toggle(obj) {
-	var el = document.getElementById(obj);
-	if ( el.style.display != 'none' ) {
-		el.style.display = 'none';
-	}
-	else {
-		el.style.display = 'block';
-	}
-}
-
-function flip()
-{
-  toggle('front');
-}
-
   initVM();
   loadImage();
   startVM();
 </script>
 </head>
 
-<body>
-  <div id="flip">
-    <p><a onClick="clearDisplay()">Clear</a> | <a onClick="flip()">Flip</a></p>
-  </div>
-  <div id="front" class="display">
-    <p id="output"></p>
-  </div>
-  <div id="back" class="display">
-    <h3>Tips and Tricks</h3>
-    <ul>
-      <li>If you make a typo, enter some random characters and hit space</li>
-      <li>Space is the only recognized separater between words</li>
-      <li>Hit command+r to reload if you get stuck</li>
-      <li>You can't <b>save</b> your image</li>
-    </ul>
-  </div>
+<body onload="init_fb()">
+  <canvas id="framebuffer" class="canvas" width="590" height="290"></canvas>
+  <div class="output" id="output"></div>
 </body>
 </html>
