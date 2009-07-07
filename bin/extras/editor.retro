@@ -22,17 +22,18 @@
 (        v        Display the current block                   )
 (        e        Evaluate Block                              )
 (        new      Erase all blocks                            )
+( # red.set#      Set the # of blocks. Calls 'new'            )
 ( ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ )
 ( The memory layout and basic configuration.                  )
 ( ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ )
-1024 constant #-blocks
- 512 constant #-block-size
-#mem @ #-block-size #-blocks * - constant offset
+variable #-blocks
+512 constant #-block-size
+variable offset
 
 13 variable: line-ending
 
 variable blk
-: block     512 * offset + ;
+: block     512 * offset @ + ;
 : (block)   blk @ block ;
 : (line)    64 * (block) + ;
 
@@ -48,7 +49,7 @@ variable blk
   (line) + push line-ending @ accept tib pop
   tib getLength copy v ;
 : i   ( n"- ) 0 swap ia v ;
-: new ( -  ) offset 32 #-block-size #-blocks * fill ;
+: new ( -  ) offset @ 32 #-block-size #-blocks @ * fill ;
 : e   ( -  ) (e) ;
 
 
@@ -63,7 +64,7 @@ variable blk
   : row     . dup 64 type 64 + cr ;
   : .rows   0 row 1 row 2 row 3 row
             4 row 5 row 6 row 7 row ;
-  : .block  ." Block: " blk @ . ." of " #-blocks . ;
+  : .block  ." Block: " blk @ . ." of " #-blocks @ . ;
   : x       ." +---:---+---:---" ;
   : bar     space space x x x x cr ;
   : vb      bar blk @ block .rows drop bar ;
@@ -88,8 +89,11 @@ variable blk
   here is (e) ] setup remap ;
 }
 
+: red.set#
+  #-blocks ! #mem @ #-block-size #-blocks @ * - offset ! new ;
+
 
 ( ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ )
 ( All done! Fill the blocks with spaces, and we're good to go )
 ( ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ )
-new
+64 red.set#
