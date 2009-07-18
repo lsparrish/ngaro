@@ -67,7 +67,8 @@ vm: tools
 	@mv vm/console/retro-nocurses bin
 fastvm: tools
 	@cd vm/console_fast && make
-	@mv vm/console_fast/retro-fast bin
+	@mv vm/console_fast/retro bin
+	@mv vm/console_fast/retro-nocurses bin
 dotnet:
 	@cd vm/dotnet && make
 	@mv vm/dotnet/retro.exe bin
