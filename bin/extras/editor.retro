@@ -46,8 +46,10 @@ variable blk
 : p   ( -  ) -1 blk +! v ;
 : n   ( -  ) 1 blk +! v ;
 : ia  ( nn"- )
+  whitespace @ push whitespace off
   (line) + push line-ending @ accept tib pop
-  tib getLength copy v ;
+  tib getLength copy v
+  pop whitespace ! ;
 : i   ( n"- ) 0 swap ia v ;
 : new ( -  ) offset @ 32 #-block-size #-blocks @ * fill ;
 : e   ( -  ) (e) ;

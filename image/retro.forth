@@ -121,16 +121,23 @@ variable fh     ( framebuffer height )
 : (type) ( a-a ) repeat @+ 0; emit again ;
 : type   ( a-  ) update # off (type) drop, update # on redraw ;
 #! ------------------------------------------------------------
-variable >in         ( Offset into the TIB )
-variable break-char  ( Holds the delimiter for 'accept' )
+variable >in             ( Offset into the TIB )
+variable break-char      ( Holds the delimiter for 'accept' )
+-1 variable: whitespace  ( Allow extended whitespace )
 
 : (remap-keys) ( c-c ) ;
+: ws ( c-c )
+  whitespace # @, 0; drop,
+  dup,  9 # =if drop, 32 # ; then
+  dup, 10 # =if drop, 32 # ; then
+  dup, 13 # =if drop, 32 # ; then
+;
 
 : key ( -c )
   repeat
     1 # 1 # out,
     wait 1 # in,
-    dup, 0 # !if (remap-keys) ; then drop,
+    dup, 0 # !if (remap-keys) ws ; then drop,
   again
 ;
 
@@ -401,6 +408,7 @@ main:
   fb           data: fb            fw           data: fw
   fh           data: fh            #mem         data: #mem
   heap         data: heap          which        data: which
+  whitespace   data: whitespace
 
 patch-dictionary
 #! ----------------------------------------------------------
