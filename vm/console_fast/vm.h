@@ -73,6 +73,5 @@ enum vm_opcode {VM_NOP, VM_LIT, VM_DUP, VM_DROP, VM_SWAP, VM_PUSH, VM_POP,
     				default:           goto DEFAULT;          \
   			}
 
-
 #define NUM_OPS VM_WAIT
 #endif
