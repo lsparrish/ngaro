@@ -1,0 +1,20 @@
+{{
+  variable rsp
+  variable a
+
+  : rdepth -6 5 out wait 5 in ;
+
+---reveal---
+  : [local rdepth rsp ! ;
+  : local] rdepth rsp @ - for pop pop pop . push push next ;
+
+  : !a a ! pop a @ push push ;
+  : !b a ! pop pop a @ push push push ;
+  : !c a ! pop pop pop a @ push push push push ;
+  : !d a ! pop pop pop pop a @ push push push push push ;
+
+  : @a pop pop dup a ! push push a @ ;
+  : @b pop pop pop dup a ! push push push a @ ;
+  : @c pop pop pop pop dup a ! push push push push a @ ;
+  : @d pop pop pop pop pop dup a ! push push push push push a @ ;
+}}
