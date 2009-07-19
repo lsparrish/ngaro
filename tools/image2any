@@ -16,7 +16,6 @@
 #! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #! Languages Supported:
 #!   C   (console)
-#!   C   (framebuffer)
 #!   C#  (dotnet)
 #!   Java (console)
 #!   Java (MIDP)
@@ -40,22 +39,6 @@ value| fid size image |
   ] countedLoop
 ] is c-console-process
 [ c-console-header c-console-process c-console-footer ] is vm
-#! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ fbvm
-[
-  ." #include \"functions.h\"\n"
-  ." #include \"vm.h\"\n"
-  ." extern VM_STATE vm;\n\n"
-  ." void initial_image()\n{\n"
-] is c-fb-header
-[ ." }\n" ] is c-fb-footer
-[ ."   vm.image[" i >string type ." ]=" >string type ." ;\n" ] is c-fb-line
-[
-  0 size
-  [
-    image i cell-size * + @ dup 0 <> [ c-fb-line ] [ drop ] ifTrueFalse
-  ] countedLoop
-] is c-fb-process
-[ c-fb-header c-fb-process c-fb-footer ] is fbvm
 #! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Java and .NET
 [ ." memory[" i >string type ." ]=" >string type ." ;\n" ] is java-line
 [
@@ -110,7 +93,6 @@ fid file.close
 2 arglist array.get file.slurp keep to image
 
 1 arglist array.get " vm" string.compare [ vm ] ifTrue
-1 arglist array.get " fbvm" string.compare [ fbvm ] ifTrue
 1 arglist array.get " java" string.compare [ java ] ifTrue
 1 arglist array.get " dotnet" string.compare [ dotnet ] ifTrue
 1 arglist array.get " javascript" string.compare [ javascript ] ifTrue
