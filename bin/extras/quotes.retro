@@ -13,5 +13,5 @@ macro: ]] 9 , swap here swap ! swap compiler ! .data ;
 : ifFalse swap FALSE =if execute ;then drop ;
 
 : I pop pop pop pop dup push swap push swap push swap push ;
-: iterate swap dup for push dup push execute pop pop 1- next drop ;
-: +iterate swap 1 swap for push dup push execute pop pop 1+ next drop ;
+: iterate swap dup for push dup push execute pop pop 1- next 2drop ;
+: +iterate swap 1 swap for push dup push execute pop pop 1+ next 2drop ;
