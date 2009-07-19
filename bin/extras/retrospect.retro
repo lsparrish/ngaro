@@ -43,7 +43,9 @@
     28 a: in      29 a: out      30 a: wait
     s" unknown: " type dup . .ascii cr ;
 
-  : more? @addr 0 =if *addr @ 1+ @ 0 =if pop drop then then ;
+  : header? @addr 9 =if *addr @ 1+ @ 30 >if .addr decompile pop pop 2drop then then ;
+  : vector? @addr 0 =if *addr @ 1+ @ 0 =if pop pop 2drop then then ;
+  : more? header? vector? ;
   : getWord ' drop which @ d->xt @ *addr ! ;
 
 ---reveal---
