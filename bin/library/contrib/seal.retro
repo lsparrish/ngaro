@@ -1,0 +1,9 @@
+( Allows sealing the dictionary after a specific word. Only   )
+( the specified word and words defined after it will remain   )
+( visible.                                                    )
+( - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - )
+( This code was written by Charles Childers and is gifted to  )
+( the public domain.                                          )
+( - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - )
+
+: seal ( "- ) ' drop 0 which @ ! ;

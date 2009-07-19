@@ -1,0 +1,16 @@
+( Safety features to help prevent accidental crashes.         )
+( - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - )
+( This code was written by Luke Parrish                       )
+( Modifications were made by Charles Childers                 )
+( - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - )
+
+{{
+  variable latest
+---reveal---
+  compiler: [prior last @ latest ! last @ @ last ! ;
+  compiler: prior] latest @ last ! ;
+
+  : . ( n- )   [prior depth 0 =if 0 then . prior] ;
+  : , ( n- )   [prior depth 0 =if 0 then , prior] ;
+  : / ( xy-z ) [prior dup 0 !if / ;; then drop 1 / prior] ;
+}}

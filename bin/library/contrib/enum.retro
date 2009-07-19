@@ -1,0 +1,9 @@
+( Support for enumerated series of named values               )
+( - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - )
+( 0 8 enum 1+ black red yellow green blue magenta cyan white  )
+( - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - )
+( Original at http://www.forthfreak.net/index.cgi?Enum        )
+( - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - )
+
+: (enum) for dup create last @ d->xt ! over execute next ;
+: enum ( start n <stream> -- ) ' -rot (enum) 2drop ;
