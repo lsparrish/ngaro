@@ -6,6 +6,14 @@
 
 {{
   variable latest
+
+  create <list>  ( -a ) 0 , 0 , 0 , 0 , 0 ,
+  : { ( - ) depth <list> @ 1+ <list> + ! 1 <list> +! ;
+  : } ( - ) 1 <list> -! <list> @ 1+ <list> + @ ;
+
+  : prepare { ;
+  : end     depth } !if ." Error: stack inbalance!" cr then ;
+
 ---reveal---
   compiler: [prior last @ latest ! last @ @ last ! ;
   compiler: prior] latest @ last ! ;
@@ -13,4 +21,11 @@
   : . ( n- )   [prior depth 0 =if 0 then . prior] ;
   : , ( n- )   [prior depth 0 =if 0 then , prior] ;
   : / ( xy-z ) [prior dup 0 !if / ;; then drop 1 / prior] ;
+  : : prepare [prior : prior] ;
+  : macro: prepare [prior macro: prior] ;
+  : compiler: prepare [prior compiler: prior] ;
+  macro: ; ` ;; ` [ end ;; [
+
+  compiler: repeat here prepare ;
+  compiler: again end 8 , , ;
 }}
