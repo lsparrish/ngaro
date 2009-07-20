@@ -12,5 +12,10 @@ The virtual machine includes a minimal image. If it can't
 find a retroImage and no other image is specified on the
 command line, it will start the minimal image.
 
-Docmentation can be found in the 'doc' directory.
+An extended image can be built. Look in the bin/library
+directory for additional modules and a shell script to help
+make building custom images a bit easier. You will need the
+C console implementation to use it.
+
+The latest docmentation can be found in the 'doc' directory.
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
