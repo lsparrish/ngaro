@@ -221,20 +221,18 @@ This is a significant source of confusion to users coming from other
 Forth systems. Just remember: only space is recognized by a default
 Retro system as a valid separator between words.
 
-Tip:
-  Although input is parsed as it is typed, backspace does work on
-  most systems, so you can correct the current word being typed if
-  you make a mistake.
-
-If you don't like this behavior, try the following:
+By default, cr, lf, and tab are remapped to be identical to space.
+This can be disabled by typing:
 
 ::
 
-  : crlf dup 10 =if drop 32 ;; then dup 13 =if drop 32 ;; then ;
-  ' crlf is (remap-keys)
+  whitespace off
 
-This won't disable the execution as you type, but will allow you to use
-enter at the end of a line.
+To turn it back on:
+
+::
+
+  whitespace on
 
 Leaving Retro
 -------------
@@ -1121,6 +1119,11 @@ List of Words by Class
 | Holds the address of the most recently looked up         |
 | dictionary header.                                       |
 +--------------+--------------+------------+---------------+
+| whitespace   | .data        | -a         |               |
++--------------+--------------+------------+---------------+
+| Flag indicting whether cr, lf, and tab should be remapped|
+| to space.                                                |
++--------------+--------------+------------+---------------+
 
 
 ==========================
@@ -1135,7 +1138,7 @@ with **osx.retro**. After building, extend your retroImage:
 
 ::
 
-  ./retro --with extras/osx.retro
+  ./retro --with library/os-specific/osx.retro
 
 Save your image, and you'll be able to use backspace in
 the future.
@@ -1150,6 +1153,10 @@ Overview
 While working with Retro, I've assembled a set of extensions that
 I personally find useful, but which don't need to be in the core.
 
+Tip:
+  Download a precompiled image from http://retroforth.org/binaries
+  to get all of these preloaded.
+
 
 Loading the Extensions
 ----------------------
@@ -1158,7 +1165,7 @@ This can be found in the **bin** directory. Load it by doing:
 
 ::
 
-  ./retro --with extras/extend.retro
+  ./retro --with library/standard/extend.retro
 
 Save, and the extensions will remain present in future sessions.
 
@@ -1298,7 +1305,7 @@ To load it:
 
 ::
 
-  ./retro --with extras/editor.retro --with extras/extend.retro
+  ./retro --with library/standard/editor.retro --with library/standard/extend.retro
 
 
 Tip:
@@ -1347,7 +1354,7 @@ To load it:
 
 ::
 
-  ./retro --with extras/retrospect.retro --with extras/extend.retro
+  ./retro --with library/standard/retrospect.retro --with library/standard/extend.retro
 
 Retrospect requires the extend.retro package to be loaded
 before it will work.
