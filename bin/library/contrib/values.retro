@@ -1,0 +1,12 @@
+( ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ )
+( Values for Retro                                            )
+( This code is gifted to the public domain. Share freely.     )
+( ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ )
+{{
+  variable state
+  : (value) state @ 0 =if @ ;then ! state off ;
+  : .value compiler @ -1 =if literal, ['] (value) compile ;then (value) ;
+---reveal---
+  : to state on ;
+  : value create 0 , ['] .value last @ d->class ! ;
+}}
