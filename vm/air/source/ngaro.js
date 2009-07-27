@@ -41,7 +41,7 @@
                                        /* clock cycle                 */
   const TERM_WIDTH  =      75;         /* Width of emulated terminal  */
   const FB_WIDTH    =     640;         /* Canvas Width                */
-  const FB_HEIGHT   =     450;         /* Canvas Height               */
+  const FB_HEIGHT   =     480;         /* Canvas Height               */
 
 
 
