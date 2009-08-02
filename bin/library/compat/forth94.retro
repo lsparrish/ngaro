@@ -249,13 +249,14 @@ create hld 0 ,
 ( 6.2.2218 SOURCE-ID     )  stub: SOURCE-ID
 ( 6.2.2240 SPAN          )  stub: SPAN
 ( 6.2.2290 TIB           )  stub: TIB
-( 6.2.2295 TO            )  stub: TO
+( 6.2.2295 TO            )  : TO ' compiler @ -1 =if literal, ` ! ;then ! ; IMMEDIATE
 ( 6.2.2298 TRUE          )  ( Supported by Retro )
 ( 6.2.2300 TUCK          )  : TUCK tuck ;
 ( 6.2.2330 U.R           )  stub: U.R
 ( 6.2.2350 U>            )  stub: U>
 ( 6.2.2395 UNUSED        )  : UNUSED #mem @ here - ;
-( 6.2.2405 VALUE         )  stub: VALUE
+( 6.2.2405 VALUE         )  : .value compiler @ -1 =if literal, ` @ ;then @ ;
+                            : VALUE create ['] .value last @ d->class ! 0 , ;
 ( 6.2.2440 WITHIN        )  stub: WITHIN
 ( 6.2.2530 [COMPILE]     )  stub: [COMPILE]
 ( 6.2.2535 \             )  : \ whitespace off 10 accept whitespace on ; IMMEDIATE
