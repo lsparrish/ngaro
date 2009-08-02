@@ -6,7 +6,6 @@
 
 create <case> 0 ,
 : switch <case> ! ;
-compiler: case:
-       ['] dup compile <case> literal, ['] @ compile ['] =if execute ['] drop compile ;
-compiler: break
-       ['] ;; execute ['] then execute ;
+
+compiler: case:  ` dup <case> literal, ` @ ` =if ` drop ;
+compiler: break  ` ;; ` then ;
