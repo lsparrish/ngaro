@@ -107,7 +107,7 @@ create hld 0 ,
 ( 6.1.0897 CHAR+     )        : CHAR+ 1+ ;
 ( 6.1.0898 CHARS     )        : CHARS ;
 ( 6.1.0950 CONSTANT  )        : CONSTANT create last @ d->xt ! ;
-( 6.1.0980 COUNT     )        : COUNT dup @ swap 1+ ;
+( 6.1.0980 COUNT     )        : COUNT dup @ swap 1+ swap ;
 ( 6.1.0990 CR        )        : CR cr ;
 ( 6.1.1000 CREATE    )        : CREATE create ;
 ( 6.1.1170 DECIMAL   )        : DECIMAL 10 BASE ! ;
@@ -184,8 +184,7 @@ create hld 0 ,
 ( 6.1.2250 STATE    )         : STATE compiler ;
 ( 6.1.2260 SWAP     )         : SWAP swap ;
 ( 6.1.2270 THEN     )         : THEN ['] then execute ['] drop compile ; IMMEDIATE
-                              : (type) for dup @ emit 1+ next ;
-( 6.1.2310 TYPE     )         : TYPE (type) drop ;
+( 6.1.2310 TYPE     )         : TYPE for dup @ . 1+ next drop ;
 ( 6.1.2320 U.       )         ( --- )
                               stub: U.
 ( 6.1.2340 U<       )         ( --- )
@@ -221,7 +220,7 @@ create hld 0 ,
 ( 6.2.0340 2>R           )  stub: 2>R
 ( 6.2.0410 2R>           )  stub: 2R>
 ( 6.2.0415 2R@           )  stub: 2R@
-( 6.2.0455 :NONAME       )  stub: :NONAME
+( 6.2.0455 :NONAME       )  : :NONAME here ] ;
 ( 6.2.0500 <>            )  : <> !if TRUE ;then FALSE ;
 ( 6.2.0620 ?DO           )  stub: ?DO
 ( 6.2.0700 AGAIN         )  stub: AGAIN
@@ -231,7 +230,7 @@ create hld 0 ,
 ( 6.2.0970 CONVERT       )  stub: CONVERT
 ( 6.2.1342 ENDCASE       )  stub: ENDCASE
 ( 6.2.1343 ENDOF         )  stub: ENDOF
-( 6.2.1350 ERASE         )  stub: ERASE
+( 6.2.1350 ERASE         )  : ERASE 0 swap fill ;
 ( 6.2.1390 EXPECT        )  stub: EXPECT
 ( 6.2.1485 FALSE         )  ( Supported by Retro )
 ( 6.2.1660 HEX           )  stub: HEX
@@ -240,9 +239,19 @@ create hld 0 ,
 ( 6.2.1950 OF            )  stub: OF
 ( 6.2.2000 PAD           )  : PAD here 1024 + ;
 ( 6.2.2008 PARSE         )  stub: PARSE
-( 6.2.2030 PICK          )  stub: PICK
+( 6.2.2030 PICK          )  {{
+                               variable a
+                               : 0? a @ 0 =if pop drop dup then ;
+                            ---reveal---
+                               : PICK
+                                 a ! 0?
+                                 a @ for pop swap push push next
+                                 dup
+                                 a @ for pop pop swap push swap next
+                               ;
+                            }}
 ( 6.2.2040 QUERY         )  stub: QUERY
-( 6.2.2125 REFILL        )  stub: REFILL
+( 6.2.2125 REFILL        )  : REFILL FALSE ;
 ( 6.2.2148 RESTORE-INPUT )  stub: RESTORE-INPUT
 ( 6.2.2150 ROLL          )  stub: ROLL
 ( 6.2.2182 SAVE-INPUT    )  stub: SAVE-INPUT
@@ -260,3 +269,5 @@ create hld 0 ,
 ( 6.2.2440 WITHIN        )  stub: WITHIN
 ( 6.2.2530 [COMPILE]     )  stub: [COMPILE]
 ( 6.2.2535 \             )  : \ whitespace off 10 accept whitespace on ; IMMEDIATE
+
+: foo [CHAR] ` WORD COUNT TYPE ;
