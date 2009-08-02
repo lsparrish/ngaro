@@ -20,7 +20,7 @@
 (   -  This has received little testing and bugs are likely )
 (      to exist.                                            )
 (   -  At present, work is only being done [albeit, slowly] )
-(      on the CORE wordset.                                 )
+(      on the CORE and CORE EXT wordset.                    )
 (   -  Non-implemented functionality is stubbed out.        )
 ( ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ )
 
@@ -31,6 +31,8 @@ create hld 0 ,
 : .unsupported drop ." Word unsupported" cr ;
 : stub: create ['] .unsupported last @ d->class ! ;
 
+( ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ )
+( 6.1 CORE                                                  )
 ( ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ )
 ( 6.1.1710 IMMEDIATE )        : IMMEDIATE last @ d->class 1 swap ! ;
 
@@ -207,3 +209,54 @@ create hld 0 ,
 ( 6.1.2510 [']      )         ( Supported by RETRO )
 ( 6.1.2520 [CHAR]   )         : [CHAR] CHAR literal, ; IMMEDIATE
 ( 6.1.2540 ]        )         ( Supported by RETRO )
+
+
+( ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ )
+( 6.2 CORE EXT                                              )
+( ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ )
+( 6.2.0060 #TIB          )  stub: #TIB
+( 6.2.0200 .(            )  stub: .(
+( 6.2.0210 .R            )  stub: .R
+( 6.2.0260 0<>           )  stub: 0<>
+( 6.2.0280 0>            )  stub: 0>
+( 6.2.0340 2>R           )  stub: 2>R
+( 6.2.0410 2R>           )  stub: 2R>
+( 6.2.0415 2R@           )  stub: 2R@
+( 6.2.0455 :NONAME       )  stub: :NONAME
+( 6.2.0500 <>            )  stub: <>
+( 6.2.0620 ?DO           )  stub: ?DO
+( 6.2.0700 AGAIN         )  stub: AGAIN
+( 6.2.0855 C"            )  stub: C"
+( 6.2.0873 CASE          )  stub: CASE
+( 6.2.0945 COMPILE,      )  stub: COMPILE,
+( 6.2.0970 CONVERT       )  stub: CONVERT
+( 6.2.1342 ENDCASE       )  stub: ENDCASE
+( 6.2.1343 ENDOF         )  stub: ENDOF
+( 6.2.1350 ERASE         )  stub: ERASE
+( 6.2.1390 EXPECT        )  stub: EXPECT
+( 6.2.1485 FALSE         )  stub: FALSE
+( 6.2.1660 HEX           )  stub: HEX
+( 6.2.1850 MARKER        )  stub: MARKER
+( 6.2.1930 NIP           )  stub: NIP
+( 6.2.1950 OF            )  stub: OF
+( 6.2.2000 PAD           )  stub: PAD
+( 6.2.2008 PARSE         )  stub: PARSE
+( 6.2.2030 PICK          )  stub: PICK
+( 6.2.2040 QUERY         )  stub: QUERY
+( 6.2.2125 REFILL        )  stub: REFILL
+( 6.2.2148 RESTORE-INPUT )  stub: RESTORE-INPUT
+( 6.2.2150 ROLL          )  stub: ROLL
+( 6.2.2182 SAVE-INPUT    )  stub: SAVE-INPUT
+( 6.2.2218 SOURCE-ID     )  stub: SOURCE-ID
+( 6.2.2240 SPAN          )  stub: SPAN
+( 6.2.2290 TIB           )  stub: TIB
+( 6.2.2295 TO            )  stub: TO
+( 6.2.2298 TRUE          )  stub: TRUE
+( 6.2.2300 TUCK          )  stub: TUCK
+( 6.2.2330 U.R           )  stub: U.R
+( 6.2.2350 U>            )  stub: U>
+( 6.2.2395 UNUSED        )  stub: UNUSED
+( 6.2.2405 VALUE         )  stub: VALUE
+( 6.2.2440 WITHIN        )  stub: WITHIN
+( 6.2.2530 [COMPILE]     )  stub: [COMPILE]
+( 6.2.2535 \             )  stub: \
