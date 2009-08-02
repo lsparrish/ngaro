@@ -1,28 +1,45 @@
-( Partial Support for the 1994 ANS FORTH Standard             )
-( - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - )
-( Some things to note:                                        )
-(   -  All words provided by this layer are UPPERCASE         )
-(   -  It's not well tested yet                               )
-(   -  So far we only care about the CORE wordset, all others )
-(      are optional                                           )
-( - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - )
-( This code was written by Charles Childers and is gifted to  )
-( the public domain. Share freely.                            )
-( - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - )
+( ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ )
+( 1994 ANS FORTH                                            )
+( ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ )
+( This is an attempt to provide a large subset of the 1994  )
+( ANS FORTH standard words in Retro.                        )
+(                                                           )
+( Note:                                                     )
+(   It is unlikely that I will ever fully support ANS FORTH )
+(   in Retro, unless someone else steps up to complete the  )
+(   missing bits. [this has happened before, during the 9.x )
+(   days; but the current codebase for Retro is all new and )
+(   no longer compatible with some of the low-level tricks  )
+(   used back then.]                                        )
+(                                                           )
+( Stuff to keep in mind:                                    )
+(   -  All words provided by this layer are UPPERCASE. As   )
+(      per 3.4.2 this is all that is strictly required and  )
+(      it lets us avoid many namespace collisions with the  )
+(      core Retro language.                                 )
+(   -  This has received little testing and bugs are likely )
+(      to exist.                                            )
+(   -  At present, work is only being done [albeit, slowly] )
+(      on the CORE wordset.                                 )
+(   -  Non-implemented functionality is stubbed out.        )
+( ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ )
 
 : array for 0 , next ;
 create holdaddr 66 array
 create hld 0 ,
 
-: (unsupported) ." Word unsupported" cr ;
-: stub: : `c (unsupported) `x ;; ;
+: .unsupported drop ." Word unsupported" cr ;
+: stub: create ['] .unsupported last @ d->class ! ;
 
+( ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ )
 ( 6.1.1710 IMMEDIATE )        : IMMEDIATE last @ d->class 1 swap ! ;
 
 ( 6.1.0010 !         )        ( Supported by RETRO )
 ( 6.1.0030 #         )        ( --- )
+                              stub: #
 ( 6.1.0040 #>        )        : #> 2drop hld @ holdaddr over - swap ;
 ( 6.1.0050 #S        )        ( --- )
+                              stub: #S
 ( 6.1.0070 '         )        ( Supported by RETRO )
 ( 6.1.0080 (         )        ( Supported by RETRO )
 ( 6.1.0090 *         )        ( Supported by RETRO )
@@ -31,9 +48,11 @@ create hld 0 ,
 ( 6.1.0120 +         )        ( Supported by RETRO )
 ( 6.1.0130 +!        )        ( Supported by RETRO )
 ( 6.1.0140 +LOOP     )        ( --- )
+                              stub: +LOOP
 ( 6.1.0150 ,         )        ( Supported by RETRO )
 ( 6.1.0160 -         )        ( Supported by RETRO )
 ( 6.1.0180 .         )        ( --- )
+                              stub: .
 ( 6.1.0190 ."        )        : ." ['] s" execute ['] type compile ; IMMEDIATE
 ( 6.1.0230 /         )        ( Supported by RETRO )
 ( 6.1.0240 /MOD      )        : /MOD /mod ;
@@ -58,7 +77,9 @@ create hld 0 ,
 ( 6.1.0540 >         )        : > >if -1 ;; then 0 ;
 ( 6.1.0550 >BODY     )        : >BODY ;
 ( 6.1.0560 >IN       )        ( --- )
+                              stub: >IN
 ( 6.1.0570 >NUMBER   )        ( --- )
+                              stub: >NUMBER
 ( 6.1.0580 >R        )        : >R 5 , ; IMMEDIATE
 ( 6.1.0630 ?DUP      )        : ?DUP dup 0; ;
 ( 6.1.0650 @         )        ( Supported by RETRO )
@@ -67,6 +88,7 @@ create hld 0 ,
 ( 6.1.0680 ABORT"    )        : ABORT" 0 literal, ['] !if execute ['] ." execute ['] ABORT compile ['] then execute ; IMMEDIATE
 ( 6.1.0690 ABS       )        : ABS dup 0 <if -1 * then ;
 ( 6.1.0695 ACCEPT    )        ( --- )
+                              stub: ACCEPT
 ( 6.1.0705 ALIGN     )        : ALIGN ;
 ( 6.1.0706 ALIGNED   )        : ALIGNED ;
                               : heap ['] here 3 + @ ;
@@ -90,6 +112,7 @@ create hld 0 ,
 ( 6.1.1170 DECIMAL   )        : DECIMAL 10 BASE ! ;
 ( 6.1.1200 DEPTH     )        : DEPTH depth ;
 ( 6.1.1240 DO        )        ( --- )
+                              stub: DO
                               : reclass last @ d->class ! ;
                               : .does compiler @ -1 =if swap literal, compile pop drop ;; then drop ;
 ( 6.1.1250 DOES>     )        : DOES> 1 , here 0 , ['] reclass compile ['] ;; execute here swap ! here literal, ['] .does compile ; IMMEDIATE
@@ -106,17 +129,23 @@ create hld 0 ,
                               : (fill) for val @ dst @ ! 1 dst +! next ;
 ( 6.1.1540 FILL      )        : FILL swap push val ! dst ! pop (fill) ;
 ( 6.1.1550 FIND      )        ( --- )
+                              stub: FIND
 ( 6.1.1561 FM/MOD    )        ( --- )
+                              stub: FM/MOD
 ( 6.1.1650 HERE      )        : HERE here ;
 ( 6.1.1670 HOLD      )        : HOLD 1 hld +! holdaddr hld @ - ! ;
 ( 6.1.1680 I         )        ( --- )
+                              stub: I
 ( 6.1.1700 IF        )        : IF ['] DUP compile 0 literal, ['] !if execute ['] drop compile ; IMMEDIATE
 ( 6.1.1720 INVERT   )         : INVERT not ;
 ( 6.1.1730 J        )         ( --- )
+                              stub: J
 ( 6.1.1750 KEY      )         : KEY key ;
 ( 6.1.1760 LEAVE    )         ( --- )
+                              stub: LEAVE
 ( 6.1.1780 LITERAL  )         : LITERAL literal, ;
 ( 6.1.1800 LOOP     )         ( --- )
+                              stub: LOOP
 ( 6.1.1805 LSHIFT   )         : LSHIFT << ;
 ( 6.1.1810 M*       )         : M* * ;
 ( 6.1.1870 MAX      )         : MAX 2dup >if drop ;; then nip ;
@@ -138,13 +167,17 @@ create hld 0 ,
 ( 6.1.2070 R@       )         : R@ pop pop dup swap push swap push ;
 ( 6.1.2120 RECURSE  )         : RECURSE 7 , last @ d->xt @ , ; IMMEDIATE
 ( 6.1.2140 REPEAT   )         ( --- )
+                              stub: REPEAT
 ( 6.1.2160 ROT      )         : ROT rot ;
 ( 6.1.2162 RSHIFT   )         : RSHIFT >> ;
 ( 6.1.2165 S"       )         : S" ['] s" execute ['] dup compile ['] getLength compile ; IMMEDIATE
 ( 6.1.2170 S>D      )         ( --- )
+                              stub: S>D
 ( 6.1.2210 SIGN     )         : SIGN 0 <if 45 HOLD then ;
 ( 6.1.2214 SM/REM   )         ( --- )
+                              stub: SM/REM
 ( 6.1.2216 SOURCE   )         ( --- )
+                              stub: SOURCE
 ( 6.1.2220 SPACE    )         : SPACE BL emit ;
 ( 6.1.2230 SPACES   )         : SPACES repeat 0; SPACE 1- again ;
 ( 6.1.2250 STATE    )         : STATE compiler ;
@@ -153,14 +186,22 @@ create hld 0 ,
                               : (type) for dup @ emit 1+ next ;
 ( 6.1.2310 TYPE     )         : TYPE (type) drop ;
 ( 6.1.2320 U.       )         ( --- )
+                              stub: U.
 ( 6.1.2340 U<       )         ( --- )
+                              stub: U<
 ( 6.1.2360 UM*      )         ( --- )
+                              stub: UM*
 ( 6.1.2370 UM/MOD   )         ( --- )
+                              stub: UM/MOD
 ( 6.1.2380 UNLOOP   )         ( --- )
+                              stub: UNLOOP
 ( 6.1.2390 UNTIL    )         ( --- )
+                              stub: UNTIL
 ( 6.1.2410 VARIABLE )         : VARIABLE create 0 , ;
 ( 6.1.2430 WHILE    )         ( --- )
+                              stub: WHILE
 ( 6.1.2450 WORD     )         ( --- )
+                              stub: WORD
 ( 6.1.2490 XOR      )         : XOR xor ;
 ( 6.1.2500 [        )         ( Supported by RETRO )
 ( 6.1.2510 [']      )         ( Supported by RETRO )
