@@ -30,7 +30,7 @@ variable #-blocks
 512 constant #-block-size
 variable offset
 
-13 variable: line-ending
+10 variable: line-ending
 
 variable blk
 : block     512 * offset @ + ;

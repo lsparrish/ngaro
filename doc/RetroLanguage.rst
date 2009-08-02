@@ -68,6 +68,8 @@ Platforms Supported
 
 - .NET (console)
 
+- Adobe AIR
+
 ==========================
 Section 2: Getting Started
 ==========================
