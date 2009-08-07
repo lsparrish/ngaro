@@ -230,11 +230,17 @@ variable #ok           variable negate?
 label: nums " 0123456789abcdef" $,
 label: base 10 ,
 
-: (hex) 16 # repeat dup, push, nums # +, @, over =if -1 # num # !, then pop, 0; 1-, again ;
-: (dec) 10 # repeat dup, push, nums # +, @, over =if -1 # num # !, then pop, 0; 1-, again ;
+: digits
+  repeat dup, push, nums # +, @, over =if -1 # num # !, then pop, 0; 1-, again ;
+: (hex) 16 # digits ;
+: (dec) 10 # digits ;
+: (oct)  8 # digits ;
+: (bin)  2 # digits ;
 : (digit)
   base # @, 10 # =if (dec) ; then
   base # @, 16 # =if (hex) ; then
+  base # @,  8 # =if (oct) ; then
+  base # @,  2 # =if (bin) ; then
 ;
 : digit?
   0 # num # !, (digit) drop, num # @, ;
