@@ -152,3 +152,12 @@ compiler: ;then ( - )
 ( Allow changing the class of a word                          )
 ( ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ )
 : reclass ( a"- ) ' drop which @ d->class ! ;
+
+
+( ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ )
+( Numeric Bases                                               )
+( ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ )
+: decimal ( - ) 10 base ! ;
+: hex     ( - ) 16 base ! ;
+: octal   ( - )  8 base ! ;
+: binary  ( - )  2 base ! ;
