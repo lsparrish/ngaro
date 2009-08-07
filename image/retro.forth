@@ -259,22 +259,10 @@ variable #ok           variable negate?
   isNegative? -1 # flag # !, (isnumber) drop,
   flag # @, ;
 
-: number>digits  ( x-... )
-  1 # flag # +!
-  #value # @, 10 # /mod,
-  dup, 0 # !if #value # !, jump, ' number>digits , then
-  drop, ;
-
-: digits>screen  ( ...- )
-  repeat
-    flag # @, 0; drop, digit>char emit
-    flag # @, 1-, flag # !,
-  again ;
-
-: . ( n- )
-  dup, 0 # <if dup, 0 # !if char: - # emit neg then then
-  0 # flag # !, #value # !,
-  number>digits digits>screen 32 # emit ;
+label: nums " 0123456789" $,
+: (.) repeat 10 # /mod, swap, nums # +, @, swap, 0; again ;
+: neg? dup, 0 # >if ; then 45 # emit -1 # *, ;
+: . neg? 0 # swap (.) repeat 0; emit again ;
 #! ------------------------------------------------------------
 variable found
 
