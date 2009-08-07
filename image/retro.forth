@@ -227,13 +227,21 @@ variable SAFE
 variable #value        variable num
 variable #ok           variable negate?
 
-: digit?
-  ( c-f )
-  dup, char: 0 # >if dup, char: 9 # <if drop, -1 # ; then then
-  drop, 0 # ;
+label: nums " 0123456789abcdef" $,
+label: base 10 ,
 
-: char>digit ( c-n )  char: 0 # -, ;
-: digit>char ( n-c )  char: 0 # +, ;
+: (hex) 16 # repeat dup, push, nums # +, @, over =if -1 # num # !, then pop, 0; 1-, again ;
+: (dec) 10 # repeat dup, push, nums # +, @, over =if -1 # num # !, then pop, 0; 1-, again ;
+: (digit)
+  base # @, 10 # =if (dec) ; then
+  base # @, 16 # =if (hex) ; then
+;
+: digit?
+  0 # num # !, (digit) drop, num # @, ;
+
+: char>digit ( c-n )
+  char: 0 # -,
+  base # @, 16 # =if dup, 48 # >if 39 # -, then then ;
 
 : isNegative?
   ( a-a+1 )
@@ -242,7 +250,7 @@ variable #ok           variable negate?
 
 : (convert)
   repeat
-    dup, @, 0; char>digit #value # @, 10 # *, +,
+    dup, @, 0; char>digit #value # @, base # @, *, +,
     #value # !, 1+,
   again ;
 
@@ -259,8 +267,7 @@ variable #ok           variable negate?
   isNegative? -1 # flag # !, (isnumber) drop,
   flag # @, ;
 
-label: nums " 0123456789" $,
-: (.) repeat 10 # /mod, swap, nums # +, @, swap, 0; again ;
+: (.) repeat base # @, /mod, swap, nums # +, @, swap, 0; again ;
 : neg? dup, 0 # >if ; then 45 # emit -1 # *, ;
 : . neg? 0 # swap (.) repeat 0; emit again ;
 #! ------------------------------------------------------------
@@ -396,7 +403,7 @@ main:
   fb           data: fb            fw           data: fw
   fh           data: fh            #mem         data: #mem
   heap         data: heap          which        data: which
-  whitespace   data: whitespace
+  whitespace   data: whitespace    base         data: base
 
 patch-dictionary
 #! ----------------------------------------------------------
