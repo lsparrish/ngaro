@@ -18,9 +18,6 @@ default:
 	@echo make vm
 	@echo - Compile the VM \(console version\)
 	@echo
-	@echo make fastvm
-	@echo - Compile the VM \(console version, Mat\'s implementation\)
-	@echo
 	@echo make dotnet
 	@echo - Build the VM \(For .NET, requires Mono\)
 	@echo
@@ -56,7 +53,6 @@ clean:
 	@rm -f tools/fix-image
 	@rm -rf tools/build
 	@cd vm/console && make clean
-	@cd vm/console_fast && make clean
 	@cd vm/java && make clean
 	@cd vm/dotnet && make clean
 	@cd toka && make clean
@@ -65,10 +61,6 @@ vm: tools
 	@cd vm/console && make
 	@mv vm/console/retro bin
 	@mv vm/console/retro-nocurses bin
-fastvm: tools
-	@cd vm/console_fast && make
-	@mv vm/console_fast/retro bin
-	@mv vm/console_fast/retro-nocurses bin
 dotnet:
 	@cd vm/dotnet && make
 	@mv vm/dotnet/retro.exe bin
@@ -85,7 +77,6 @@ dist:
 	@rm -rf retro-10.latest
 bootstrap:
 	./toka/toka tools/image2any vm bin/retroImage >vm/console/initial_image.c
-	./toka/toka tools/image2any vm bin/retroImage >vm/console_fast/initial_image.c
 	./toka/toka tools/image2any java bin/retroImage >vm/java/retro_middle
 	./toka/toka tools/image2any dotnet bin/retroImage >vm/dotnet/retro_middle
 	./toka/toka tools/image2any javascript bin/retroImage >vm/javascript/retroImage.js
