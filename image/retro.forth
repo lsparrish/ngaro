@@ -273,9 +273,10 @@ label: base 10 ,
   isNegative? -1 # flag # !, (isnumber) drop,
   flag # @, ;
 
-: (.) repeat base # @, /mod, swap, nums # +, @, swap, 0; again ;
+: <#> repeat base # @, /mod, swap, nums # +, @, swap, 0; again ;
 : neg? dup, 0 # >if ; then 45 # emit -1 # *, ;
-: . neg? 0 # swap (.) repeat 0; emit again ;
+: display repeat 0; emit again ;
+: . neg? 0 # swap <#> display 32 # emit ;
 #! ------------------------------------------------------------
 variable found
 
