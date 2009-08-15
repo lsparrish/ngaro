@@ -227,7 +227,7 @@ variable SAFE
 variable #value        variable num
 variable #ok           variable negate?
 
-label: nums " 0123456789abcdef" $,
+label: nums " 0123456789ABCDEF" $,
 label: base 10 ,
 
 : digits
@@ -247,7 +247,7 @@ label: base 10 ,
 
 : char>digit ( c-n )
   char: 0 # -,
-  base # @, 16 # =if dup, 48 # >if 39 # -, then then ;
+  base # @, 16 # =if dup, 16 # >if 7 # -, then then ;
 
 : isNegative?
   ( a-a+1 )
