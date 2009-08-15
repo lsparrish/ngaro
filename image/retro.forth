@@ -126,18 +126,18 @@ variable break-char      ( Holds the delimiter for 'accept' )
 -1 variable: whitespace  ( Allow extended whitespace )
 
 : (remap-keys) ( c-c ) ;
+: crlf ( c-c ) dup, 13 # =if drop, 10 # then ;
 : ws ( c-c )
   whitespace # @, 0; drop,
   dup,  9 # =if drop, 32 # ; then
   dup, 10 # =if drop, 32 # ; then
-  dup, 13 # =if drop, 32 # ; then
 ;
 
 : key ( -c )
   repeat
     1 # 1 # out,
     wait 1 # in,
-    dup, 0 # !if (remap-keys) ws ; then drop,
+    dup, 0 # !if (remap-keys) crlf ws ; then drop,
   again
 ;
 
