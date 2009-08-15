@@ -1,5 +1,10 @@
 ( Fixups for OSX keyboard oddities )
 
-: <bs>  dup 127 =if drop 8 then ;
-: osx-keys ['] <bs> ['] (remap-keys) :is ;
+{{
+  : <bs>   dup 127 =if drop 8 then ;
+  : <crlf> dup  13 =if drop 10 then ;
+  : (keys) <bs> <crlf> ;
+---reveal---
+  : osx-keys ['] (keys) ['] (remap-keys) :is ;
+}}
 osx-keys

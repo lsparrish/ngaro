@@ -1,0 +1,15 @@
+{{
+  variable #items
+  variable TORS
+  : pre ( - ) depth #items ! ;
+  : get ( ...- )
+    pop TORS !
+    #items @ for pop swap push push next
+    TORS @ push ;
+  : display ( -... )
+    pop TORS !
+    #items @ for pop pop swap push dup . next
+    TORS @ push ;
+---reveal---
+  : .s ( - ) ." < " depth . ." > " pre get display ;
+}}
