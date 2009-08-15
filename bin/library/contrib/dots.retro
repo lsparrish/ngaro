@@ -1,7 +1,7 @@
 {{
   variable #items
   variable TORS
-  : pre ( - ) depth #items ! ;
+  : pre ( - ) #items ! ;
   : get ( ...- )
     pop TORS !
     #items @ for pop swap push push next
@@ -10,6 +10,7 @@
     pop TORS !
     #items @ for pop pop swap push dup . next
     TORS @ push ;
+  : header ." < " depth . ." > " ;
 ---reveal---
-  : .s ( - ) ." < " depth . ." > " pre get display ;
+  : .s ( - ) header depth 0; pre get display ;
 }}
