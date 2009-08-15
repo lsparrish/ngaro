@@ -54,7 +54,7 @@ value| BUFFER INDEX |
 
 [ ( -- )
   ( Cycle through the blocks, dumping them as ASCII to the output file )
-  1024 [ header 8 [ dump-line next ] iterate --- ] iterate ] is dump
+  64 [ header 8 [ dump-line next ] iterate --- ] iterate ] is dump
 
 
 ( The main sequence. This is pretty easy now. )
