@@ -1,5 +1,5 @@
 default:
-	@cat retro_top retro_middle retro_bottom >retro.cs
+	@cat top.cs middle.cs bottom.cs >retro.cs
 	@gmcs retro.cs
 
 clean:
