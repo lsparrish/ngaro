@@ -1,6 +1,6 @@
 default:
-	@cat retro_top retro_middle retro_bottom >retro.java
+	@cat top.java middle.java bottom.java >retro.java
 	@javac retro.java
 
 clean:
-	@rm -rf *.class *.java
+	@rm -rf *.class retro.java
