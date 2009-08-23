@@ -52,6 +52,7 @@ clean:
 	@rm -f latest.tar.gz
 	@rm -f tools/fix-image
 	@rm -rf tools/build
+	@rm -f vm/midp/bin/Retro.jar
 	@cd vm/console && make clean
 	@cd vm/java && make clean
 	@cd vm/dotnet && make clean
