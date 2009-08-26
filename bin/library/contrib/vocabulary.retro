@@ -1,0 +1,30 @@
+( ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ )
+( Vocabulary support                                          )
+( ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ )
+{{
+: voc-list-nil last @ ;
+: voc-list-set last ! ;
+
+variable (context)
+variable (definitions)
+
+: context      (context) @ ;
+: context!     (context) ! ;
+: definitions  (definitions) @ ;
+: definitions! (definitions) ! ;
+
+---reveal---
+
+: current  voc-list-nil definitions! ;
+: previous context voc-list-set ;
+
+: vocabulary: previous definitions constant
+             voc-list-nil context!
+;
+
+: vocabulary ( a - ) voc-list-nil context!
+                    voc-list-set
+;
+
+voc-list-nil context! current vocabulary: forth
+}}
