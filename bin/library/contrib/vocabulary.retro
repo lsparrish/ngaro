@@ -18,13 +18,15 @@ variable (definitions)
 : current  voc-list-nil definitions! ;
 : previous context voc-list-set ;
 
-: vocabulary: previous definitions constant
+: vocabulary: previous definitions variable:
              voc-list-nil context!
 ;
 
-: vocabulary ( a - ) voc-list-nil context!
-                    voc-list-set
+: vocabulary ( a - ) @ voc-list-nil context!
+                      voc-list-set
 ;
+
+: extend current previous definitions ;
 
 voc-list-nil context! current vocabulary: forth
 }}
