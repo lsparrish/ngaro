@@ -1,7 +1,7 @@
 The Retro Language
 ==================
 :Author: Charles Childers
-:Version: 10.2-dev
+:Version: 10.2 (work in progress)
 
 
 ===========================
@@ -21,9 +21,8 @@ all major operating systems, and thanks to a JavaScript
 implementation of the virtual machine, on any modern web
 browser.
 
-The code and documentation for Retro are gifted to the
-public domain. You may use them freely and without
-restriction.
+The code and documentation for Retro are provided under
+an open source license.
 
 Platforms Supported
 -------------------

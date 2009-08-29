@@ -1,9 +1,6 @@
 ( Assembler for Ngaro VM machine code.                        )
 ( This is really crude at present. All opcodes end in a ,     )
 ( - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - )
-( This code was written by Charles Childers and is gifted to  )
-( the public domain.                                          )
-( - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - )
 : nop, 0 , ;          : lit, 1 , ;
 : dup, 2 , ;          : drop, 3 , ;
 : swap, 4 , ;         : push, 5 , ;

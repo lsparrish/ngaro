@@ -1,8 +1,6 @@
 /**********************************************************************
  * Ngaro Virtual Machine
- * Written by Charles Childers
- *
- * This code is gifted to the public domain.
+ * Copyright (C) 2008, 2009, Charles Childers
  **********************************************************************
  * This implementation provides an environment very similar to a text
  * console, including the ability to type directly in the browser.

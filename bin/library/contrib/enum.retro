@@ -1,6 +1,5 @@
 ( ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ )
 ( Enumerated Sequences of Values                              )
-( This code is gifted to the public domain. Share freely.     )
 ( ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ )
 ( Sample Use:                                                 )
 (  0 enum| 1+ a b c d e f g |                                 )

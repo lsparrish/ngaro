@@ -1,8 +1,5 @@
 /******************************************************
  * Ngaro
- *
- * Written by Charles Childers, released into the public
- * domain
  ******************************************************/
 
 #include <stdio.h>

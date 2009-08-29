@@ -1,9 +1,4 @@
 #! ------------------------------------------------------------
-#! Retro, a dialect of Forth
-#!
-#! This code was written by Charles Childers and is gifted to
-#! the public domain.
-#! ------------------------------------------------------------
 #! This implements an assembler for the Ngaro VM and a cross
 #! compiler providing a MachineForth language. The rest of
 #! Retro is written using this as a base.

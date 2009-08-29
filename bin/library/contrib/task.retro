@@ -14,9 +14,6 @@
 ( To stop a task, have the task invoke 'stop' being           )
 ( cooperative.                                                )
 ( - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - )
-( This code was written by Charles Childers, Ron Aaron, and   )
-( others. It is gifted to the public domain.                  )
-( - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - )
 
 {{
   create which 0 , 0 , 0 , 0 , 0 , 0 , 0 ,

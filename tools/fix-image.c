@@ -5,9 +5,6 @@
  * As part of the build system, it detects the host
  * native word size (used by Toka), and only does the
  * conversion if the native word size is not 32-bits.
- *
- * Written by Charles Childers, released into the public
- * domain
  ******************************************************/
 
 #include <stdio.h>

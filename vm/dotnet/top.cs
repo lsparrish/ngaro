@@ -1,8 +1,7 @@
 /******************************************************
  * Ngaro for Mono / .NET
  *
- * Written by Simon Waite and Charles Childers
- * This code is gifted to the public domain.
+ * Copyright (c) 2009, Simon Waite and Charles Childers
  *
  * Please compile with `gmcs` as `mcs` seems to have a
  * simple Console.in implementation.

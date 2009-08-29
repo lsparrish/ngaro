@@ -1,6 +1,5 @@
 ( ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ )
 ( Quotes for Retro                                            )
-( This code is gifted to the public domain. Share freely.     )
 ( ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ )
 ( This implements quotes and a few words to work with them.   )
 ( Quotes are anonymous, nestable blocks of code.              )

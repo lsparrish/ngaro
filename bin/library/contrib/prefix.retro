@@ -1,6 +1,4 @@
 ( ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ )
-( This code is gifted to the public domain. Share freely.     )
-( ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ )
 ( One of the more interesting features in Retro 9.x was the   )
 ( support for appending single character prefixes to words to )
 ( alter their behaviour.                                      )

@@ -1,7 +1,6 @@
 /**********************************************************************
  * Ngaro Virtual Machine
- * Written by Charles Childers
- * This code is gifted to the public domain.
+ * Copyright (C) 2008, 2009, Charles Childers
  **********************************************************************
  * This is mostly a straightforward port of the original C
  * implementation with a crude approximation of a text console

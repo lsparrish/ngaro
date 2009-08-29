@@ -1,8 +1,6 @@
 /******************************************************
  * Ngaro
- *
- * Written by Charles Childers, released into the public
- * domain
+ * Copyright (C) 2008, 2009, Charles Childers
  ******************************************************/
 
 #include <stdio.h>
@@ -63,9 +61,7 @@ int main(int argc, char **argv)
     }
     else if (strcmp(argv[i], "--about") == 0)
     {
-      fprintf(stderr, "Retro Language  [VM: C, console]\n");
-      fprintf(stderr, "The Retro language and documentation have been gifted to the\n");
-      fprintf(stderr, "public domain. Use it as you see fit.\n\n");
+      fprintf(stderr, "Retro Language  [VM: C, console]\n\n");
       exit(0);
     }
     else

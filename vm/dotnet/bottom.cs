@@ -236,9 +236,7 @@
       }
       if (arg == "--about")
       {
-        Console.Write("Retro Language  [VM: C#, .NET]\n");
-        Console.Write("The Retro language and documentation have been gifted to the\n");
-        Console.Write("public domain. Use it as you see fit.\n\n");
+        Console.Write("Retro Language  [VM: C#, .NET]\n\n");
         Environment.Exit(0);
       }
     }

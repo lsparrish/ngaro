@@ -1,8 +1,14 @@
+/*
+ * Copyright (c) 2009, Simon Waite and Charles Childers
+ * Based on the C# implementation
+*/
+
 import java.*;
 import java.io.*;
 
 
 /**
+ * @author Simon Waite
  * @author Charles Childers
  *
  * The retro class contains the Ngaro VM and an initial

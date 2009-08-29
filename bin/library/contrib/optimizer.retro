@@ -1,6 +1,5 @@
 ( ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ )
 ( Compiler Optimizations for Retro 10                         )
-( This code is gifted to the public domain. Share freely.     )
 ( ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ )
 ( This is an experimental set of extensions to the core Retro )
 ( compiler. The words are extended in various ways with the   )

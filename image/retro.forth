@@ -1,8 +1,5 @@
 #! ------------------------------------------------------------
 #! Retro, a dialect of Forth
-#!
-#! This code was written by Charles Childers and is gifted to
-#! the public domain.
 #! ------------------------------------------------------------
    3072 is-data SCRATCH-START
    4096 is-data TIB

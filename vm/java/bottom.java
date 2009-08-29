@@ -267,8 +267,6 @@
         if (args[i].equals("--about"))
         {
           System.out.println("Retro Language  [VM: java]");
-          System.out.println("The Retro language and documentation have been gifted to the");
-          System.out.println("public domain. Use it as you see fit.");
           System.exit(0);
         }
       }
