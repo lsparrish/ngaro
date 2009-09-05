@@ -1,21 +1,49 @@
-RETRO
+ _   _
+| \ | | __ _  __ _ _ __ ___
+|  \| |/ _` |/ _` | '__/ _ \
+| |\  | (_| | (_| | | | (_) |
+|_| \_|\__, |\__,_|_|  \___/
+       |___/  Virtual Machine
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-This is a small dialect of Forth. It's minimalistic in nature
-and is designed to be fairly easy to learn and customize for
-specific needs.
-
-There are two parts to Retro, an executable which provides the
-virtual machine, and an image file which contains the actual
-Retro language.
-
-The virtual machine includes a minimal image. If it can't
-find a retroImage and no other image is specified on the
-command line, it will start the minimal image.
-
-An extended image can be built. Look in the bin/library
-directory for additional modules and a shell script to help
-make building custom images a bit easier. You will need the
-C console implementation to use it.
-
-The latest docmentation can be found in the 'doc' directory.
+Ngaro is a portable virtual machine / emulator for a dual
+stack processor and various I/O devices. The instruction set
+is concise (31 core instructions), and the basic I/O devices
+are kept minimal to ensure maximum portability and ease of
+implementation.
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Opcode   Name          Description
+000      nop           Do nothing
+001      lit           Push a value to the stack
+002      dup           Duplicate TOS
+003      drop          Lose TOS
+004      swap          Swap TOS and NOS
+005      push          Move a value from data stack to the
+                       address stack
+006      pop           Move a value from address stack to data
+                       stack
+007      call          Call a subroutine
+008      jump          Jump to a new address
+009      return        Return from a call
+010      gt_jump       Jump if NOS is greather than TOS
+011      lt_jump       Jump if NOS is less than TOS
+012      ne_jump       Jump if TOS and NOS are not equal
+013      eq_jump       Jump if TOS and NOS are equal
+014      fetch         Fetch from address at TOS
+015      store         Store NOS to address in TOS
+016      add           Add TOS to NOS
+017      subtract      Subtract TOS from NOS
+018      multiply      Multiply TOS and NOS
+019      divmod        Divide and get Remainder
+020      and           Bitwise AND
+021      or            Bitwise OR
+022      xor           Bitwise XOR
+023      shift_left    Shift bits right
+024      shift_right   Shift bits left
+025      zero_return   Return and drop TOS if TOS is 0.
+                       If TOS is not 0, do nothing.
+026      inc           Increment TOS by 1
+027      dec           Decrement TOS by 1
+028      in            Read a value from an I/O port
+029      out           Send a value to an I/O port
+039      wait          Wait for an I/O event
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
