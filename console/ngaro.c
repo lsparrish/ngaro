@@ -17,13 +17,12 @@
  ******************************************************/
 int main(int argc, char **argv)
 {
-  int a, i, trace, endian, minimal;
+  int a, i, trace, endian;
 
   VM *vm = malloc(sizeof(VM));
 
   trace = 0;
   endian = 0;
-  minimal = 0;
 
   strcpy(vm->filename, "retroImage");
 
@@ -40,10 +39,6 @@ int main(int argc, char **argv)
     else if (strcmp(argv[i], "--endian") == 0)
     {
       endian = 1;
-    }
-    else if (strcmp(argv[i], "--minimal") == 0)
-    {
-      minimal = 1;
     }
     else if (strcmp(argv[i], "--with") == 0)
     {
@@ -72,13 +67,13 @@ int main(int argc, char **argv)
 
   dev_init(OUTPUT);
 
-  if (minimal == 0)
+  a = vm_load_image(vm, vm->filename);
+  if (a == -1)
   {
-    /* Load the image */
-    a = vm_load_image(vm, vm->filename);
+    dev_cleanup();
+    printf("Sorry, unable to find %s\n", vm->filename);
+    exit(1);
   }
-  if (a == -1 || minimal == 1)
-    initial_image(vm);
 
   /* Swap endian if --endian was passed */
   if (endian == 1)
