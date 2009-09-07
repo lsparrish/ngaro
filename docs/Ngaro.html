@@ -1,0 +1,917 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.5: http://docutils.sourceforge.net/" />
+<title></title>
+<style type="text/css">
+
+/* used to remove borders from tables and images */
+.borderless, table.borderless td, table.borderless th
+{
+  border: 0
+}
+
+table.borderless td, table.borderless th
+{
+  /* Override padding for "table.docutils td" with "! important".
+     The right padding separates the table cells. */
+  padding: 0 0.5em 0 0 ! important
+}
+
+.first
+{
+  /* Override more specific margin styles with "! important". */
+  margin-top: 0 ! important
+}
+
+.last, .with-subtitle
+{
+  margin-bottom: 0 ! important
+}
+
+.hidden
+{
+  display: none
+}
+
+a.toc-backref
+{
+  text-decoration: none;
+  color: black
+}
+
+blockquote.epigraph
+{
+  margin: 2em 5em;
+}
+
+dl.docutils dd
+{
+  margin-bottom: 0.5em
+}
+
+div.abstract
+{
+  margin: 2em 5em
+}
+
+div.abstract p.topic-title
+{
+  font-weight: bold;
+  text-align: center
+}
+
+div.admonition, div.attention, div.caution, div.danger, div.error,
+div.hint, div.important, div.note, div.tip, div.warning
+{
+  margin: 2em;
+  border: medium outset;
+  padding: 1em
+}
+
+div.admonition p.admonition-title, div.hint p.admonition-title,
+div.important p.admonition-title, div.note p.admonition-title,
+div.tip p.admonition-title
+{
+  font-weight: bold;
+  font-family: sans-serif
+}
+
+div.attention p.admonition-title, div.caution p.admonition-title,
+div.danger p.admonition-title, div.error p.admonition-title,
+div.warning p.admonition-title
+{
+  color: red;
+  font-weight: bold;
+  font-family: sans-serif
+}
+
+div.dedication
+{
+  margin: 2em 5em;
+  text-align: center;
+  font-style: italic
+}
+
+div.dedication p.topic-title
+{
+  font-weight: bold;
+  font-style: normal
+}
+
+div.figure
+{
+  margin-left: 2em;
+  margin-right: 2em
+}
+
+div.footer, div.header
+{
+  clear: both;
+  font-size: smaller
+}
+
+div.line-block
+{
+  display: block;
+  margin-top: 1em;
+  margin-bottom: 1em;
+  margin-left: 2em;
+  font: monospace, sans-serif;
+}
+
+div.line-block div.line-block
+{
+  margin-top: 0;
+  margin-bottom: 0;
+  margin-left: 1.5em
+}
+
+div.sidebar
+{
+  margin: 0 0 0.5em 1em;
+  border: medium outset;
+  padding: 1em;
+  background-color: #ffffee;
+  width: 40%;
+  float: right;
+  clear: right
+}
+
+div.sidebar p.rubric
+{
+  font-family: sans-serif;
+  font-size: medium
+}
+
+div.system-messages
+{
+  margin: 5em
+}
+
+div.system-messages h1
+{
+  color: red
+}
+
+div.system-message
+{
+  border: medium outset;
+  padding: 1em
+}
+
+div.system-message p.system-message-title
+{
+  color: red;
+  font-weight: bold
+}
+
+div.topic
+{
+  margin: 2em
+}
+
+h1.section-subtitle, h2.section-subtitle, h3.section-subtitle,
+h4.section-subtitle, h5.section-subtitle, h6.section-subtitle
+{
+  margin-top: 0.4em
+}
+
+h1.title
+{
+  text-align: center
+}
+
+h2.subtitle
+{
+  text-align: center
+}
+
+hr.docutils
+{
+  width: 75%
+}
+
+img.align-left
+{
+  clear: left
+}
+
+img.align-right
+{
+  clear: right
+}
+
+ol.simple, ul.simple
+{
+  margin-bottom: 1em
+}
+
+ol.arabic
+{
+  list-style: decimal
+}
+
+ol.loweralpha
+{
+  list-style: lower-alpha
+}
+
+ol.upperalpha
+{
+  list-style: upper-alpha
+}
+
+ol.lowerroman
+{
+  list-style: lower-roman
+}
+
+ol.upperroman
+{
+  list-style: upper-roman
+}
+
+p.attribution
+{
+  text-align: right;
+  margin-left: 50%
+}
+
+p.caption
+{
+  font-style: italic
+}
+
+p.credits
+{
+  font-style: italic;
+  font-size: smaller
+}
+
+p.label
+{
+  white-space: nowrap
+}
+
+p.rubric
+{
+  font-weight: bold;
+  font-size: larger;
+  color: maroon;
+  text-align: center
+}
+
+p.sidebar-title
+{
+  font-family: sans-serif;
+  font-weight: bold;
+  font-size: larger
+}
+
+p.sidebar-subtitle
+{
+  font-family: sans-serif;
+  font-weight: bold
+}
+
+p.topic-title
+{
+  font-weight: bold
+}
+
+pre.address
+{
+  margin-bottom: 0;
+  margin-top: 0;
+  font-family: serif;
+  font-size: 100%
+}
+
+pre.literal-block, pre.doctest-block
+{
+  margin-left: 2em;
+  margin-right: 2em
+}
+
+span.classifier
+{
+  font-family: sans-serif;
+  font-style: oblique
+}
+
+span.classifier-delimiter
+{
+  font-family: sans-serif;
+  font-weight: bold
+}
+
+span.interpreted
+{
+  font-family: sans-serif
+}
+
+span.option
+{
+  white-space: nowrap
+}
+
+span.pre
+{
+  white-space: pre
+}
+
+span.problematic
+{
+  color: red
+}
+
+span.section-subtitle
+{
+  /* font-size relative to parent (h1..h6 element) */
+  font-size: 80%
+}
+
+table.citation
+{
+  border-left: solid 1px gray;
+  margin-left: 1px
+}
+
+table.docinfo
+{
+  margin: 2em 4em
+}
+
+table.docutils
+{
+  margin-top: 0.5em;
+  margin-bottom: 0.5em
+}
+
+table.footnote
+{
+  border-left: solid 1px black;
+  margin-left: 1px
+}
+
+table.docutils td, table.docutils th,
+table.docinfo td, table.docinfo th
+{
+  padding-left: 0.5em;
+  padding-right: 0.5em;
+  vertical-align: top
+}
+
+table.docutils th.field-name, table.docinfo th.docinfo-name
+{
+  font-weight: bold;
+  text-align: left;
+  white-space: nowrap;
+  padding-left: 0
+}
+
+h1 tt.docutils, h2 tt.docutils, h3 tt.docutils,
+h4 tt.docutils, h5 tt.docutils, h6 tt.docutils
+{
+  font-size: 100%
+}
+
+ul.auto-toc
+{
+  list-style-type: none
+}
+
+
+body
+{
+  font-family: Arial, sans-serif;
+}
+
+em, i
+{
+  /* Typically serif fonts have much nicer italics */
+  font-family: Times New Roman, Times, serif;
+}
+
+a.target
+{
+  color: blue;
+}
+
+a.target
+{
+  color: blue;
+}
+
+a.toc-backref
+{
+  text-decoration: none;
+  color: black;
+}
+
+a.toc-backref:hover
+{
+  background-color: inherit;
+}
+
+a:hover
+{
+  background-color: #cccccc;
+}
+
+div.attention, div.caution, div.danger, div.error, div.hint,
+div.important, div.note, div.tip, div.warning
+{
+  background-color: #cccccc;
+  padding: 3px;
+  width: 80%;
+}
+
+div.admonition p.admonition-title, div.hint p.admonition-title,
+div.important p.admonition-title, div.note p.admonition-title,
+div.tip p.admonition-title
+{
+  text-align: center;
+  background-color: #999999;
+  display: block;
+  margin: 0;
+}
+
+div.attention p.admonition-title, div.caution p.admonition-title,
+div.danger p.admonition-title, div.error p.admonition-title,
+div.warning p.admonition-title
+{
+  color: #cc0000;
+  font-family: sans-serif;
+  text-align: center;
+  background-color: #999999;
+  display: block;
+  margin: 0;
+}
+
+h1, h2, h3, h4, h5, h6
+{
+  font-family: Helvetica, Arial, sans-serif;
+  border: thin solid black;
+  /* This makes the borders rounded on Mozilla, which pleases me */
+  -moz-border-radius: 8px;
+  padding: 4px;
+}
+
+h1
+{
+  background-color: #617755;
+  color: #000000;
+  border: medium solid black;
+}
+
+h1 a.toc-backref, h2 a.toc-backref
+{
+  color: #ffffff;
+}
+
+h2
+{
+  background-color: #666666;
+  color: #ffffff;
+  border: medium solid black;
+}
+
+h3, h4, h5, h6
+{
+  background-color: #cccccc;
+  color: #000000;
+}
+
+h3 a.toc-backref, h4 a.toc-backref, h5 a.toc-backref, h6 a.toc-backref
+{
+  color: #000000;
+}
+
+h1.title
+{
+  text-align: center;
+  background-color: #444499;
+  color: #eeeeee;
+  border: thick solid black;
+  -moz-border-radius: 20px;
+}
+
+table.footnote
+{
+  padding-left: 0.5ex;
+}
+
+table.citation
+{
+  padding-left: 0.5ex
+}
+
+pre.literal-block, pre.doctest-block
+{
+  border: thin black solid;
+  padding: 5px;
+}
+
+.image img
+{
+  border-style: solid;
+  border-width: 2px;
+}
+
+h1 tt, h2 tt, h3 tt, h4 tt, h5 tt, h6 tt
+{
+  font-size: 100%;
+}
+
+code, tt
+{
+}
+
+body
+{
+  width: 70%;
+}
+
+</style>
+</head>
+<body>
+<div class="document">
+
+
+<div class="section" id="overview">
+<h1>Overview</h1>
+<p>Ngaro is a portable virtual machine and emulator for a
+stack computer. It is designed to be small, easy to
+implement, and easy to extend for specific needs.</p>
+</div>
+<div class="section" id="instruction-set">
+<h1>Instruction Set</h1>
+<p>The instruction set is small, consisting of 31 primary
+instructions. (Some implementations have extended instruction
+sets).</p>
+<p>Encoding is kept minimal. One instruction per memory location,
+with certain instructions taking a value from the following
+location.</p>
+<p>All opcodes in the list below are in decimal.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="6%" />
+<col width="11%" />
+<col width="83%" />
+</colgroup>
+<tbody valign="top">
+<tr><td>Opcode</td>
+<td>Name</td>
+<td>Description</td>
+</tr>
+<tr><td>000</td>
+<td>nop</td>
+<td>Do nothing</td>
+</tr>
+<tr><td>001</td>
+<td>lit</td>
+<td>Push a value to the stack. The value is taken from the following memory location.</td>
+</tr>
+<tr><td>002</td>
+<td>dup</td>
+<td>Duplicate TOS</td>
+</tr>
+<tr><td>003</td>
+<td>drop</td>
+<td>Lose TOS</td>
+</tr>
+<tr><td>004</td>
+<td>swap</td>
+<td>Swap TOS and NOS</td>
+</tr>
+<tr><td>005</td>
+<td>push</td>
+<td>Move a value from data stack to the
+address stack</td>
+</tr>
+<tr><td>006</td>
+<td>pop</td>
+<td>Move a value from address stack to data
+stack</td>
+</tr>
+<tr><td>007</td>
+<td>call</td>
+<td>Call a subroutine. The address of the subroutine is in the following memory location.</td>
+</tr>
+<tr><td>008</td>
+<td>jump</td>
+<td>Jump to a new address. The address is in the following memory location.</td>
+</tr>
+<tr><td>009</td>
+<td>return</td>
+<td>Return from a call</td>
+</tr>
+<tr><td>010</td>
+<td>gt_jump</td>
+<td>Jump if NOS is greather than TOS. The address is in the following memory location.</td>
+</tr>
+<tr><td>011</td>
+<td>lt_jump</td>
+<td>Jump if NOS is less than TOS. The address is in the following memory location.</td>
+</tr>
+<tr><td>012</td>
+<td>ne_jump</td>
+<td>Jump if TOS and NOS are not equal. The address is in the following memory location.</td>
+</tr>
+<tr><td>013</td>
+<td>eq_jump</td>
+<td>Jump if TOS and NOS are equal. The address is in the following memory location.</td>
+</tr>
+<tr><td>014</td>
+<td>fetch</td>
+<td>Fetch from address at TOS</td>
+</tr>
+<tr><td>015</td>
+<td>store</td>
+<td>Store NOS to address in TOS</td>
+</tr>
+<tr><td>016</td>
+<td>add</td>
+<td>Add TOS to NOS</td>
+</tr>
+<tr><td>017</td>
+<td>subtract</td>
+<td>Subtract TOS from NOS</td>
+</tr>
+<tr><td>018</td>
+<td>multiply</td>
+<td>Multiply TOS and NOS</td>
+</tr>
+<tr><td>019</td>
+<td>divmod</td>
+<td>Divide and get Remainder</td>
+</tr>
+<tr><td>020</td>
+<td>and</td>
+<td>Bitwise AND</td>
+</tr>
+<tr><td>021</td>
+<td>or</td>
+<td>Bitwise OR</td>
+</tr>
+<tr><td>022</td>
+<td>xor</td>
+<td>Bitwise XOR</td>
+</tr>
+<tr><td>023</td>
+<td>shift_left</td>
+<td>Shift bits right</td>
+</tr>
+<tr><td>024</td>
+<td>shift_right</td>
+<td>Shift bits left</td>
+</tr>
+<tr><td>025</td>
+<td>zero_return</td>
+<td>Return and drop TOS if TOS is 0. If TOS is not 0, do nothing.</td>
+</tr>
+<tr><td>026</td>
+<td>inc</td>
+<td>Increment TOS by 1</td>
+</tr>
+<tr><td>027</td>
+<td>dec</td>
+<td>Decrement TOS by 1</td>
+</tr>
+<tr><td>028</td>
+<td>in</td>
+<td>Read a value from an I/O port</td>
+</tr>
+<tr><td>029</td>
+<td>out</td>
+<td>Send a value to an I/O port</td>
+</tr>
+<tr><td>039</td>
+<td>wait</td>
+<td>Wait for an I/O event</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="i-o-devices">
+<h1>I/O Devices</h1>
+<p>Ngaro provides a minimal set of hardware devices, accessible via a collection of I/O
+ports. The <em>in</em>, <em>out</em>, and <em>wait</em> instructions are used to access these.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="11%" />
+<col width="89%" />
+</colgroup>
+<tbody valign="top">
+<tr><td>Port</td>
+<td>Description</td>
+</tr>
+<tr><td>000</td>
+<td>Device wait state</td>
+</tr>
+<tr><td>001</td>
+<td>Keyboard Input</td>
+</tr>
+<tr><td>002</td>
+<td>Console Output</td>
+</tr>
+<tr><td>003</td>
+<td>Force Console Update</td>
+</tr>
+<tr><td>004</td>
+<td>Save Image</td>
+</tr>
+<tr><td>005</td>
+<td>Capabilities Query</td>
+</tr>
+<tr><td>006</td>
+<td>Canvas Output</td>
+</tr>
+<tr><td>007</td>
+<td>Mouse Input</td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="port-0-trigger-i-o-event">
+<h2>Port 0: Trigger I/O Event</h2>
+<p>To tell Ngaro that an I/O event is coming, write the appropiate values to one of the
+ports, write <em>0</em> to port <em>0</em>, then invoke the <em>wait</em> instruction.</p>
+<div class="line-block">
+<div class="line">lit 0  # value</div>
+<div class="line">lit 0  # port</div>
+<div class="line">out    # write value to port</div>
+<div class="line">wait   # wait for an I/O event</div>
+</div>
+</div>
+<div class="section" id="port-1-keyboard-input">
+<h2>Port 1: Keyboard Input</h2>
+<p>Reading from the keyboard is easy. Send <em>1</em> to port <em>1</em> and then trigger an I/O event.
+After the I/O event returns, read the keypress from port <em>1</em>. If a non-keyboard event
+is received, the read result will be <em>0</em>, otherwise it will be the ASCII value of the
+pressed key.</p>
+<div class="line-block">
+<div class="line">lit 1</div>
+<div class="line">lit 1  # keyboard port</div>
+<div class="line">out</div>
+<div class="line"># --- wait for I/O event ---</div>
+<div class="line">lit 0</div>
+<div class="line">lit 0</div>
+<div class="line">out</div>
+<div class="line">wait</div>
+<div class="line"># --- read keypress ---</div>
+<div class="line">lit 1</div>
+<div class="line">in</div>
+</div>
+</div>
+<div class="section" id="port-2-console-output">
+<h2>Port 2: Console Output</h2>
+<p>Writing a character to the console is also easy. Push the ASCII code to the
+screen, then send <em>1</em> to port <em>2</em> and trigger an I/O event.</p>
+<div class="line-block">
+<div class="line">lit 98 # ASCII code for 'b'</div>
+<div class="line">lit 1</div>
+<div class="line">lit 2  # console output port</div>
+<div class="line">out</div>
+<div class="line"># --- wait for I/O event ---</div>
+<div class="line">lit 0</div>
+<div class="line">lit 0</div>
+<div class="line">out</div>
+<div class="line">wait</div>
+</div>
+</div>
+<div class="section" id="port-3-force-console-update">
+<h2>Port 3: Force Console Update</h2>
+<p>The Ngaro VM is allowed to cache updates to the console (and canvas). You can
+force a screen update using port <em>3</em>.</p>
+<p>Port <em>3</em> is normally set to <em>1</em>. To trigger a screen update, send <em>0</em> to it.</p>
+<div class="line-block">
+<div class="line">lit 0</div>
+<div class="line">lit 3  # force screen update</div>
+<div class="line">out</div>
+</div>
+<p><em>Note: You do _not_ need to wait for an I/O event on this port.</em></p>
+</div>
+<div class="section" id="port-4-save-the-image">
+<h2>Port 4: Save the Image</h2>
+<p>Port 4 is used to save the image. Send <em>1</em> to port <em>4</em> and trigger an I/O event.</p>
+<p><em>Note: Not all implementations allow this to be done.</em></p>
+</div>
+<div class="section" id="port-5-query-capabilities">
+<h2>Port 5: Query Capabilities</h2>
+<p>Port 5 is used to query Ngaro about the provided hardware emulation and
+some aspects of the processor state.</p>
+<p>Send one of the following to port <em>5</em>, trigger an I/O event, then read
+port <em>5</em> to get the results.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="11%" />
+<col width="89%" />
+</colgroup>
+<tbody valign="top">
+<tr><td>Value</td>
+<td>Action</td>
+</tr>
+<tr><td>-1</td>
+<td>Return amount of memory</td>
+</tr>
+<tr><td>-2</td>
+<td>Is canvas present? -1 if true, 0 if false</td>
+</tr>
+<tr><td>-3</td>
+<td>Get canvas width</td>
+</tr>
+<tr><td>-4</td>
+<td>Get canvas height</td>
+</tr>
+<tr><td>-5</td>
+<td>Get stack depth</td>
+</tr>
+<tr><td>-6</td>
+<td>Get address stack depth</td>
+</tr>
+<tr><td>-7</td>
+<td>Is mouse present? -1 if true, 0 if false</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="port-6-draw-on-the-canvas">
+<h2>Port 6: Draw on the Canvas</h2>
+<p>Port 6 is used to draw on the canvas.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="6%" />
+<col width="94%" />
+</colgroup>
+<tbody valign="top">
+<tr><td>Value</td>
+<td>Action</td>
+</tr>
+<tr><td>001</td>
+<td>Set color. Takes <em>color</em> value from the stack.</td>
+</tr>
+<tr><td>002</td>
+<td>Draw a pixel. Takes <em>x</em> and <em>y</em> from the stack.</td>
+</tr>
+<tr><td>003</td>
+<td>Draw a hollow rectangle. Takes <em>width</em>, <em>height</em>, <em>x</em>, and <em>y</em> from the stack.</td>
+</tr>
+<tr><td>004</td>
+<td>Draw a filled rectangle. Takes <em>width</em>, <em>height</em>, <em>x</em>, and <em>y</em> from the stack.</td>
+</tr>
+<tr><td>005</td>
+<td>Draw a vertical line. Takes <em>height</em>, <em>x</em>, and <em>y</em> from the stack.</td>
+</tr>
+<tr><td>006</td>
+<td>Draw a horizontal line. Takes <em>width</em>, <em>x</em>, and <em>y</em> from the stack.</td>
+</tr>
+<tr><td>007</td>
+<td>Draw a hollow circle. Takes <em>width</em>, <em>x</em>, and <em>y</em> from the stack.</td>
+</tr>
+<tr><td>008</td>
+<td>Draw a filled circle. Takes <em>width</em>, <em>x</em>, and <em>y</em> from the stack.</td>
+</tr>
+</tbody>
+</table>
+<p><em>Note: Not all implementations will support the canvas.</em></p>
+</div>
+<div class="section" id="port-7-interact-with-the-mouse">
+<h2>Port 7: Interact with the Mouse</h2>
+<p>Port 7 is used to interact with the mouse device.</p>
+<p>To obtain mouse position, send <em>1</em> to port <em>7</em> and trigger an I/O
+event.</p>
+<div class="line-block">
+<div class="line">lit 1</div>
+<div class="line">lit 7</div>
+<div class="line">out</div>
+<div class="line"># --- wait for I/O event ---</div>
+<div class="line">lit 0</div>
+<div class="line">lit 0</div>
+<div class="line">out</div>
+<div class="line">wait</div>
+</div>
+<p>The mouse coordinates will be placed on the stack. The Y coordinate
+will be TOS, and the X coordinate will be NOS.</p>
+<p>To obtain the button press state, send <em>2</em> to port <em>7</em> and trigger
+an I/O event.</p>
+<div class="line-block">
+<div class="line">lit 2</div>
+<div class="line">lit 7</div>
+<div class="line">out</div>
+<div class="line"># --- wait for I/O event ---</div>
+<div class="line">lit 0</div>
+<div class="line">lit 0</div>
+<div class="line">out</div>
+<div class="line">wait</div>
+</div>
+<p>The button state will be placed on the stack. <em>1</em> if a button is
+pressed, or <em>2</em> if a button is not pressed.</p>
+</div>
+</div>
+</div>
+</body>
+</html>
