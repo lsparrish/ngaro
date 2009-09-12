@@ -29,6 +29,8 @@ int main(int argc, char **argv)
   init_vm(vm);
   dev_init(INPUT);
 
+  vm->shrink = 0;
+
   /* Parse the command line arguments */
   for (i = 1; i < argc; i++)
   {
@@ -44,6 +46,10 @@ int main(int argc, char **argv)
     {
       i++; dev_include(argv[i]);
     }
+    else if (strcmp(argv[i], "--shrink") == 0)
+    {
+      vm->shrink = 1;
+    }
     else if (strcmp(argv[i], "--help") == 0)
     {
       fprintf(stderr, "%s [options] [imagename]\n", argv[0]);
@@ -51,6 +57,7 @@ int main(int argc, char **argv)
       fprintf(stderr, "   --about        Display some information about Ngaro\n");
       fprintf(stderr, "   --trace        Execution trace\n");
       fprintf(stderr, "   --endian       Load an image with a different endianness\n");
+      fprintf(stderr, "   --shrink       Shrink the image to the current heap size when saving\n");
       fprintf(stderr, "   --with [file]  Treat [file] as an input source\n");
       exit(0);
     }

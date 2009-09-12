@@ -25,6 +25,7 @@ typedef struct {
   int data[STACK_DEPTH];
   int address[ADDRESSES];
   int ports[1024];
+  int shrink;
   int image[IMAGE_SIZE];
   int padding;
   char filename[2048];
