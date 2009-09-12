@@ -19,6 +19,7 @@ namespace Retro.Forth
     int[] address;
     int[] ports;
     int[] memory;
+    int shrink;
 
     enum OpCodes
     {
@@ -104,12 +105,17 @@ namespace Retro.Forth
 
     public void saveImage()
     {
-      int i;
+      int i, j;
       BinaryWriter binWriter = new BinaryWriter(File.Open("retroImage", FileMode.Create));
       try
       {
         i = 0;
-        while (i < 5000000)
+        if (shrink == 0)
+          j = 5000000;
+        else
+          j = memory[3];
+
+        while (i < j)
         {
           binWriter.Write(memory[i]); i++;
         }
@@ -364,6 +370,7 @@ namespace Retro.Forth
   public static void Main(string [] args)
   {
     VM vm = new VM();
+    vm.shrink = 0;
 
     foreach(string arg in args)
     {
@@ -371,6 +378,10 @@ namespace Retro.Forth
       {
         for (int i = 0; i < 5000000; i++)
           vm.memory[i] = vm.switchEndian(vm.memory[i]);
+      }
+      if (arg == "--shrink")
+      {
+        vm.shrink = 1;
       }
       if (arg == "--about")
       {
