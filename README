@@ -11,6 +11,22 @@ is concise (31 core instructions), and the basic I/O devices
 are kept minimal to ensure maximum portability and ease of
 implementation.
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Quick Start:
+
+Console (C) implementation:
+
+  cd tools
+  make
+  cd ..
+  cd console
+  make
+
+If you have Mono, you can build the .NET port as well:
+
+  cd dotnet
+  make
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Opcode   Name          Description
 000      nop           Do nothing
 001      lit           Push a value to the stack
