@@ -96,6 +96,11 @@ int handle_devices(void *unused)
       {
         drawcharacter(tx, ty, c);
         tx += 8;
+        if (c == 8)
+        {
+          tx -= 16;
+          drawcharacter(tx, ty, '_');
+        }
         if (c == 10)
         {
           tx  = 0;
