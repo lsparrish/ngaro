@@ -39,6 +39,8 @@ int main(int argc, char **argv)
   init_vm();
   init_devices();
 
+  vm.shrink = 0;
+
   /* Parse the command line arguments */
   for (i = 1; i < argc; i++)
   {
@@ -50,12 +52,17 @@ int main(int argc, char **argv)
     {
       endian = 1;
     }
+    else if (strcmp(argv[i], "--shrink") == 0)
+    {
+      vm.shrink = 1;
+    }
     else if (strcmp(argv[i], "--help") == 0)
     {
       fprintf(stderr, "%s [options] [imagename]\n", argv[0]);
       fprintf(stderr, "Valid options are:\n");
       fprintf(stderr, "   --trace    Execution trace\n");
       fprintf(stderr, "   --endian   Load an image with a different endianness\n");
+      fprintf(stderr, "   --shrink   Only save used heap during save operation\n");
       exit(0);
     }
     else

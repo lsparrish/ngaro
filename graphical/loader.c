@@ -57,7 +57,10 @@ int vm_save_image(char *image)
     exit(-1);
   }
 
-  x = fwrite(&vm.image, sizeof(int), IMAGE_SIZE, fp);
+  if (vm.shrink == 0)
+    x = fwrite(&vm.image, sizeof(int), IMAGE_SIZE, fp);
+  else
+    x = fwrite(&vm.image, sizeof(int), vm.image[3], fp);
   fclose(fp);
 
   return x;

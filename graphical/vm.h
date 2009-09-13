@@ -33,6 +33,7 @@ typedef struct {
   int address[ADDRESSES];
   int ports[1024];
   int image[IMAGE_SIZE+VIDEO_MEM];
+  int shrink;
   char filename[2048];
 } VM_STATE;
 
