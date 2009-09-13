@@ -28,7 +28,7 @@ typedef struct {
 } DEVICES;
 
 DEVICES io;
-int tx, ty;
+int tx, ty, mousex, mousey, mouseb;
 
 /******************************************************
  *|F| void draw_character(int x, int y, int character)
@@ -82,6 +82,16 @@ int handle_devices(void *unused)
              vm.ports[0] = 1;
              break;
         case SDL_KEYUP:
+             break;
+        case SDL_MOUSEMOTION:
+             mousex = event.motion.x;
+             mousey = event.motion.y;
+             break;
+        case SDL_MOUSEBUTTONDOWN:
+             mouseb = 1;
+             break;
+        case SDL_MOUSEBUTTONUP:
+             mouseb = 0;
              break;
         case SDL_QUIT:
              vm.ip = IMAGE_SIZE;
@@ -159,7 +169,21 @@ int handle_devices(void *unused)
     }
     if (vm.ports[5] == -7)
     {
-      vm.ports[5] = 0; // NOTE: change to -1 when mouse events are added
+      vm.ports[5] = -1;
+      vm.ports[0] = 1;
+    }
+
+    if (vm.ports[7] == 1)
+    {
+      vm.sp++; vm.data[vm.sp] = mousex;
+      vm.sp++; vm.data[vm.sp] = mousey;
+      vm.ports[7] = 0;
+      vm.ports[0] = 1;
+    }
+    if (vm.ports[7] == 2)
+    {
+      vm.sp++; vm.data[vm.sp] = mouseb;
+      vm.ports[7] = 0;
       vm.ports[0] = 1;
     }
   }
