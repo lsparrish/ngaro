@@ -1,0 +1,19 @@
+Mouse Support:
+
+Globals:
+int mousex, mousey, mouseb;
+
+Event Handler:
+if (event.type == SDL_MOUSEMOTION)
+{
+  mousex = event.motion.x;
+  mousey = event.motion.y;
+}
+if (event.type == SDL_MOUSEBUTTONDOWN)
+{
+  mouseb = 1;
+}
+if (event.type == SDL_MOUSEBUTTONUP)
+{
+  mouseb = 0;
+}
