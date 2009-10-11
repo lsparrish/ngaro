@@ -3,7 +3,7 @@ MIDlet-Jar-Size: 32768
 MIDlet-Jar-URL: Retro.jar
 MIDlet-Name: Retro
 MIDlet-Vendor: retroforth.org
-MIDlet-Version: 1.0
+MIDlet-Version: 10.3
 MicroEdition-Configuration: CLDC-1.0
 MicroEdition-Profile: MIDP-1.0
 
