@@ -147,6 +147,20 @@ namespace Retro.Forth
     }
 
 
+    public int read_key()
+    {
+      ConsoleKeyInfo cki = Console.ReadKey();
+      int a = (int)cki.KeyChar;
+      if (cki.Key == ConsoleKey.Backspace)
+      {
+        a = 8;
+        Console.Write(a);
+      }
+      if ( a >= 32)
+        Console.Write((char)8);
+      return a;
+    }
+
   public void HandleDevices()
   {
     if (ports[0] == 1)
@@ -154,15 +168,7 @@ namespace Retro.Forth
 
     if (ports[0] == 0 && ports[1] == 1)
     {
-      ConsoleKeyInfo cki = Console.ReadKey();
-      int a = (int)cki.KeyChar;
-      if (cki.Key == ConsoleKey.Backspace)
-      {
-        a = 8;
-        Console.Write('a');
-      }
-      if (a >= 32)
-        Console.Write((char)8);
+      int a = read_key();
       ports[1] = a;
       ports[0] = 1;
     }
