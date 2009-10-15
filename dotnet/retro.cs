@@ -21,11 +21,13 @@ namespace Retro.Forth
     int[] memory;
     int shrink;
 
+    /* Variables used for input stack */
     string[] inputs;
     int[] lengths;
     int isp;
     int offset;
 
+    /* Opcodes recognized by the VM */
     enum OpCodes
     {
       VM_NOP,       VM_LIT,       VM_DUP,
@@ -41,7 +43,7 @@ namespace Retro.Forth
       VM_WAIT
     }
 
-
+    /* Initialize the VM */
     public VM()
     {
       sp = 0;
@@ -60,7 +62,7 @@ namespace Retro.Forth
       Retro();
     }
 
-
+    /* Convert the endian of an image */
     public int switchEndian(int value)
     {
       int b1 = (value >>  0) & 0xff;
@@ -70,7 +72,7 @@ namespace Retro.Forth
       return b1 << 24 | b2 << 16 | b3 << 8 | b4 << 0;
     }
 
-
+    /* Load the 'retroImage' into memory */
     public void loadImage()
     {
       int i;
@@ -80,32 +82,15 @@ namespace Retro.Forth
       BinaryReader binReader = new BinaryReader(File.Open("retroImage", FileMode.Open));
       try
       {
-        // If the file is not empty,
-        // read the application settings.
-        // First read 4 bytes into a buffer to
-        // determine if the file is empty.
-        byte[] testArray = new byte[3];
-        int count = binReader.Read(testArray, 0, 3);
-
-        if (count != 0)
+        i = 0;
+        while (i < 5000000)
         {
-          // Reset the position in the stream to zero.
-          binReader.BaseStream.Seek(0, SeekOrigin.Begin);
-
-          i = 0;
-          while (i < 5000000)
-          {
-            memory[i] = binReader.ReadInt32(); i++;
-          }
+          memory[i] = binReader.ReadInt32(); i++;
         }
       }
-
-      // If the end of the stream is reached before reading
-      // the four data values, ignore the error and use the
-      // default settings for the remaining values.
       catch(EndOfStreamException e)
       {
-        Console.WriteLine("{0} caught and ignored. " + "Using default values.", e.GetType().Name);
+        Console.WriteLine("{0} caught and ignored." , e.GetType().Name);
       }
       finally
       {
@@ -113,7 +98,7 @@ namespace Retro.Forth
       }
     }
 
-
+    /* Save the image */
     public void saveImage()
     {
       int i, j;
@@ -131,13 +116,9 @@ namespace Retro.Forth
           binWriter.Write(memory[i]); i++;
         }
       }
-
-      // If the end of the stream is reached before reading
-      // the four data values, ignore the error and use the
-      // default settings for the remaining values.
       catch(EndOfStreamException e)
       {
-        Console.WriteLine("{0} caught and ignored. " + "Using default values.", e.GetType().Name);
+        Console.WriteLine("{0} caught and ignored." , e.GetType().Name);
       }
       finally
       {
@@ -145,7 +126,7 @@ namespace Retro.Forth
       }
     }
 
-
+    /* Initialize and load the image */
     public void Retro()
     {
       loadImage();
@@ -157,11 +138,12 @@ namespace Retro.Forth
       }
     }
 
-
+    /* Read a key */
     public int read_key()
     {
       int a = 0;
 
+      /* Check to see if we need to move to the next input source */
       if (isp > 0 && offset == lengths[isp])
       {
         isp--;
@@ -170,24 +152,27 @@ namespace Retro.Forth
 
       if (isp > 0)
       {
+        /* Read from a file */
         a = (int)inputs[isp][offset];
         offset++;
       }
       else
       {
-      ConsoleKeyInfo cki = Console.ReadKey();
-      a = (int)cki.KeyChar;
-      if (cki.Key == ConsoleKey.Backspace)
-      {
-        a = 8;
-        Console.Write(a);
-      }
-      if ( a >= 32)
-        Console.Write((char)8);
+        /* Read from Console */
+        ConsoleKeyInfo cki = Console.ReadKey();
+        a = (int)cki.KeyChar;
+        if (cki.Key == ConsoleKey.Backspace)
+        {
+          a = 8;
+          Console.Write(a);
+        }
+        if ( a >= 32)
+          Console.Write((char)8);
       }
       return a;
     }
 
+    /* Handle I/O device emulation */
     public void HandleDevices()
     {
       if (ports[0] == 1)
@@ -212,9 +197,9 @@ namespace Retro.Forth
       }
       if (ports[4] == 1)
       {
-      saveImage();
-      ports[4] = 0;
-      ports[0] = 1;
+        saveImage();
+        ports[4] = 0;
+        ports[0] = 1;
       }
       /* Capabilities */
       if (ports[5] == -1)
@@ -239,7 +224,7 @@ namespace Retro.Forth
       }
     }
 
-
+  /* Process the current opcode */
   public void Process()
   {
     int x, y;
@@ -394,12 +379,15 @@ namespace Retro.Forth
     }
   }
 
+  /* Process the image until the IP reaches the end of memory */
   public void Execute()
   {
     for (; ip < 5000000; ip++)
        Process();
   }
 
+  /* Main entry point */
+  /* Calls all the other stuff and process the command line */
   public static void Main(string [] args)
   {
     VM vm = new VM();
