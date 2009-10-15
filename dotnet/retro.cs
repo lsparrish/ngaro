@@ -21,6 +21,11 @@ namespace Retro.Forth
     int[] memory;
     int shrink;
 
+    string[] inputs;
+    int[] lengths;
+    int isp;
+    int offset;
+
     enum OpCodes
     {
       VM_NOP,       VM_LIT,       VM_DUP,
@@ -46,6 +51,12 @@ namespace Retro.Forth
       address = new int[100];
       ports   = new int[1024];
       memory  = new int[5000000];
+
+      inputs = new string[8];
+      lengths = new int[8];
+      isp = 0;
+      offset = 0;
+
       Retro();
     }
 
@@ -149,8 +160,23 @@ namespace Retro.Forth
 
     public int read_key()
     {
+      int a = 0;
+
+      if (isp > 0 && offset == lengths[isp])
+      {
+        isp--;
+        offset = 0;
+      }
+
+      if (isp > 0)
+      {
+        a = (int)inputs[isp][offset];
+        offset++;
+      }
+      else
+      {
       ConsoleKeyInfo cki = Console.ReadKey();
-      int a = (int)cki.KeyChar;
+      a = (int)cki.KeyChar;
       if (cki.Key == ConsoleKey.Backspace)
       {
         a = 8;
@@ -158,59 +184,60 @@ namespace Retro.Forth
       }
       if ( a >= 32)
         Console.Write((char)8);
+      }
       return a;
     }
 
-  public void HandleDevices()
-  {
-    if (ports[0] == 1)
-      return;
+    public void HandleDevices()
+    {
+      if (ports[0] == 1)
+        return;
 
-    if (ports[0] == 0 && ports[1] == 1)
-    {
-      int a = read_key();
-      ports[1] = a;
-      ports[0] = 1;
-    }
-    if (ports[2] == 1)
-    {
-      char c = (char)data[sp];
-      if (data[sp] < 0)
-        Console.Clear();
-      else
-        Console.Write(c);
-      sp--;
-      ports[2] = 0;
-      ports[0] = 1;
-    }
-    if (ports[4] == 1)
-    {
+      if (ports[0] == 0 && ports[1] == 1)
+      {
+        int a = read_key();
+        ports[1] = a;
+        ports[0] = 1;
+      }
+      if (ports[2] == 1)
+      {
+        char c = (char)data[sp];
+        if (data[sp] < 0)
+          Console.Clear();
+        else
+          Console.Write(c);
+        sp--;
+        ports[2] = 0;
+        ports[0] = 1;
+      }
+      if (ports[4] == 1)
+      {
       saveImage();
       ports[4] = 0;
       ports[0] = 1;
+      }
+      /* Capabilities */
+      if (ports[5] == -1)
+      {
+        ports[5] = 5000000;
+        ports[0] = 1;
+      }
+      if (ports[5] == -2 || ports[5] == -3 || ports[5] == -4)
+      {
+        ports[5] = 0;
+        ports[0] = 1;
+      }
+      if (ports[5] == -5)
+      {
+        ports[5] = sp;
+        ports[0] = 1;
+      }
+      if (ports[5] == -6)
+      {
+        ports[5] = rsp;
+        ports[0] = 1;
+      }
     }
-    /* Capabilities */
-    if (ports[5] == -1)
-    {
-      ports[5] = 5000000;
-      ports[0] = 1;
-    }
-    if (ports[5] == -2 || ports[5] == -3 || ports[5] == -4)
-    {
-      ports[5] = 0;
-      ports[0] = 1;
-    }
-    if (ports[5] == -5)
-    {
-      ports[5] = sp;
-      ports[0] = 1;
-    }
-    if (ports[5] == -6)
-    {
-      ports[5] = rsp;
-      ports[0] = 1;
-    }
-  }
 
 
   public void Process()
@@ -378,21 +405,28 @@ namespace Retro.Forth
     VM vm = new VM();
     vm.shrink = 0;
 
-    foreach(string arg in args)
+    for (int i = 0; i < args.Length; i++)
     {
-      if (arg == "--endian")
+      if (args[i] == "--endian")
       {
-        for (int i = 0; i < 5000000; i++)
-          vm.memory[i] = vm.switchEndian(vm.memory[i]);
+        for (int ix = 0; ix < 5000000; ix++)
+          vm.memory[ix] = vm.switchEndian(vm.memory[ix]);
       }
-      if (arg == "--shrink")
+      if (args[i] == "--shrink")
       {
         vm.shrink = 1;
       }
-      if (arg == "--about")
+      if (args[i] == "--about")
       {
         Console.Write("Retro Language  [VM: C#, .NET]\n\n");
         Environment.Exit(0);
+      }
+      if (args[i] == "--with")
+      {
+        i++;
+        vm.isp++;
+        vm.inputs[vm.isp] = System.IO.File.ReadAllText(args[i]);
+        vm.lengths[vm.isp] = vm.inputs[vm.isp].Length;
       }
     }
 
