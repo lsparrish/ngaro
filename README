@@ -64,13 +64,13 @@ Opcode   Name          Description
 020      and           Bitwise AND
 021      or            Bitwise OR
 022      xor           Bitwise XOR
-023      shift_left    Shift bits right
-024      shift_right   Shift bits left
+023      shift_left    Shift bits left
+024      shift_right   Shift bits right
 025      zero_return   Return and drop TOS if TOS is 0.
                        If TOS is not 0, do nothing.
 026      inc           Increment TOS by 1
 027      dec           Decrement TOS by 1
 028      in            Read a value from an I/O port
 029      out           Send a value to an I/O port
-039      wait          Wait for an I/O event
+030      wait          Wait for an I/O event
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
