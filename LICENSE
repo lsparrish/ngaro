@@ -12,8 +12,15 @@ For the MIDP port ("midp"). the following copyright applies:
 
   Copyright (c) 2009, Martin Polak
 
+A few (optional) files in the javascript implementaion are copyrighted
+by others:
+
+  jszip.js  : Copyright (c) 2009 Stuart Knightley
+  base64.js : Copyright (c) 1999 Masanao Izumo
+
 ----------------------------------------------------------------------
-Unless otherwise noted, the following license applies:
+Unless otherwise noted in the source files, the following license
+applies:
 
 Permission to use, copy, modify, and/or distribute this software for
 any purpose with or without fee is hereby granted, provided that the
