@@ -105,7 +105,7 @@ int handle_devices(void *unused)
       if (c >= 0)
       {
         drawcharacter(tx, ty, c);
-        tx += 8;
+        tx += 9;
         if (c == 8)
         {
           tx -= 16;
@@ -114,14 +114,14 @@ int handle_devices(void *unused)
         if (c == 10)
         {
           tx  = 0;
-          ty += 8;
+          ty += 12;
         }
-        if (tx > VIDEO_WIDTH - 8)
+        if (tx > VIDEO_WIDTH - 9)
         {
           tx  = 0;
-          ty += 8;
+          ty += 12;
         }
-        if (ty > VIDEO_HEIGHT - 8)
+        if (ty > VIDEO_HEIGHT - 12)
           ty = 0;
       }
       else
