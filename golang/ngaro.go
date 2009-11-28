@@ -5,9 +5,9 @@
 // Public Domain or LICENSE file
 
 // TODO:
-//	- writeImage()
-//	- Add more i/o ports
 //	- Better error handling
+//	- Better packagement (find out "the go way")
+//	- Cat multiple image files
 
 /*
 	Ngaro virtual machines.
@@ -19,23 +19,27 @@
 		http://github.com/crcx/ngaro
 
 	Communication with the virtual machine is done through
-	int chanels for input (port 1) and output (port 2).
+	int chanels for input (port 1) and output (port 2). The
+	port 4 can be used to save the current image to a file.
 
 	In addition to normal ngaro features, this Go version
-	allows to launch 4 new children virtual machines (which
-	can launch 4 more children, and so on) through the port 6.
-	The port 7 can be used to create pipes between the
+	allows to launch new children virtual machines (which
+	can launch more children, and so on) through the port 13.
+	The port 14 can be used to create pipes between the
 	input and output of two childrens.
 
-	: reset ( n- ) 1 6 out wait ;
-	: pipe ( xy- ) 1 7 out wait ;
-	: child.in ( xy- ) 8 + 1 swap out wait ; ( for children = 4 )
-	: child.out ( x-y ) 12 + 1 swap out wait ; ( for children = 4 )
+	: reset ( n- ) 1 13 out wait ;
+	: pipe ( xy- ) 1 14 out wait ;
+	: >in ( n- ) 0 swap pipe ;
+	: <out ( n- ) 0 pipe ;
+	: child.in ( xy- ) 16 + 1 swap out wait ;
+	: child.out ( x-y ) 32 + 1 swap out wait ; ( for children = 16 )
 */
 
 package ngaro
 
 import (
+	"fmt";
 	"os";
 	B "encoding/binary";
 )
@@ -63,21 +67,35 @@ type NgaroVM struct {
 	Off		chan bool;
 }
 
-func (vm *NgaroVM) writeDump() {
-	println("saving to :", vm.dump);
-	w, err := os.Open(vm.dump, os.O_WRONLY|os.O_CREATE, 0666);
+func LoadDump(filename string, img []int) {
+	r, err := os.Open(filename, os.O_RDONLY, 0);
 	if err != nil {
-		return;
+		return
 	}
-	// this write always fails (with constants as 3rd arg too)
-	err = B.Write(w, B.BigEndian, vm.img[0:]);
+	fmt.Fprint(os.Stderr, " [ Ngaro: reading image from ", filename, "] ");
+	var ui uint32;
+	for i, _ := range img {
+		if err := B.Read(r, B.LittleEndian, &ui); err != nil {
+			break
+		}
+		img[i] = int(ui);
+	}
+}
+
+func (vm *NgaroVM) WriteDump(filename string) {
+	w, err := os.Open(filename, os.O_WRONLY|os.O_CREATE, 0666);
 	if err != nil {
-		println("ERROR writing image");
+		return
+	}
+	fmt.Fprint(os.Stderr, " [ Ngaro: saving image to ", filename, "] ");
+	for _, i := range vm.img {
+		if err = B.Write(w, B.LittleEndian, uint32(i)); err != nil {
+			fmt.Fprint(os.Stderr, " [ Ngaro ERROR: writing ", filename, "] ")
+		}
 	}
 }
 
 func (vm *NgaroVM) wait() (spdec int) {
-	//D:print("\tWAITING");
 	switch 1 {
 	case vm.ports[0]:
 		return
@@ -93,7 +111,7 @@ func (vm *NgaroVM) wait() (spdec int) {
 		spdec = 1;
 
 	case vm.ports[4]:	// Save Image (Port 4)
-		vm.writeDump();
+		vm.WriteDump(vm.dump);
 		vm.ports[4] = 0;
 		vm.ports[0] = 1;
 
@@ -103,16 +121,30 @@ func (vm *NgaroVM) wait() (spdec int) {
 			return
 		}
 		if vm.child[c] == nil {
-			vm.child[c] = NewVM(vm.img, vm.size, vm.children, "")
+			d := vm.dump;
+			if d != "" {
+				d += ".child"
+			}
+			vm.child[c] = NewVM(vm.img, vm.size, vm.children, d);
 		} else {
 			vm.child[c].Off <- false
 		}
+		vm.ports[13] = 0;
 		vm.ports[0] = 1;
 		spdec = 1;
 
 	case vm.ports[14]:	// Pipe (Port 14)
 		f := vm.tos;
 		t := vm.nos;
+		if f == 0 && t == 0 {
+			return
+		}
+		switch 0 {
+		case f:
+			f = 1	// (input)
+		case t:
+			t = 2	// (output)
+		}
 		if f < 0 || f > len(vm.child) || t < 0 || t > len(vm.child) {
 			return
 		}
@@ -121,6 +153,7 @@ func (vm *NgaroVM) wait() (spdec int) {
 				vm.child[t].Out <- <-vm.child[f].In
 			}
 		}();
+		vm.ports[14] = 0;
 		vm.ports[0] = 1;
 		spdec = 2;
 	}
@@ -170,7 +203,6 @@ func (vm *NgaroVM) wait() (spdec int) {
 }
 
 func (vm *NgaroVM) core(image []int) {
-	//D:println("Ngaro: new core");
 	var x, y int;
 	var sp, rsp int;
 	var data, addr [stackDepth]int;
@@ -179,7 +211,6 @@ func (vm *NgaroVM) core(image []int) {
 		vm.img[i] = x
 	}
 	for ip := 0; ip < vm.size; ip++ {
-		//D:print("NgaroVM (", vm, "): Op[ ip =", ip, "]\t= ", vm.img[ip], "\t-->");
 		if end, sig := <-vm.Off; sig {
 			if end {
 				break
@@ -302,7 +333,7 @@ func (vm *NgaroVM) core(image []int) {
 			data[sp]--
 		case In:
 			if data[sp] < 0 || data[sp] > len(vm.ports) {
-				println(" ERROR (Invalid port)");
+				fmt.Fprint(os.Stderr, " [ Ngaro ERROR: Invalid port ] ");
 				break;
 			}
 			x = data[sp];
@@ -310,7 +341,7 @@ func (vm *NgaroVM) core(image []int) {
 			vm.ports[x] = 0;
 		case Out:
 			if data[sp] < 0 || data[sp] > len(vm.ports) {
-				println(" ERROR: Invalid port");
+				fmt.Fprint(os.Stderr, " [ Ngaro ERROR: Invalid port ] ");
 				break;
 			}
 			vm.ports[0] = 0;
@@ -323,10 +354,10 @@ func (vm *NgaroVM) core(image []int) {
 		}
 		// to avoid segfaults:
 		if sp < 0 {
-			println(" ERROR: Stack underflow");
+			fmt.Fprint(os.Stderr, " [ Ngaro ERROR: Stack underflow ] ");
 			sp = 0;
 		} else if stackDepth-sp < 2 {
-			println(" ERROR: Stack overflowing (2 elements droped)");
+			fmt.Fprint(os.Stderr, " [ Ngaro ERROR: Stack overflow (2 elements droped) ] ");
 			sp -= 2;
 		}
 		vm.tos = data[sp];
@@ -335,15 +366,14 @@ func (vm *NgaroVM) core(image []int) {
 		} else {
 			vm.nos = 0
 		}
-		//D:println("\tsp =", sp, "\trsp =", rsp, "\ttos =", vm.tos);
 	}
 	vm.Off <- true;
 }
 
 func NewVM(image []int, size, children int, dump string) *NgaroVM {
-	println("Ngaro: New core ( size:", size, ")");
+	fmt.Fprint(os.Stderr, " [ Ngaro: new core ( size:", size, ") ] ");
 	if len(image) > size {
-		println("Ngaro: image too large");
+		fmt.Fprint(os.Stderr, " [ Ngaro ERROR: image too large ] ");
 		return nil;
 	}
 	vm := new(NgaroVM);
