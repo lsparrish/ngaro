@@ -44,14 +44,13 @@ const (
 	In; Out; Wait;
 
 	stackDepth	= 100;
-	Children	= 4;
 )
 
 type NgaroVM struct {
 	size		int;
 	img		[]int;
 	tos, nos	int;
-	ports		[16]int;
+	ports		[]int;
 	children	int;
 	child		[]*NgaroVM;
 	In, Out		chan int;
@@ -83,7 +82,7 @@ func (vm *NgaroVM) wait() (spdec int) {
 		vm.ports[4] = 0;
 		vm.ports[0] = 1;
 
-	case vm.ports[6]:	// Reset Child (Port 6)
+	case vm.ports[13]:	// Reset Child (Port 13)
 		c := vm.tos;
 		if c < 0 || c > len(vm.child) {
 			return
@@ -96,7 +95,7 @@ func (vm *NgaroVM) wait() (spdec int) {
 		vm.ports[0] = 1;
 		spdec = 1;
 
-	case vm.ports[7]:	// Pipe (Port 7)
+	case vm.ports[14]:	// Pipe (Port 14)
 		f := vm.tos;
 		t := vm.nos;
 		if f < 0 || f > len(vm.child) || t < 0 || t > len(vm.child) {
@@ -112,16 +111,16 @@ func (vm *NgaroVM) wait() (spdec int) {
 	}
 
 	for i, c := range vm.child {
-		if c != nil {
-			if vm.ports[8+i] == 1 {	// Childs Input (Ports 8-11)
+		if c != nil {	// Children VMs I/O (Ports 16-...)
+			if vm.ports[16+i] == 1 {
 				c.In <- vm.tos;
-				vm.ports[8+i] = 0;
+				vm.ports[16+i] = 0;
 				vm.ports[0] = 1;
 				spdec = 1;
 				return;
 			}
-			if vm.ports[8+Children+i] == 1 {	// Childs Output (Ports 12-15)
-				vm.ports[12+i] = <-c.Out;
+			if vm.ports[16+vm.children+i] == 1 {
+				vm.ports[16+vm.children+i] = <-c.Out;
 				vm.ports[0] = 1;
 				return;
 			}
@@ -336,6 +335,7 @@ func NewVM(image []int, size, children int) *NgaroVM {
 	vm.size = size;
 	vm.children = children;
 	vm.child = make([]*NgaroVM, children);
+	vm.ports = make([]int, 16+2*children);
 	vm.In = make(chan int);
 	vm.Out = make(chan int);
 	vm.Off = make(chan bool);
