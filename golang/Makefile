@@ -3,8 +3,11 @@ include $(GOROOT)/src/Make.$(GOARCH)
 TARG=ngaro
 GOFILES=ngaro.go
 
-gonga: _obj/$(TARG).a gonga.go
-	$(GC) -I_obj gonga.go
-	$(LD) -L_obj -o $@ gonga.$O
+gonga: ./$(TARG).a gonga.go image.go
+	$(GC) -o gonga.$O image.go gonga.go
+	$(LD) -o $@ gonga.$O
+
+./$(TARG).a: ./_obj/$(TARG).a
+	cp ./_obj/$(TARG).a .
 
 include $(GOROOT)/src/Make.pkg
