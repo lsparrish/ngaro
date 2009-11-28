@@ -12,6 +12,10 @@ For the MIDP port ("midp"). the following copyright applies:
 
   Copyright (c) 2009, Martin Polak
 
+For the Go port ("golang"). the following copyright applies:
+
+  Copyright (c) 2009 JGL
+
 A few (optional) files in the javascript implementaion are copyrighted
 by others:
 
