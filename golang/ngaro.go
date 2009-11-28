@@ -35,6 +35,11 @@
 
 package ngaro
 
+import (
+	"os";
+	B "encoding/binary";
+)
+
 const (
 	// Instruction set
 	Nop=iota; Lit; Dup; Drop; Swap; Push; Pop;
@@ -49,6 +54,7 @@ const (
 type NgaroVM struct {
 	size		int;
 	img		[]int;
+	dump		string;
 	tos, nos	int;
 	ports		[]int;
 	children	int;
@@ -57,8 +63,17 @@ type NgaroVM struct {
 	Off		chan bool;
 }
 
-func (vm *NgaroVM) writeImage() {
-	// Write to what?
+func (vm *NgaroVM) writeDump() {
+	println("saving to :", vm.dump);
+	w, err := os.Open(vm.dump, os.O_WRONLY|os.O_CREATE, 0666);
+	if err != nil {
+		return;
+	}
+	// this write always fails (with constants as 3rd arg too)
+	err = B.Write(w, B.BigEndian, vm.img[0:]);
+	if err != nil {
+		println("ERROR writing image");
+	}
 }
 
 func (vm *NgaroVM) wait() (spdec int) {
@@ -78,7 +93,7 @@ func (vm *NgaroVM) wait() (spdec int) {
 		spdec = 1;
 
 	case vm.ports[4]:	// Save Image (Port 4)
-		go vm.writeImage();
+		vm.writeDump();
 		vm.ports[4] = 0;
 		vm.ports[0] = 1;
 
@@ -88,7 +103,7 @@ func (vm *NgaroVM) wait() (spdec int) {
 			return
 		}
 		if vm.child[c] == nil {
-			vm.child[c] = NewVM(vm.img, vm.size, vm.children)
+			vm.child[c] = NewVM(vm.img, vm.size, vm.children, "")
 		} else {
 			vm.child[c].Off <- false
 		}
@@ -325,7 +340,7 @@ func (vm *NgaroVM) core(image []int) {
 	vm.Off <- true;
 }
 
-func NewVM(image []int, size, children int) *NgaroVM {
+func NewVM(image []int, size, children int, dump string) *NgaroVM {
 	println("Ngaro: New core ( size:", size, ")");
 	if len(image) > size {
 		println("Ngaro: image too large");
@@ -336,6 +351,7 @@ func NewVM(image []int, size, children int) *NgaroVM {
 	vm.children = children;
 	vm.child = make([]*NgaroVM, children);
 	vm.ports = make([]int, 16+2*children);
+	vm.dump = dump;
 	vm.In = make(chan int);
 	vm.Out = make(chan int);
 	vm.Off = make(chan bool);
