@@ -20,6 +20,17 @@
 
 	Communication with the virtual machine is done through
 	int chanels for input (port 1) and output (port 2).
+
+	In addition to normal ngaro features, this Go version
+	allows to launch 4 new children virtual machines (which
+	can launch 4 more children, and so on) through the port 6.
+	The port 7 can be used to create pipes between the
+	input and output of two childrens.
+
+	: reset ( n- ) 1 6 out wait ;
+	: pipe ( xy- ) 1 7 out wait ;
+	: child.in ( xy- ) 8 + 1 swap out wait ; ( for children = 4 )
+	: child.out ( x-y ) 12 + 1 swap out wait ; ( for children = 4 )
 */
 
 package ngaro
@@ -33,14 +44,18 @@ const (
 	In; Out; Wait;
 
 	stackDepth	= 100;
+	Children	= 4;
 )
 
 type NgaroVM struct {
-	size	int;
-	tos	int;
-	ports	[16]int;
-	In, Out	chan int;
-	Off	chan bool;
+	size		int;
+	img		[]int;
+	tos, nos	int;
+	ports		[16]int;
+	children	int;
+	child		[]*NgaroVM;
+	In, Out		chan int;
+	Off		chan bool;
 }
 
 func (vm *NgaroVM) writeImage() {
@@ -67,6 +82,50 @@ func (vm *NgaroVM) wait() (spdec int) {
 		go vm.writeImage();
 		vm.ports[4] = 0;
 		vm.ports[0] = 1;
+
+	case vm.ports[6]:	// Reset Child (Port 6)
+		c := vm.tos;
+		if c < 0 || c > len(vm.child) {
+			return
+		}
+		if vm.child[c] == nil {
+			vm.child[c] = NewVM(vm.img, vm.size, vm.children)
+		} else {
+			vm.child[c].Off <- false
+		}
+		vm.ports[0] = 1;
+		spdec = 1;
+
+	case vm.ports[7]:	// Pipe (Port 7)
+		f := vm.tos;
+		t := vm.nos;
+		if f < 0 || f > len(vm.child) || t < 0 || t > len(vm.child) {
+			return
+		}
+		go func() {
+			for {
+				vm.child[t].Out <- <-vm.child[f].In
+			}
+		}();
+		vm.ports[0] = 1;
+		spdec = 2;
+	}
+
+	for i, c := range vm.child {
+		if c != nil {
+			if vm.ports[8+i] == 1 {	// Childs Input (Ports 8-11)
+				c.In <- vm.tos;
+				vm.ports[8+i] = 0;
+				vm.ports[0] = 1;
+				spdec = 1;
+				return;
+			}
+			if vm.ports[8+Children+i] == 1 {	// Childs Output (Ports 12-15)
+				vm.ports[12+i] = <-c.Out;
+				vm.ports[0] = 1;
+				return;
+			}
+		}
 	}
 
 	switch vm.ports[5] {	// Capabilities (Port 5)
@@ -85,6 +144,10 @@ func (vm *NgaroVM) wait() (spdec int) {
 		vm.ports[5] = stackDepth;
 		vm.ports[0] = 1;
 
+	case -7:	// Number of children
+		vm.ports[5] = vm.children;
+		vm.ports[0] = 1;
+
 	default:
 		vm.ports[5] = 0;
 		vm.ports[0] = 1;
@@ -97,18 +160,24 @@ func (vm *NgaroVM) core(image []int) {
 	var x, y int;
 	var sp, rsp int;
 	var data, addr [stackDepth]int;
-	img := make([]int, vm.size);
+	vm.img = make([]int, vm.size);
 	for i, x := range image {
-		img[i] = x
+		vm.img[i] = x
 	}
 	for ip := 0; ip < vm.size; ip++ {
-		//D:print("NgaroVM: Op[ ip =", ip, "]\t= ", img[ip], "\t-->");
-		switch img[ip] {
+		//D:print("NgaroVM (", vm, "): Op[ ip =", ip, "]\t= ", vm.img[ip], "\t-->");
+		if end, sig := <-vm.Off; sig {
+			if end {
+				break
+			}
+			ip = 0;
+		}
+		switch vm.img[ip] {
 		case Nop:
 		case Lit:
 			sp++;
 			ip++;
-			data[sp] = img[ip];
+			data[sp] = vm.img[ip];
 		case Dup:
 			sp++;
 			data[sp] = data[sp-1];
@@ -129,41 +198,41 @@ func (vm *NgaroVM) core(image []int) {
 			ip++;
 			rsp++;
 			addr[rsp] = ip;
-			ip = img[ip] - 1;
+			ip = vm.img[ip] - 1;
 		case Jump:
 			ip++;
-			ip = img[ip] - 1;
+			ip = vm.img[ip] - 1;
 		case Return:
 			ip = addr[rsp];
 			rsp--;
 		case GtJump:
 			ip++;
 			if data[sp-1] > data[sp] {
-				ip = img[ip] - 1
+				ip = vm.img[ip] - 1
 			}
 			sp = sp - 2;
 		case LtJump:
 			ip++;
 			if data[sp-1] < data[sp] {
-				ip = img[ip] - 1
+				ip = vm.img[ip] - 1
 			}
 			sp = sp - 2;
 		case NeJump:
 			ip++;
 			if data[sp-1] != data[sp] {
-				ip = img[ip] - 1
+				ip = vm.img[ip] - 1
 			}
 			sp = sp - 2;
 		case EqJump:
 			ip++;
 			if data[sp-1] == data[sp] {
-				ip = img[ip] - 1
+				ip = vm.img[ip] - 1
 			}
 			sp = sp - 2;
 		case Fetch:
-			data[sp] = img[data[sp]]
+			data[sp] = vm.img[data[sp]]
 		case Store:
-			img[data[sp]] = data[sp-1];
+			vm.img[data[sp]] = data[sp-1];
 			sp = sp - 2;
 		case Add:
 			data[sp-1] += data[sp];
@@ -242,24 +311,31 @@ func (vm *NgaroVM) core(image []int) {
 		if sp < 0 {
 			println(" ERROR: Stack underflow");
 			sp = 0;
-		} else if sp > stackDepth {
-			println(" ERROR: Stack overflow (cleared)");
-			sp = 0;
+		} else if stackDepth-sp < 2 {
+			println(" ERROR: Stack overflowing (2 elements droped)");
+			sp -= 2;
 		}
 		vm.tos = data[sp];
+		if sp > 1 {
+			vm.nos = data[sp-1]
+		} else {
+			vm.nos = 0
+		}
 		//D:println("\tsp =", sp, "\trsp =", rsp, "\ttos =", vm.tos);
 	}
 	vm.Off <- true;
 }
 
-func NewVM(image []int, size int) *NgaroVM {
-	//D:println("Ngaro: New core (", len(image), "/", size, ")");
+func NewVM(image []int, size, children int) *NgaroVM {
+	println("Ngaro: New core ( size:", size, ")");
 	if len(image) > size {
 		println("Ngaro: image too large");
 		return nil;
 	}
 	vm := new(NgaroVM);
 	vm.size = size;
+	vm.children = children;
+	vm.child = make([]*NgaroVM, children);
 	vm.In = make(chan int);
 	vm.Out = make(chan int);
 	vm.Off = make(chan bool);
