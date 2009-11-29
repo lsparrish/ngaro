@@ -1,0 +1,35 @@
+ _   _
+| \ | | __ _  __ _ _ __ ___
+|  \| |/ _` |/ _` | '__/ _ \
+| |\  | (_| | (_| | | | (_) |
+|_| \_|\__, |\__,_|_|  \___/
+       |___/  Virtual Machine
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+This is the family of JavaScript implementations. There's a few
+varients, so read on to learn about each of them.
+
+browser
+  This is the most complete, purely client-side system. It has
+  support for the basic I/O devices, Canvas, Mouse, and can
+  save images(1).
+
+browsers-form-io
+  The older version of the browser system, it lacks canvas,
+  mouse, and saving of images, but can be used on older (and
+  mobile) browsers.
+
+server-side
+  Like browser, but saves images to the server hosting it. I
+  include a server (tuari) for use with it. You'll need Perl
+  and PHP (cgi mode) on the server.
+
+apple-dashboard:
+  Implementation for use as a widget on Apple's Dashboard app
+  for OS X.
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+With all of these, you will need a retroImage.js. This can be
+built from the image repository by doing a "make js"
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+(1) Images are saved as a .zip file containing a CSV file and
+    a PHP script. Uncompress and run the PHP script to get a
+    working retroImage.
