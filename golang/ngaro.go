@@ -103,7 +103,7 @@ func (vm *NgaroVM) WriteDump(filename string) {
 			perror(" [ Ngaro ERROR: writing ", filename, "] ")
 		}
 	}
-	perror(" [ Ngaro: saved image to ", filename, " ] ");
+	perror(" [ Ngaro: saved image to ", filename, " ( size:", vm.size, " ) ] ");
 }
 
 func (vm *NgaroVM) wait() (spdec int) {
@@ -131,13 +131,13 @@ func (vm *NgaroVM) wait() (spdec int) {
 		vm.ports[0] = 1;
 		spdec = 1;
 		c := vm.tos - 1;
-		if (c < 0 || c > len(vm.child) - 1) {
+		if c < 0 || c > len(vm.child)-1 {
 			return
 		}
 		if vm.child[c] == nil {
 			d := vm.dump;
 			if d != "" {
-				d += "." + string(vm.tos);
+				d += "." + string(vm.tos)
 			}
 			vm.child[c] = NewVM(vm.img, vm.size, vm.children, d);
 		} else {
@@ -153,17 +153,20 @@ func (vm *NgaroVM) wait() (spdec int) {
 		var fc, tc *chan int;
 		switch {
 		case f < 0:
-			fc = &vm.In;
+			fc = &vm.In
 		case t < 0:
-			tc = &vm.Out;
+			tc = &vm.Out
 		case vm.child[f-1] == nil || vm.child[t-1] == nil:
-			return;
+			return
 		default:
 			fc = &vm.child[f-1].Out;
 			tc = &vm.child[t-1].In;
 		}
 		go func() {
 			for {
+				if tc == nil || fc == nil {
+					break;
+				}
 				*tc <- <-*fc
 			}
 		}();

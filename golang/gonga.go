@@ -82,13 +82,13 @@ func main() {
 	var img = make([]int, *size);
 	perror("Gonga: loading ");
 	if flag.NArg() == 0 {
-		img = retroImage;
+		img = &retroImage;
 		perror("default (retroForth-10.3) ");
 	}
 	for i, n := 0, 0; i < flag.NArg(); i++ {
 		if flag.Arg(i) == "-" {
 			perror("default (retroForth-10.3) ");
-			img = retroImage;
+			img = &retroImage;
 			img = img[0:cap(img)];
 			n += len(retroImage);
 		} else {
