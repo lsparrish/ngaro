@@ -58,17 +58,18 @@ func readIn(vm *ngaro.NgaroVM) {
 		if err != nil {
 			vm.Off <- true
 		}
-		vm.In <- int(b[0]);
+		vm.Write(b);
 	}
 }
 
 func printOut(vm *ngaro.NgaroVM) {
+	b := make([]byte, 1);
 	for {
-		if x := <-vm.Out; x < 0 {
-			fmt.Printf("\033[2J\033[1;1H")	// Clear screen
-		} else {
-			fmt.Print(string(x))
+		_, err := vm.Read(b);
+		if err != nil {
+			vm.Off <- true
 		}
+		fmt.Print(string(b))
 	}
 }
 
@@ -79,6 +80,10 @@ func main() {
 		os.Exit(0);
 	}
 	ngaro.Verbose = *verbose;
+	ngaro.ClearScreen = func () {
+		fmt.Printf("\033[2J\033[1;1H")	// Clear screen
+	};
+
 	var img = make([]int, *size);
 	perror("Gonga: loading ");
 	if flag.NArg() == 0 {
