@@ -64,16 +64,38 @@ type NgaroVM struct {
 	ports		[]int;
 	children	int;
 	child		[]*NgaroVM;
-	In, Out		chan int;
+	in, out		chan int;
 	Off		chan bool;
 }
 
 var Verbose bool = false
 
+var ClearScreen func() = func() {}
+
 func perror(s ...) {
 	if Verbose {
 		fmt.Fprint(os.Stderr, s)
 	}
+}
+
+func (vm *NgaroVM) Read(p []byte) (n int, err os.Error) {
+	for i, _ := range p {
+		if x := <-vm.out; x < 0 {
+			ClearScreen()
+		} else {
+			p[i] = byte(x);
+			n++;
+		}
+	}
+	return;
+}
+
+func (vm *NgaroVM) Write(p []byte) (n int, err os.Error) {
+	for _, b := range p {
+		vm.in <- int(b);
+		n++;
+	}
+	return;
 }
 
 func LoadDump(filename string, img []int, start int) int {
@@ -112,11 +134,11 @@ func (vm *NgaroVM) wait() (spdec int) {
 		return
 
 	case vm.ports[1]:	// Input (Port 1)
-		vm.ports[1] = <-vm.In;
+		vm.ports[1] = <-vm.in;
 		vm.ports[0] = 1;
 
 	case vm.ports[2]:	// Output (Port 2)
-		vm.Out <- vm.tos;
+		vm.out <- vm.tos;
 		vm.ports[2] = 0;
 		vm.ports[0] = 1;
 		spdec = 1;
@@ -153,21 +175,21 @@ func (vm *NgaroVM) wait() (spdec int) {
 		var fc, tc *chan int;
 		switch {
 		case f < 0:
-			fc = &vm.In
+			fc = &vm.in
 		case t < 0:
-			tc = &vm.Out
+			tc = &vm.out
 		case vm.child[f-1] == nil || vm.child[t-1] == nil:
 			return
 		default:
-			fc = &vm.child[f-1].Out;
-			tc = &vm.child[t-1].In;
+			fc = &vm.child[f-1].out;
+			tc = &vm.child[t-1].in;
 		}
 		go func() {
 			for {
 				if tc == nil || fc == nil {
-					break;
+					break
 				}
-				*tc <- <-*fc
+				*tc <- <-*fc;
 			}
 		}();
 		perror(" [ Ngaro: new pipe ", f, " -> ", t, " ] ");
@@ -176,14 +198,14 @@ func (vm *NgaroVM) wait() (spdec int) {
 	for i, c := range vm.child {
 		if c != nil {	// Children VMs I/O (Ports 16-...)
 			if vm.ports[16+i] == 1 {
-				c.In <- vm.tos;
+				c.in <- vm.tos;
 				vm.ports[16+i] = 0;
 				vm.ports[0] = 1;
 				spdec = 1;
 				return;
 			}
 			if vm.ports[16+vm.children+i] == 1 {
-				vm.ports[16+vm.children+i] = <-c.Out;
+				vm.ports[16+vm.children+i] = <-c.out;
 				vm.ports[0] = 1;
 				return;
 			}
@@ -396,8 +418,8 @@ func NewVM(image []int, size, children int, dump string) *NgaroVM {
 	vm.child = make([]*NgaroVM, children);
 	vm.ports = make([]int, 16+2*children);
 	vm.dump = dump;
-	vm.In = make(chan int);
-	vm.Out = make(chan int);
+	vm.in = make(chan int);
+	vm.out = make(chan int);
 	vm.Off = make(chan bool);
 	go vm.core(image);
 	perror(" [ Ngaro: new core ( size:", size, ") ] ");
