@@ -22,19 +22,13 @@
 	In addition to normal ngaro features, this Go version
 	allows to launch new children virtual machines (which
 	can launch more children, and so on) through the port 13.
-	The port 14 can be used to create pipes between the
-	input and output of two childrens and/or their parent.
 
 	Some useful words:
 
-	: fork ( n- ) 1 13 out wait ;
-	: pipe ( xy- ) 1 14 out wait ;
-	: >in ( n- ) 0 swap pipe ;
-	: <out ( n- ) 0 pipe ;
-	: children -7 5 out wait 5 in ;
-	: child.in ( xy- ) 16 + 1 swap out wait ;
-	: child.out ( x-y ) 16 + children + 1 swap out wait ;
-
+	: reset ( n- ) 1 13 out wait ;
+	: children ( -n ) -7 5 out wait 5 in ;
+	: c<- ( xy- ) 16 + 1 swap out wait ;
+	: <-c ( x-y ) 16 + children + dup 1 swap out wait in ;
 */
 
 package ngaro
@@ -54,6 +48,7 @@ const (
 	In; Out; Wait;
 
 	stackDepth	= 100;
+	chanBuffer	= 128;
 )
 
 type NgaroVM struct {
@@ -152,7 +147,7 @@ func (vm *NgaroVM) wait() (spdec int) {
 		vm.ports[13] = 0;
 		vm.ports[0] = 1;
 		spdec = 1;
-		c := vm.tos - 1;
+		c := vm.tos;
 		if c < 0 || c > len(vm.child)-1 {
 			return
 		}
@@ -165,34 +160,6 @@ func (vm *NgaroVM) wait() (spdec int) {
 		} else {
 			vm.child[c].Off <- false
 		}
-
-	case vm.ports[14]:	// Pipe (Port 14)
-		vm.ports[14] = 0;
-		vm.ports[0] = 1;
-		spdec = 2;
-		f := vm.nos;
-		t := vm.tos;
-		var fc, tc *chan int;
-		switch {
-		case f < 0:
-			fc = &vm.in
-		case t < 0:
-			tc = &vm.out
-		case vm.child[f-1] == nil || vm.child[t-1] == nil:
-			return
-		default:
-			fc = &vm.child[f-1].out;
-			tc = &vm.child[t-1].in;
-		}
-		go func() {
-			for {
-				if tc == nil || fc == nil {
-					break
-				}
-				*tc <- <-*fc;
-			}
-		}();
-		perror(" [ Ngaro: new pipe ", f, " -> ", t, " ] ");
 	}
 
 	for i, c := range vm.child {
@@ -202,12 +169,10 @@ func (vm *NgaroVM) wait() (spdec int) {
 				vm.ports[16+i] = 0;
 				vm.ports[0] = 1;
 				spdec = 1;
-				return;
 			}
 			if vm.ports[16+vm.children+i] == 1 {
 				vm.ports[16+vm.children+i] = <-c.out;
 				vm.ports[0] = 1;
-				return;
 			}
 		}
 	}
@@ -369,7 +334,7 @@ func (vm *NgaroVM) core(image []int) {
 		case Dec:
 			data[sp]--
 		case In:
-			if data[sp] < 0 || data[sp] > len(vm.ports) {
+			if data[sp] < 0 || data[sp] > len(vm.ports)-1 {
 				perror(" [ Ngaro ERROR: Invalid port ] ");
 				break;
 			}
@@ -418,8 +383,8 @@ func NewVM(image []int, size, children int, dump string) *NgaroVM {
 	vm.child = make([]*NgaroVM, children);
 	vm.ports = make([]int, 16+2*children);
 	vm.dump = dump;
-	vm.in = make(chan int);
-	vm.out = make(chan int);
+	vm.in = make(chan int, chanBuffer);
+	vm.out = make(chan int, chanBuffer);
 	vm.Off = make(chan bool);
 	go vm.core(image);
 	perror(" [ Ngaro: new core ( size:", size, ") ] ");
