@@ -69,7 +69,7 @@ func printOut(vm *ngaro.NgaroVM) {
 		if err != nil {
 			vm.Off <- true
 		}
-		fmt.Print(string(b))
+		fmt.Print(string(b));
 	}
 }
 
@@ -80,7 +80,7 @@ func main() {
 		os.Exit(0);
 	}
 	ngaro.Verbose = *verbose;
-	ngaro.ClearScreen = func () {
+	ngaro.ClearScreen = func() {
 		fmt.Printf("\033[2J\033[1;1H")	// Clear screen
 	};
 
