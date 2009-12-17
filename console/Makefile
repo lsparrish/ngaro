@@ -1,4 +1,5 @@
 default:
+	cd ../tools && make
 	../tools/build retro
 
 clean:
