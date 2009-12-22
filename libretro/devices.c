@@ -60,12 +60,6 @@ int retro_internal_dev_getch()
     exit(0);
   }
 
-  if (retro_internal_input[retro_internal_isp] != stdin)
-  {
-    if (c == 10 || c == 13 || c == 9)
-      c = 32;
-  }
-
   if (c == 10)
     c = 0;
 

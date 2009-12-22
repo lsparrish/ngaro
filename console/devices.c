@@ -63,12 +63,6 @@ int dev_getch()
     exit(0);
   }
 
-  if (input[isp] != stdin)
-  {
-    if (c == 10 || c == 13 || c == 9)
-     c = 32;
-  }
-
   return c;
 }
 
