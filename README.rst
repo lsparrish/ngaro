@@ -143,11 +143,12 @@ Port 0: Trigger I/O Event
 To tell Ngaro that an I/O event is coming, write the appropiate values to one of the
 ports, write *0* to port *0*, then invoke the *wait* instruction.
 
-| lit 0  # value
-| lit 0  # port
-| out    # write value to port
-| wait   # wait for an I/O event
+::
 
+   lit 0  # value
+   lit 0  # port
+   out    # write value to port
+   wait   # wait for an I/O event
 
 Port 1: Keyboard Input
 ----------------------
@@ -156,17 +157,19 @@ After the I/O event returns, read the keypress from port *1*. If a non-keyboard 
 is received, the read result will be *0*, otherwise it will be the ASCII value of the
 pressed key.
 
-| lit 1
-| lit 1  # keyboard port
-| out
-| # --- wait for I/O event ---
-| lit 0
-| lit 0
-| out
-| wait
-| # --- read keypress ---
-| lit 1
-| in
+::
+
+   lit 1
+   lit 1  # keyboard port
+   out
+   # --- wait for I/O event ---
+   lit 0
+   lit 0
+   out
+   wait
+   # --- read keypress ---
+   lit 1
+   in
 
 
 Port 2: Console Output
@@ -174,15 +177,17 @@ Port 2: Console Output
 Writing a character to the console is also easy. Push the ASCII code to the
 screen, then send *1* to port *2* and trigger an I/O event.
 
-| lit 98 # ASCII code for 'b'
-| lit 1
-| lit 2  # console output port
-| out
-| # --- wait for I/O event ---
-| lit 0
-| lit 0
-| out
-| wait
+::
+
+   lit 98 # ASCII code for 'b'
+   lit 1
+   lit 2  # console output port
+   out
+   # --- wait for I/O event ---
+   lit 0
+   lit 0
+   out
+   wait
 
 
 Port 3: Force Console Update
@@ -192,9 +197,11 @@ force a screen update using port *3*.
 
 Port *3* is normally set to *1*. To trigger a screen update, send *0* to it.
 
-| lit 0
-| lit 3  # force screen update
-| out
+::
+
+   lit 0
+   lit 3  # force screen update
+   out
 
 *Note: You do _not_ need to wait for an I/O event on this port.*
 
@@ -249,14 +256,16 @@ Port 7 is used to interact with the mouse device.
 To obtain mouse position, send *1* to port *7* and trigger an I/O
 event.
 
-| lit 1
-| lit 7
-| out
-| # --- wait for I/O event ---
-| lit 0
-| lit 0
-| out
-| wait
+::
+
+   lit 1
+   lit 7
+   out
+   # --- wait for I/O event ---
+   lit 0
+   lit 0
+   out
+   wait
 
 The mouse coordinates will be placed on the stack. The Y coordinate
 will be TOS, and the X coordinate will be NOS.
@@ -264,14 +273,16 @@ will be TOS, and the X coordinate will be NOS.
 To obtain the button press state, send *2* to port *7* and trigger
 an I/O event.
 
-| lit 2
-| lit 7
-| out
-| # --- wait for I/O event ---
-| lit 0
-| lit 0
-| out
-| wait
+::
+
+   lit 2
+   lit 7
+   out
+   # --- wait for I/O event ---
+   lit 0
+   lit 0
+   out
+   wait
 
 The button state will be placed on the stack. *1* if a button is
 pressed, or *2* if a button is not pressed.
