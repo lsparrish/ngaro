@@ -1,14 +1,19 @@
+========
 Overview
---------
+========
 Ngaro is a portable virtual machine / emulator for a dual
 stack processor and various I/O devices. The instruction set
 is concise (31 core instructions), and the basic I/O devices
 are kept minimal to ensure maximum portability and ease of
 implementation.
 
-Quick Start
+========
+Building
+========
+
+Console (C)
 -----------
-Console (C) implementation:
+For most systems, the following will suffice:
 
 ::
 
@@ -31,6 +36,8 @@ your system):
 
 Then build as shown above.
 
+Microsoft .NET and Mono
+-----------------------
 If you have Mono, you can build the .NET port as well:
 
 ::
@@ -38,8 +45,12 @@ If you have Mono, you can build the .NET port as well:
    cd dotnet
    make
 
+The .NET build will run on Microsoft .NET, but building
+is only tested with Mono.
+
+===============
 Instruction Set
----------------
+===============
 
 ======   ===========   ================================
 Opcode   Name          Description
