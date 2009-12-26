@@ -1,53 +1,58 @@
- _   _
-| \ | | __ _  __ _ _ __ ___
-|  \| |/ _` |/ _` | '__/ _ \
-| |\  | (_| | (_| | | | (_) |
-|_| \_|\__, |\__,_|_|  \___/
-       |___/  Virtual Machine
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Overview
+--------
 Ngaro is a portable virtual machine / emulator for a dual
 stack processor and various I/O devices. The instruction set
 is concise (31 core instructions), and the basic I/O devices
 are kept minimal to ensure maximum portability and ease of
 implementation.
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Quick Start:
 
+Quick Start
+-----------
 Console (C) implementation:
 
-  cd tools
-  make
-  cd ..
-  cd console
-  make
+::
+
+   cd console
+   make
 
 If your system requires curses (e.g., on Windows); open the
 console/retro.c and change //FLAGS to:
 
-  //FLAGS -O3 -fomit-frame-pointer -DCURSES
+::
+
+   //FLAGS -O3 -fomit-frame-pointer -DCURSES
 
 You will also need to add a //LIBS line (change as needed for
 your system):
 
-  //LIBS -lcurses
+::
+
+   //LIBS -lcurses
 
 Then build as shown above.
 
 If you have Mono, you can build the .NET port as well:
 
-  cd dotnet
-  make
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+::
+
+   cd dotnet
+   make
+
+Instruction Set
+---------------
+
+======   ===========   ================================
 Opcode   Name          Description
+======   ===========   ================================
 000      nop           Do nothing
 001      lit           Push a value to the stack
 002      dup           Duplicate TOS
 003      drop          Lose TOS
 004      swap          Swap TOS and NOS
-005      push          Move a value from data stack to the
-                       address stack
-006      pop           Move a value from address stack to data
-                       stack
+005      push          Move a value from data stack to
+                       the address stack
+006      pop           Move a value from address stack
+                       to data stack
 007      call          Call a subroutine
 008      jump          Jump to a new address
 009      return        Return from a call
@@ -70,7 +75,7 @@ Opcode   Name          Description
                        If TOS is not 0, do nothing.
 026      inc           Increment TOS by 1
 027      dec           Decrement TOS by 1
-028      in            Read a value from an I/O port
-029      out           Send a value to an I/O port
-030      wait          Wait for an I/O event
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+028      in            Read a value from an IO port
+029      out           Send a value to an IO port
+030      wait          Wait for an IO event
+======   ===========   ================================
