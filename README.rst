@@ -36,8 +36,8 @@ your system):
 
 Then build as shown above.
 
-Microsoft .NET and Mono
------------------------
+.NET and Mono
+-------------
 If you have Mono, you can build the .NET port as well:
 
 ::
@@ -47,6 +47,25 @@ If you have Mono, you can build the .NET port as well:
 
 The .NET build will run on Microsoft .NET, but building
 is only tested with Mono.
+
+Go! Language
+------------
+
+::
+
+   cd golang
+   make
+
+Java
+----
+This port is mostly abandoned, but can still be built and
+works on non-Windows hosts only. It's slow, and --endian
+argument may be needed to load images.
+
+::
+
+   cd z_pending_removal/java/
+   make
 
 ===============
 Instruction Set
