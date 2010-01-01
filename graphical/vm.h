@@ -20,8 +20,8 @@ enum vm_opcode {VM_NOP, VM_LIT, VM_DUP, VM_DROP, VM_SWAP, VM_PUSH, VM_POP,
 #define IMAGE_SIZE   5000000
 #define VIDEO_MEM    2000000
 #define VIDEO_BASE   6000000
-#define VIDEO_WIDTH      640
-#define VIDEO_HEIGHT     480
+#define VIDEO_WIDTH      800
+#define VIDEO_HEIGHT     400
 #define STACK_DEPTH      100
 #define ADDRESSES       1024
 
