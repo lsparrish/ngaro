@@ -30,7 +30,7 @@ typedef struct {
 
 DEVICES io;
 int tx, ty, mousex, mousey, mouseb;
-int color, gx, gy, gh, gw;
+int color, gx, gy, gh, gw, scratch;
 
 int black, darkblue, darkgreen, darkcyan, darkred;
 int purple, brown, darkgray, gray, blue, green;
@@ -234,7 +234,32 @@ int handle_devices(void *unused)
           ty += 12;
         }
         if (ty > VIDEO_HEIGHT - 12)
-          ty = 0;
+        {
+          /* Scroll Up */
+          gw = 0;
+          for (gx = VIDEO_WIDTH * 12; gx < (VIDEO_WIDTH * VIDEO_HEIGHT) - 12; gx++)
+          {
+            vm.image[VIDEO_BASE + gw] = vm.image[VIDEO_BASE + gx];
+            gw++;
+          }
+
+          ty = VIDEO_HEIGHT - 12;
+
+          /* Clear bottom line */
+          scratch = color;
+          color = black;
+          gw = VIDEO_WIDTH;     gh = 12;
+          gy = ty;              gx = 0;
+          for (; gw > 0; gw--)
+          {
+            line(gx, gy, gx + gw, gy);
+            line(gx + gw, gy, gx + gw, gy + gh);
+            line(gx + gw, gy + gh, gx, gy + gh);
+            line(gx, gy + gh, gx, gy);
+          }
+          color = scratch;
+          vm.ports[3] = 0;
+        }
       }
       else
         clear_display();
