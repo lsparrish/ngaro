@@ -14,6 +14,7 @@
 
 #include "functions.h"
 #include "vm.h"
+#include "SDL_ColorDef.h"
 
 #include "SDL.h"
 #include "SDL_keysym.h"
@@ -31,6 +32,66 @@ DEVICES io;
 int tx, ty, mousex, mousey, mouseb;
 int color, gx, gy, gh, gw;
 
+int black, darkblue, darkgreen, darkcyan, darkred;
+int purple, brown, darkgray, gray, blue, green;
+int cyan, red, magenta, yellow, white;
+
+void video_color(int c)
+{
+  switch (c)
+  {
+    case 0:
+      color = black;
+      break;
+    case 1:
+      color = darkblue;
+      break;
+    case 2:
+      color = darkgreen;
+      break;
+    case 3:
+      color = darkcyan;
+      break;
+    case 4:
+      color = darkred;
+      break;
+    case 5:
+      color = purple;
+      break;
+    case 6:
+      color = brown;
+      break;
+    case 7:
+      color = darkgray;
+      break;
+    case 8:
+      color = gray;
+      break;
+    case 9:
+      color = blue;
+      break;
+    case 10:
+      color = green;
+      break;
+    case 11:
+      color = cyan;
+      break;
+    case 12:
+      color = red;
+      break;
+    case 13:
+      color = magenta;
+      break;
+    case 14:
+      color = yellow;
+      break;
+    case 15:
+      color = white;
+      break;
+    default:
+      color = black;
+  }
+}
 
 void video_pixel(int x, int y)
 {
@@ -227,7 +288,7 @@ int handle_devices(void *unused)
     if (vm.ports[6] == 1)
     {
       printf("Set color: %i\n", TOS);
-      color = TOS; DROP;
+      video_color(TOS); DROP;
       vm.ports[6] = 0;
       vm.ports[0] = 1;
     }
@@ -362,6 +423,24 @@ void init_devices()
 
   io.font = SDL_ConvertSurface(temp, io.screen->format, SDL_SWSURFACE);
   SDL_FreeSurface(temp);
+
+  /* Map Colors */
+  black     = RGB_black(io.screen);
+  darkblue  = RGB_darkblue(io.screen);
+  darkgreen = RGB_darkgreen(io.screen);
+  darkcyan  = RGB_darkcyan(io.screen);
+  darkred   = RGB_darkred(io.screen);
+  purple    = RGB_purple(io.screen);
+  brown     = RGB_brown(io.screen);
+  darkgray  = RGB_darkgray(io.screen);
+  gray      = RGB_gray(io.screen);
+  blue      = RGB_blue(io.screen);
+  green     = RGB_green(io.screen);
+  cyan      = RGB_cyan(io.screen);
+  red       = RGB_red(io.screen);
+  magenta   = RGB_magenta(io.screen);
+  yellow    = RGB_yellow(io.screen);
+  white     = RGB_white(io.screen);
 }
 
 
