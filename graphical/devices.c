@@ -11,6 +11,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 
 #include "functions.h"
 #include "vm.h"
@@ -138,6 +139,44 @@ void line(int x1, int y1, int x2, int y2)
         x--;
       video_pixel(x, y);
     }
+  }
+}
+
+
+int equ(float x, float y, int r)
+{
+  int res = 0;
+  if (pow(x, 2) + pow(y, 2) - pow(r, 2) == 0)
+    res = 0;
+  else if (pow(x, 2) + pow(y, 2) - pow(r, 2) < 0)
+    res = -1;
+  else if (pow(x, 2) + pow(y, 2) - pow(r, 2) > 0)
+    res = 1;
+  return res;
+}
+
+void setOthers(int x, int y, int xCenter, int yCenter)
+{
+  video_pixel(xCenter+x, yCenter+y);
+  video_pixel(xCenter-x, yCenter+y);
+  video_pixel(xCenter+x, yCenter-y);
+  video_pixel(xCenter-x, yCenter-y);
+  video_pixel(xCenter+y, yCenter+x);
+  video_pixel(xCenter-y, yCenter+x);
+  video_pixel(xCenter+y, yCenter-x);
+  video_pixel(xCenter-y, yCenter-x);
+}
+
+void video_circle(int xCenter, int yCenter, int radius)
+{
+  int x = 0, y = radius;
+  setOthers(x, y, xCenter, yCenter);
+  while (x < y)
+  {
+    x++;
+    if (equ(x, y - (float) 1 / 2, radius) >= 0)
+      y--;
+    setOthers(x, y, xCenter, yCenter);
   }
 }
 
@@ -378,14 +417,21 @@ int handle_devices(void *unused)
     }
     if (vm.ports[6] == 7)
     {
-//    video_circle(x, y, w);
+      gw = TOS; DROP;
+      gy = TOS; DROP;
+      gx = TOS; DROP;
+      video_circle(gx, gy, gw);
       vm.ports[6] = 0;
-     vm.ports[0] = 1;
+      vm.ports[0] = 1;
       vm.ports[3] = 0;
     }
     if (vm.ports[6] == 8)
     {
-//    video_fillCircle(x, y, w);
+      gw = TOS; DROP;
+      gy = TOS; DROP;
+      gx = TOS; DROP;
+      for (; gw > 0; gw--)
+        video_circle(gx, gy, gw);
       vm.ports[6] = 0;
       vm.ports[0] = 1;
       vm.ports[3] = 0;
