@@ -240,13 +240,30 @@ int handle_devices(void *unused)
     }
     if (vm.ports[6] == 3)
     {
-//    video_rect(x, y, h, w);
+      gw = TOS; DROP;
+      gh = TOS; DROP;
+      gy = TOS; DROP;
+      gx = TOS; DROP;
+      line(gx, gy, gx + gw, gy);
+      line(gx + gw, gy, gx + gw, gy - gh);
+      line(gx + gw, gy - gh, gx, gy - gh);
+      line(gx, gy - gh, gx, gy);
       vm.ports[6] = 0;
       vm.ports[0] = 1;
     }
     if (vm.ports[6] == 4)
     {
-//    video_fillRect(x, y, h, w);
+      gw = TOS; DROP;
+      gh = TOS; DROP;
+      gy = TOS; DROP;
+      gx = TOS; DROP;
+      for (; gw > 0; gw--)
+      {
+        line(gx, gy, gx + gw, gy);
+        line(gx + gw, gy, gx + gw, gy - gh);
+        line(gx + gw, gy - gh, gx, gy - gh);
+        line(gx, gy - gh, gx, gy);
+      }
       vm.ports[6] = 0;
       vm.ports[0] = 1;
     }
