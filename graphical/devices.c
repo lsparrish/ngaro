@@ -226,6 +226,7 @@ int handle_devices(void *unused)
 
     if (vm.ports[6] == 1)
     {
+      printf("Set color: %i\n", TOS);
       color = TOS; DROP;
       vm.ports[6] = 0;
       vm.ports[0] = 1;
@@ -237,6 +238,7 @@ int handle_devices(void *unused)
       video_pixel(gx, gy);
       vm.ports[6] = 0;
       vm.ports[0] = 1;
+      vm.ports[3] = 0;
     }
     if (vm.ports[6] == 3)
     {
@@ -250,6 +252,7 @@ int handle_devices(void *unused)
       line(gx, gy - gh, gx, gy);
       vm.ports[6] = 0;
       vm.ports[0] = 1;
+      vm.ports[3] = 0;
     }
     if (vm.ports[6] == 4)
     {
@@ -266,6 +269,7 @@ int handle_devices(void *unused)
       }
       vm.ports[6] = 0;
       vm.ports[0] = 1;
+      vm.ports[3] = 0;
     }
     if (vm.ports[6] == 5)
     {
@@ -275,6 +279,7 @@ int handle_devices(void *unused)
       line(gx, gy, gx, gy + gh);
       vm.ports[6] = 0;
       vm.ports[0] = 1;
+      vm.ports[3] = 0;
     }
     if (vm.ports[6] == 6)
     {
@@ -284,18 +289,21 @@ int handle_devices(void *unused)
       line(gx, gy, gx + gw, gy);
       vm.ports[6] = 0;
       vm.ports[0] = 1;
+      vm.ports[3] = 0;
     }
     if (vm.ports[6] == 7)
     {
 //    video_circle(x, y, w);
       vm.ports[6] = 0;
      vm.ports[0] = 1;
+      vm.ports[3] = 0;
     }
     if (vm.ports[6] == 8)
     {
 //    video_fillCircle(x, y, w);
       vm.ports[6] = 0;
       vm.ports[0] = 1;
+      vm.ports[3] = 0;
     }
 
 
