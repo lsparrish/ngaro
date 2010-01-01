@@ -28,7 +28,13 @@ typedef struct {
 } DEVICES;
 
 DEVICES io;
-int tx, ty, mousex, mousey, mouseb;
+int tx, ty, mousex, mousey, mouseb, color, gx, gy;
+
+
+void video_pixel(int x, int y)
+{
+  vm.image[VIDEO_BASE+(x + (y * VIDEO_WIDTH))] = color;
+}
 
 /******************************************************
  *|F| void draw_character(int x, int y, int character)
@@ -175,13 +181,15 @@ int handle_devices(void *unused)
 
     if (vm.ports[6] == 1)
     {
-//    video_color(data[sp]); sp--;
+      color = TOS; DROP;
       vm.ports[6] = 0;
       vm.ports[0] = 1;
     }
     if (vm.ports[6] == 2)
     {
-//    video_pixel(x, y);
+      gy = TOS; DROP;
+      gx = TOS; DROP;
+      video_pixel(gx, gy);
       vm.ports[6] = 0;
       vm.ports[0] = 1;
     }
