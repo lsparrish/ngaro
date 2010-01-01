@@ -173,6 +173,56 @@ int handle_devices(void *unused)
       vm.ports[0] = 1;
     }
 
+    if (vm.ports[6] == 1)
+    {
+//    video_color(data[sp]); sp--;
+      vm.ports[6] = 0;
+      vm.ports[0] = 1;
+    }
+    if (vm.ports[6] == 2)
+    {
+//    video_pixel(x, y);
+      vm.ports[6] = 0;
+      vm.ports[0] = 1;
+    }
+    if (vm.ports[6] == 3)
+    {
+//    video_rect(x, y, h, w);
+      vm.ports[6] = 0;
+      vm.ports[0] = 1;
+    }
+    if (vm.ports[6] == 4)
+    {
+//    video_fillRect(x, y, h, w);
+      vm.ports[6] = 0;
+      vm.ports[0] = 1;
+    }
+    if (vm.ports[6] == 5)
+    {
+//    video_vline(x, y, h);
+      vm.ports[6] = 0;
+      vm.ports[0] = 1;
+    }
+    if (vm.ports[6] == 6)
+    {
+//    video_hline(x, y, w);
+      vm.ports[6] = 0;
+      vm.ports[0] = 1;
+    }
+    if (vm.ports[6] == 7)
+    {
+//    video_circle(x, y, w);
+      vm.ports[6] = 0;
+     vm.ports[0] = 1;
+    }
+    if (vm.ports[6] == 8)
+    {
+//    video_fillCircle(x, y, w);
+      vm.ports[6] = 0;
+      vm.ports[0] = 1;
+    }
+
+
     if (vm.ports[7] == 1)
     {
       vm.sp++; vm.data[vm.sp] = mousex;
