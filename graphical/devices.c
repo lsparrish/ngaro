@@ -95,7 +95,6 @@ void video_color(int c)
 
 void video_pixel(int x, int y)
 {
-  printf("Pixel @ %i, %i\n", x, y);
   vm.image[VIDEO_BASE+(x + y * VIDEO_WIDTH)] = color;
 }
 
@@ -288,7 +287,6 @@ int handle_devices(void *unused)
 
     if (vm.ports[6] == 1)
     {
-      printf("Set color: %i\n", TOS);
       video_color(TOS); DROP;
       vm.ports[6] = 0;
       vm.ports[0] = 1;
