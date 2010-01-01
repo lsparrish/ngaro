@@ -28,13 +28,58 @@ typedef struct {
 } DEVICES;
 
 DEVICES io;
-int tx, ty, mousex, mousey, mouseb, color, gx, gy;
+int tx, ty, mousex, mousey, mouseb;
+int color, gx, gy, gh, gw;
 
 
 void video_pixel(int x, int y)
 {
   vm.image[VIDEO_BASE+(x + (y * VIDEO_WIDTH))] = color;
 }
+
+
+void line(int x1, int y1, int x2, int y2)
+{
+  float error, m;
+  int x, y;
+  x = x1;
+  y = y1;
+  if (x1 == x2)
+  {
+    while (y != y2)
+    {
+      if (y2 - y1 > 0)
+         y++;
+      else
+         y--;
+      video_pixel(x,y);
+    }
+  }
+  else
+  {
+    m = (float)(y2 - y1) / (x2 - x1);
+    error = 0;
+    video_pixel(x, y);
+    while (x != x2)
+    {
+      error += m;
+      if (error > .5)
+      {
+        if (x2 - x1 > 0)
+          y++;
+        else
+          y--;
+        --error;
+      }
+      if (x2 - x1 > 0)
+        x++;
+      else
+        x--;
+      video_pixel(x, y);
+    }
+  }
+}
+
 
 /******************************************************
  *|F| void draw_character(int x, int y, int character)
@@ -207,13 +252,19 @@ int handle_devices(void *unused)
     }
     if (vm.ports[6] == 5)
     {
-//    video_vline(x, y, h);
+      gh = TOS; DROP;
+      gy = TOS; DROP;
+      gx = TOS; DROP;
+      line(gx, gy, gx, gy + gh);
       vm.ports[6] = 0;
       vm.ports[0] = 1;
     }
     if (vm.ports[6] == 6)
     {
-//    video_hline(x, y, w);
+      gw = TOS; DROP;
+      gy = TOS; DROP;
+      gx = TOS; DROP;
+      line(gx, gy, gx + gw, gy);
       vm.ports[6] = 0;
       vm.ports[0] = 1;
     }
