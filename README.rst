@@ -19,15 +19,15 @@ For most systems, the following will suffice:
    cd console
    make
 
-If your system requires curses (e.g., on Windows); open the
+If your system requires curses, open the
 console/retro.c and change //FLAGS to:
 
 ::
 
    //FLAGS -O3 -fomit-frame-pointer -DCURSES
 
-You will also need to add a //LIBS line (change as needed for
-your system):
+You will also need to add a //LIBS line (change as
+needed for your system):
 
 ::
 
@@ -286,3 +286,5 @@ an I/O event.
 
 The button state will be placed on the stack. *1* if a button is
 pressed, or *2* if a button is not pressed.
+
+*Note: Not all implementations will support the canvas.*
