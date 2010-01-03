@@ -12,12 +12,16 @@
 #include "vm.h"
 
 
+int opcount[NUM_OPS+2];
+
 /******************************************************
  * Main entry point into the VM
  ******************************************************/
 int main(int argc, char **argv)
 {
   int a, i, trace, endian;
+  char *opstat_file = 0;
+  FILE *opstats = 0;
 
   VM *vm = malloc(sizeof(VM));
 
@@ -46,6 +50,10 @@ int main(int argc, char **argv)
     {
       i++; dev_include(argv[i]);
     }
+    else if (strcmp(argv[i], "--opstats") == 0)
+    {
+      i++; opstat_file = argv[i];
+    }
     else if (strcmp(argv[i], "--shrink") == 0)
     {
       vm->shrink = 1;
@@ -54,11 +62,12 @@ int main(int argc, char **argv)
     {
       fprintf(stderr, "%s [options] [imagename]\n", argv[0]);
       fprintf(stderr, "Valid options are:\n");
-      fprintf(stderr, "   --about        Display some information about Ngaro\n");
-      fprintf(stderr, "   --trace        Execution trace\n");
-      fprintf(stderr, "   --endian       Load an image with a different endianness\n");
-      fprintf(stderr, "   --shrink       Shrink the image to the current heap size when saving\n");
-      fprintf(stderr, "   --with [file]  Treat [file] as an input source\n");
+      fprintf(stderr, "   --about          Display some information about Ngaro\n");
+      fprintf(stderr, "   --trace          Execution trace\n");
+      fprintf(stderr, "   --endian         Load an image with a different endianness\n");
+      fprintf(stderr, "   --shrink         Shrink the image to the current heap size when saving\n");
+      fprintf(stderr, "   --with [file]    Treat [file] as an input source\n");
+      fprintf(stderr, "   --opstats [file] Write statistics about VM opcode to [file]\n");
       exit(0);
     }
     else if (strcmp(argv[i], "--about") == 0)
@@ -71,6 +80,7 @@ int main(int argc, char **argv)
       strcpy(vm->filename, argv[i]);
     }
   }
+  fprintf(stderr, "got here\n");
 
   dev_init(OUTPUT);
 
@@ -87,19 +97,74 @@ int main(int argc, char **argv)
     swapEndian(vm);
 
   /* Process the image */
-  if (trace == 0)
+    
+  if (opstat_file)
   {
-    for (vm->ip = 0; vm->ip < IMAGE_SIZE; vm->ip++)
+    opstats = fopen(opstat_file, "w");
+    if (! opstats)
     {
-      vm_process(vm);
+      fprintf(stderr, "Sorry, can't open %s to save op code statistics.\n", opstat_file);
+    }
+  }
+  if (opstats == 0)
+  {
+    if (trace == 0)
+    {
+      for (vm->ip = 0; vm->ip < IMAGE_SIZE; vm->ip++)
+      {
+        vm_process(vm);
+      }
+    }
+    else
+    {
+      for (vm->ip = 0; vm->ip < IMAGE_SIZE; vm->ip++)
+      {
+        display_instruction(vm);
+        vm_process(vm);
+      }
     }
   }
   else
   {
-    for (vm->ip = 0; vm->ip < IMAGE_SIZE; vm->ip++)
+    int opcode = 999;
+    for (a = 0; a < NUM_OPS+2; ++a) opcount[a] = 0;
+    if (trace == 0)
     {
-      display_instruction(vm);
-      vm_process(vm);
+      for (vm->ip = 0; vm->ip < IMAGE_SIZE; vm->ip++)
+      {
+        opcode = vm->image[vm->ip];
+        opcount[(opcode <= NUM_OPS)?(opcode):(NUM_OPS+1)] += 1;
+        vm_process(vm);
+      }
+    }
+    else
+    {
+      for (vm->ip = 0; vm->ip < IMAGE_SIZE; vm->ip++)
+      {
+        opcode = vm->image[vm->ip];
+        opcount[(opcode <= NUM_OPS)?(opcode):(NUM_OPS+1)] += 1;
+        display_instruction(vm);
+        vm_process(vm);
+      }
+    }
+    {
+      char *opname[NUM_OPS+2] = {
+        "VM_NOP",       "VM_LIT",       "VM_DUP",       "VM_DROP",
+        "VM_SWAP",      "VM_PUSH",      "VM_POP",       "VM_CALL",
+        "VM_JUMP",      "VM_RETURN",    "VM_GT_JUMP",   "VM_LT_JUMP",
+        "VM_NE_JUMP",   "VM_EQ_JUMP",   "VM_FETCH",     "VM_STORE",
+        "VM_ADD",       "VM_SUB",       "VM_MUL",       "VM_DIVMOD",
+        "VM_AND",       "VM_OR",        "VM_XOR",       "VM_SHL",
+        "VM_SHR",       "VM_ZERO_EXIT", "VM_INC",       "VM_DEC",
+        "VM_IN",        "VM_OUT",       "VM_WAIT",
+        "VM_ILLEGAL" };
+      fprintf(opstats, "   times run | code | op_name\n");
+      for (a = 0; a < NUM_OPS + 2; ++a)
+      {
+        fprintf(opstats, "%12d |  %2x  | %s\n", opcount[a], a, opname[a]);
+      }
+      fprintf(opstats, "\n");
+      fclose(opstats);
     }
   }
 
