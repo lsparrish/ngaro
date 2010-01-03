@@ -33,6 +33,10 @@ void dev_putch(int c)
   {
     printf("\033[2J\033[1;1H");
   }
+  if (c == 8)
+  {
+    putchar(32); putchar(8);
+  }
 }
 
 
@@ -136,6 +140,10 @@ void dev_putch(int c)
   else
   {
     clear();
+  }
+  if (c == 8)
+  {
+    putchar(32); putchar(8);
   }
 }
 
