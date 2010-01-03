@@ -80,7 +80,6 @@ int main(int argc, char **argv)
       strcpy(vm->filename, argv[i]);
     }
   }
-  fprintf(stderr, "got here\n");
 
   dev_init(OUTPUT);
 
@@ -97,11 +96,11 @@ int main(int argc, char **argv)
     swapEndian(vm);
 
   /* Process the image */
-    
+
   if (opstat_file)
   {
     opstats = fopen(opstat_file, "w");
-    if (! opstats)
+    if (!opstats)
     {
       fprintf(stderr, "Sorry, can't open %s to save op code statistics.\n", opstat_file);
     }
@@ -127,7 +126,7 @@ int main(int argc, char **argv)
   else
   {
     int opcode = 999;
-    for (a = 0; a < NUM_OPS+2; ++a) opcount[a] = 0;
+    for (a = 0; a < NUM_OPS + 2; ++a) opcount[a] = 0;
     if (trace == 0)
     {
       for (vm->ip = 0; vm->ip < IMAGE_SIZE; vm->ip++)
@@ -142,7 +141,7 @@ int main(int argc, char **argv)
       for (vm->ip = 0; vm->ip < IMAGE_SIZE; vm->ip++)
       {
         opcode = vm->image[vm->ip];
-        opcount[(opcode <= NUM_OPS)?(opcode):(NUM_OPS+1)] += 1;
+        opcount[(opcode <= NUM_OPS) ? (opcode) : (NUM_OPS + 1)] += 1;
         display_instruction(vm);
         vm_process(vm);
       }
