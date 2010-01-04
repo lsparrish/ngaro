@@ -72,5 +72,5 @@ void display_instruction(VM *vm)
     fprintf(stderr, "%i ", vm->address[(vm->rsp-i)+1]);
 
   /* Whew, all done! */
-  fprintf(stderr, "\n\r");
+  fprintf(stderr, "\n");
 }
