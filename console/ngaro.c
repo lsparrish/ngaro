@@ -12,7 +12,178 @@
 #include "vm.h"
 
 
-int opcount[NUM_OPS+2];
+/* track how many times each opcode is run */
+#define LAST_OP (NUM_OPS)
+#define ILL_OP (NUM_OPS + 1)
+#define TRACKED_OPS (NUM_OPS + 2)
+unsigned int op_count[TRACKED_OPS];
+
+/* track number of instructions between (potentially)
+   branching ones, jumps calls and returns.  32 is
+   ridiculously large actually.  Somewhere around 6-8
+   there is a sharp knee. */
+#define MAX_SLL (32)
+
+/* +2: 0 1 ... if 3 is max, I am also using 4. */
+/* to represent "more than 3".  And  3+2 == 5 */
+#define TRACKED_SLLS (MAX_SLL + 2)
+unsigned int sll_count[TRACKED_SLLS];
+unsigned int straight_line_length = -1;
+
+/* track how many times each literal value is used */
+#define MIN_LIT (-1024)
+#define MAX_LIT (8192)
+
+/* +3: 1 for 0, 1 for below range, 1 for above range */
+#define TRACKED_LITS (MAX_LIT - MIN_LIT + 3)
+
+/* OFF_LITS + (MIN_LIT - 1) == 0 */
+#define OFF_LITS (1 - MIN_LIT)
+/* I don't mind 32 element arrays we don't use, but 9k
+ * is too much.  So use a pointer and malloc. */
+unsigned int *lit_count = 0;
+
+
+void init_stats(FILE **opstats, char *opstat_path)
+{
+  int a;
+  if ((! opstats) || (! opstat_path)) return;
+
+  lit_count = (unsigned int *)malloc(TRACKED_LITS * sizeof(unsigned int));
+  if (! lit_count)
+  {
+    fprintf(stderr, "Sorry, can't allocate the structure to count lits.\nNot collecting any stats  this run.\n");
+    return;
+  }
+
+  *opstats = fopen(opstat_path, "w");
+  if (! (*opstats))
+  {
+    fprintf(stderr, "Sorry, can't open %s to save op code statistics.\nNot collecting any stats  this run.\n", opstat_path);
+    free(lit_count);
+    lit_count = 0;
+    return;
+  }
+  for (a = 0; a < TRACKED_OPS; ++a)   op_count[a] = 0;
+  for (a = 0; a < TRACKED_SLLS; ++a) sll_count[a] = 0;
+  for (a = 0; a < TRACKED_LITS; ++a) lit_count[a] = 0;
+}
+
+void collect_stats(VM *vm)
+{
+  /* track frequency of various op codes */
+  int opcode = vm->image[vm->ip];
+  if ((opcode < 0) || (LAST_OP < opcode))
+    opcode = ILL_OP;
+  op_count[opcode] += 1;
+
+  /* track distribution of straight line code lengths */
+  switch (opcode)
+  {
+    case VM_CALL:     case VM_JUMP:     case VM_RETURN:
+    case VM_GT_JUMP:  case VM_LT_JUMP:  case VM_NE_JUMP:
+    case VM_EQ_JUMP:  case VM_ZERO_EXIT:
+         if (0 <= straight_line_length)
+         {
+           if (MAX_SLL < straight_line_length)
+             straight_line_length = MAX_SLL + 1;
+           sll_count[straight_line_length] += 1;
+         }
+         straight_line_length = 0;
+         break;
+
+    default:
+         straight_line_length += 1;
+         break;
+  }
+
+  /* track distribution of literals */
+  if (VM_LIT == opcode)
+  {
+    int lit = vm->image[vm->ip + 1];
+    if      (lit < MIN_LIT) lit = MIN_LIT - 1;
+    else if (MAX_LIT < lit) lit = MAX_LIT + 1;
+    lit_count[lit + OFF_LITS] += 1;
+  }
+
+  /* $TODO$ read existing stats file and accumulate */
+
+  /* $TODO$ track distribution of stack depths.
+            What is a reasonable stack size? */
+
+  /* $TODO$ track distribution of jump lengths, 
+            I bet most jumps are short distances.
+            What are the popular distances to jump? */
+
+  /* $TODO$ ? track distribution of call lengths.
+            are most calls also local?  how local?? */
+
+  /* $TODO$ ? track total time spent executing
+            different opcodes.  No matter how popular NOP
+            is, it doesn't matter if it only uses 1% of
+            runtime -- optimize something else. */
+}
+
+void report_stats(FILE *opstats)
+{
+  int a;
+  char *opname[TRACKED_OPS] = {
+    "VM_NOP",       "VM_LIT",       "VM_DUP",       "VM_DROP",
+    "VM_SWAP",      "VM_PUSH",      "VM_POP",       "VM_CALL",
+    "VM_JUMP",      "VM_RETURN",    "VM_GT_JUMP",   "VM_LT_JUMP",
+    "VM_NE_JUMP",   "VM_EQ_JUMP",   "VM_FETCH",     "VM_STORE",
+    "VM_ADD",       "VM_SUB",       "VM_MUL",       "VM_DIVMOD",
+    "VM_AND",       "VM_OR",        "VM_XOR",       "VM_SHL",
+    "VM_SHR",       "VM_ZERO_EXIT", "VM_INC",       "VM_DEC",
+    "VM_IN",        "VM_OUT",       "VM_WAIT",
+    "VM_ILLEGAL" };
+  /* The max 32 bit unsigned int is 4,294,967,295 so */
+  /* I am using %10u and %10d below.  6 places to change */
+  /* if xx_count[] isn't a 32 bit int */
+
+  /* report frequency of the opcodes. */
+  fprintf(opstats, "   times run | code | op_name\n");
+  for (a = 0; a < TRACKED_OPS; ++a)
+  {
+    fprintf(opstats, "  %10u |  %2x  | %s\n", op_count[a], a, opname[a]);
+  }
+  fprintf(opstats, "\n");
+
+  /* report freq. of the sizes of the straight line code blocks. */
+  fprintf(opstats, "  times seen | straight line code length\n");
+  for (a = 0; a < TRACKED_SLLS; ++a)
+  {
+    if (sll_count[a])
+    {
+      if (MAX_SLL + 1 == a)
+        fprintf(opstats, "  %10d | >%3d\n", sll_count[a], (a - 1));
+      else
+        fprintf(opstats, "  %10d |  %3d\n", sll_count[a], a);
+    }
+  }
+  fprintf(opstats, "\n");
+
+  /* report freq. of usage of the various literals. */
+  fprintf(opstats, "  times used | literal value\n");
+  for (a = 0; a < TRACKED_LITS; ++a)
+  {
+    if (lit_count[a])
+    {
+      if (0 == a)
+        fprintf(opstats, "  %10d | <%4d\n", lit_count[a], ((a - OFF_LITS) + 1));
+      else if (TRACKED_LITS - 1 == a)
+        fprintf(opstats, "  %10d | >%4d\n", lit_count[a], ((a - OFF_LITS) - 1));
+      else
+        fprintf(opstats, "  %10d |  %4d\n", lit_count[a], (a - OFF_LITS));
+    }
+  }
+  fprintf(opstats, "\n");
+
+  /* clean up */
+  free(lit_count);
+  lit_count = 0;
+  fclose(opstats);
+}
 
 /******************************************************
  * Main entry point into the VM
@@ -20,7 +191,7 @@ int opcount[NUM_OPS+2];
 int main(int argc, char **argv)
 {
   int a, i, trace, endian;
-  char *opstat_file = 0;
+  char *opstat_path = 0;
   FILE *opstats = 0;
 
   VM *vm = malloc(sizeof(VM));
@@ -52,7 +223,8 @@ int main(int argc, char **argv)
     }
     else if (strcmp(argv[i], "--opstats") == 0)
     {
-      i++; opstat_file = argv[i];
+      i++; opstat_path = argv[i];
+      init_stats(&opstats, opstat_path);
     }
     else if (strcmp(argv[i], "--shrink") == 0)
     {
@@ -67,10 +239,11 @@ int main(int argc, char **argv)
       fprintf(stderr, "   --endian         Load an image with a different endianness\n");
       fprintf(stderr, "   --shrink         Shrink the image to the current heap size when saving\n");
       fprintf(stderr, "   --with [file]    Treat [file] as an input source\n");
-      fprintf(stderr, "   --opstats [file] Write statistics about VM opcode to [file]\n");
+      fprintf(stderr, "   --opstats [file] Write statistics about VM operations to [file]\n");
       exit(0);
     }
-    else if (strcmp(argv[i], "--about") == 0)
+    else if ((strcmp(argv[i], "--about") == 0) ||
+             (strcmp(argv[i], "--version") == 0))
     {
       fprintf(stderr, "Retro Language  [VM: C, console]\n\n");
       exit(0);
@@ -97,14 +270,6 @@ int main(int argc, char **argv)
 
   /* Process the image */
 
-  if (opstat_file)
-  {
-    opstats = fopen(opstat_file, "w");
-    if (!opstats)
-    {
-      fprintf(stderr, "Sorry, can't open %s to save op code statistics.\n", opstat_file);
-    }
-  }
   if (opstats == 0)
   {
     if (trace == 0)
@@ -125,14 +290,11 @@ int main(int argc, char **argv)
   }
   else
   {
-    int opcode = 999;
-    for (a = 0; a < NUM_OPS + 2; ++a) opcount[a] = 0;
     if (trace == 0)
     {
       for (vm->ip = 0; vm->ip < IMAGE_SIZE; vm->ip++)
       {
-        opcode = vm->image[vm->ip];
-        opcount[(opcode <= NUM_OPS)?(opcode):(NUM_OPS+1)] += 1;
+        collect_stats(vm);
         vm_process(vm);
       }
     }
@@ -140,31 +302,12 @@ int main(int argc, char **argv)
     {
       for (vm->ip = 0; vm->ip < IMAGE_SIZE; vm->ip++)
       {
-        opcode = vm->image[vm->ip];
-        opcount[(opcode <= NUM_OPS) ? (opcode) : (NUM_OPS + 1)] += 1;
+        collect_stats(vm);
         display_instruction(vm);
         vm_process(vm);
       }
     }
-    {
-      char *opname[NUM_OPS+2] = {
-        "VM_NOP",       "VM_LIT",       "VM_DUP",       "VM_DROP",
-        "VM_SWAP",      "VM_PUSH",      "VM_POP",       "VM_CALL",
-        "VM_JUMP",      "VM_RETURN",    "VM_GT_JUMP",   "VM_LT_JUMP",
-        "VM_NE_JUMP",   "VM_EQ_JUMP",   "VM_FETCH",     "VM_STORE",
-        "VM_ADD",       "VM_SUB",       "VM_MUL",       "VM_DIVMOD",
-        "VM_AND",       "VM_OR",        "VM_XOR",       "VM_SHL",
-        "VM_SHR",       "VM_ZERO_EXIT", "VM_INC",       "VM_DEC",
-        "VM_IN",        "VM_OUT",       "VM_WAIT",
-        "VM_ILLEGAL" };
-      fprintf(opstats, "   times run | code | op_name\n");
-      for (a = 0; a < NUM_OPS + 2; ++a)
-      {
-        fprintf(opstats, "%12d |  %2x  | %s\n", opcount[a], a, opname[a]);
-      }
-      fprintf(opstats, "\n");
-      fclose(opstats);
-    }
+    report_stats(opstats);
   }
 
   /* Once done, cleanup */
