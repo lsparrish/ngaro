@@ -43,12 +43,26 @@ unsigned int straight_line_length = -1;
  * is too much.  So use a pointer and malloc. */
 unsigned int *lit_count = 0;
 
+/* track how many times each jump distance is used */
+#define MIN_DIST (-64)
+#define MAX_DIST (2564)
+#define TRACKED_DISTS (MAX_DIST - MIN_DIST + 3)
+#define OFF_DISTS (1 - MIN_DIST)
+unsigned int dist_count[TRACKED_DISTS];
+
+/* track how deep the stacks are */
+#define MIN_SP (-3)
+#define MAX_SP (100)
+#define TRACKED_SPS (MAX_SP - MIN_SP + 3)
+#define OFF_SPS (1 - MIN_SP)
+unsigned int dsp_count[TRACKED_SPS];
+unsigned int rsp_count[TRACKED_SPS];
+
+/* track call destinations */
 unsigned int tracked_calls = 0;
 unsigned int *call_count = 0;
 unsigned int call_stats_please = 0; /* no call statistics by default */
 
-/*                       0123456789.123456789. */
-#define OP_STATS_HEADER "   times run | code | op_name\n"
 
 void init_stats(FILE **opstats, char *opstat_path, int call_tracking_requested)
 {
@@ -98,8 +112,10 @@ void init_stats(FILE **opstats, char *opstat_path, int call_tracking_requested)
     return;
   }
   for (a = 0; a < TRACKED_OPS; ++a)     op_count[a] = 0;
+  for (a = 0; a < TRACKED_SPS; ++a)    rsp_count[a] = dsp_count[a] = 0;
   for (a = 0; a < TRACKED_SLLS; ++a)   sll_count[a] = 0;
   for (a = 0; a < TRACKED_LITS; ++a)   lit_count[a] = 0;
+  for (a = 0; a < TRACKED_DISTS; ++a) dist_count[a] = 0;
   for (a = 0; a < tracked_calls; ++a) call_count[a] = 0;
 }
 
@@ -114,9 +130,18 @@ void collect_stats(VM *vm)
   /* track distribution of straight line code lengths */
   switch (opcode)
   {
-    case VM_CALL:     case VM_JUMP:     case VM_RETURN:
     case VM_GT_JUMP:  case VM_LT_JUMP:  case VM_NE_JUMP:
-    case VM_EQ_JUMP:  case VM_ZERO_EXIT:
+    case VM_EQ_JUMP:  case VM_JUMP:
+         /* track jump distances */
+         {
+             int dist = vm->image[vm->ip + 1];
+             dist -= vm->ip;
+             if      (dist < MIN_DIST) dist = MIN_DIST - 1;
+             else if (MAX_DIST < dist) dist = MAX_DIST + 1;
+             dist_count[dist + OFF_DISTS] += 1;
+         }
+         /* FALL THROUGH! */
+    case VM_CALL:     case VM_RETURN:   case VM_ZERO_EXIT:
          if (0 <= straight_line_length)
          {
            if (MAX_SLL < straight_line_length)
@@ -140,36 +165,42 @@ void collect_stats(VM *vm)
     lit_count[lit + OFF_LITS] += 1;
   }
 
-  /* track distribution of call targets */
-  if ((VM_CALL == opcode) && (call_count))
+  if (call_count)
   {
-    int target = vm->image[vm->ip + 1];
-    if (tracked_calls < target)
+    /* track distribution of stack depths */
+    int dsp = vm->sp;
+    if      (dsp < MIN_SP) dsp = MIN_SP - 1;
+    else if (MAX_SP < dsp) dsp = MAX_SP + 1;
+    dsp_count[dsp + OFF_SPS] += 1;
+    int rsp = vm->rsp;
+    if      (rsp < MIN_SP) rsp = MIN_SP - 1;
+    else if (MAX_SP < rsp) rsp = MAX_SP + 1;
+    rsp_count[rsp + OFF_SPS] += 1;
+
+    /* track distribution of call targets */
+    if (VM_CALL == opcode)
     {
-      int newsize = target + 10;
-      int i;
-      call_count = (unsigned int *)realloc(call_count, newsize*sizeof(*call_count));
-      if (! call_count)
+      int target = vm->image[vm->ip + 1];
+      if (tracked_calls < target)
       {
-        fprintf(stderr,
-                "Sorry, can't grow the structure to count call targets.\n"
-                "aborting this run.\n");
-        exit(1);
+        int newsize = target + 10;
+        int i;
+        call_count = (unsigned int *)realloc(call_count, newsize*sizeof(*call_count));
+        if (! call_count)
+        {
+          fprintf(stderr,
+                  "Sorry, can't grow the structure to count call targets.\n"
+                  "aborting this run.\n");
+          exit(1);
+        }
+        for (i = tracked_calls; i < newsize; ++i) call_count[i] = 0;
+        tracked_calls = newsize;
       }
-      for (i = tracked_calls; i < newsize; ++i) call_count[i] = 0;
-      tracked_calls = newsize;
+      call_count[target] += 1;
     }
-    call_count[target] += 1;
   }
 
   /* $TODO$ read existing stats file and accumulate */
-
-  /* $TODO$ track distribution of stack depths.
-            What is a reasonable stack size? */
-
-  /* $TODO$ track distribution of jump lengths,
-            I bet most jumps are short distances.
-            What are the popular distances to jump? */
 
   /* $TODO$ ? track distribution of call lengths.
             are most calls also local?  how local?? */
@@ -198,7 +229,7 @@ void report_stats(FILE *opstats)
   /* if xx_count[] isn't a 32 bit int */
 
   /* report frequency of the opcodes. */
-  fprintf(opstats, OP_STATS_HEADER);
+  fprintf(opstats, "   times run | code | op_name\n");
   for (a = 0; a < TRACKED_OPS; ++a)
   {
     fprintf(opstats, "  %10u |  %2x  | %s\n", op_count[a], a, opname[a]);
@@ -212,9 +243,9 @@ void report_stats(FILE *opstats)
     if (sll_count[a])
     {
       if (MAX_SLL + 1 == a)
-        fprintf(opstats, "  %10d | >%3d\n", sll_count[a], (a - 1));
+        fprintf(opstats, "  %10d | > %3d\n", sll_count[a], (a - 1));
       else
-        fprintf(opstats, "  %10d |  %3d\n", sll_count[a], a);
+        fprintf(opstats, "  %10d |   %3d\n", sll_count[a], a);
     }
   }
   fprintf(opstats, "\n");
@@ -235,8 +266,54 @@ void report_stats(FILE *opstats)
   }
   fprintf(opstats, "\n");
 
+  /* report freq. of usage of the various jump distances. */
+  fprintf(opstats, "  times used | jump distance\n");
+  for (a = 0; a < TRACKED_DISTS; ++a)
+  {
+    if (dist_count[a])
+    {
+      if (0 == a)
+        fprintf(opstats, "  %10d | < %4d\n", dist_count[a], ((a - OFF_DISTS) + 1));
+      else if (TRACKED_DISTS - 1 == a)
+        fprintf(opstats, "  %10d | > %4d\n", dist_count[a], ((a - OFF_DISTS) - 1));
+      else
+        fprintf(opstats, "  %10d |   %4d\n", dist_count[a], (a - OFF_DISTS));
+    }
+  }
+  fprintf(opstats, "\n");
+
   if (call_count)
   {
+    /* report distribution of stack depths. */
+    fprintf(opstats, "  times seen | data stack depth\n");
+    for (a = 0; a < TRACKED_SPS; ++a)
+    {
+      if (dsp_count[a])
+      {
+        if (0 == a)
+          fprintf(opstats, "  %10d | < %4d\n", dsp_count[a], ((a - OFF_SPS) + 1));
+        else if (TRACKED_SPS - 1 == a)
+          fprintf(opstats, "  %10d | > %4d\n", dsp_count[a], ((a - OFF_SPS) - 1));
+        else
+          fprintf(opstats, "  %10d |   %4d\n", dsp_count[a], (a - OFF_SPS));
+      }
+    }
+    fprintf(opstats, "\n");
+    fprintf(opstats, "  times seen | return/address stack depth\n");
+    for (a = 0; a < TRACKED_SPS; ++a)
+    {
+      if (rsp_count[a])
+      {
+        if (0 == a)
+          fprintf(opstats, "  %10d | < %4d\n", rsp_count[a], ((a - OFF_SPS) + 1));
+        else if (TRACKED_SPS - 1 == a)
+          fprintf(opstats, "  %10d | > %4d\n", rsp_count[a], ((a - OFF_SPS) - 1));
+        else
+          fprintf(opstats, "  %10d |   %4d\n", rsp_count[a], (a - OFF_SPS));
+      }
+    }
+    fprintf(opstats, "\n");
+
     /* report freq. of the various call targets. */
     fprintf(opstats, "times called | decimal address\n");
     for (a = 0; a < tracked_calls; ++a)
@@ -311,7 +388,12 @@ int main(int argc, char **argv)
     {
       vm->shrink = 1;
     }
-    else if (strcmp(argv[i], "--help") == 0)
+    else if ((strcmp(argv[i], "--help") == 0) ||
+             (strcmp(argv[i], "-help") == 0)  ||
+             (strcmp(argv[i], "/help") == 0)  ||
+             (strcmp(argv[i], "/?") == 0)     ||
+             (strcmp(argv[i], "/h") == 0)     ||
+             (strcmp(argv[i], "-h") == 0))
     {
       fprintf(stderr, "%s [options] [imagename]\n", argv[0]);
       fprintf(stderr, "Valid options are:\n");
@@ -322,6 +404,7 @@ int main(int argc, char **argv)
       fprintf(stderr, "   --with [file]    Treat [file] as an input source\n");
       fprintf(stderr, "   --opstats [file] Write statistics about VM operations to [file]\n");
       fprintf(stderr, "      --callstats      Include how many times each address is called (slow)\n");
+      fprintf(stderr, "                       Also includes distribution of stack depths.\n");
       exit(0);
     }
     else if ((strcmp(argv[i], "--about") == 0) ||
