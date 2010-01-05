@@ -75,7 +75,7 @@ void init_stats(FILE **opstats, char *opstat_path, int call_tracking_requested)
       return;
     }
   }
-  
+
 
   if (! lit_count)
     lit_count = (unsigned int *)malloc(TRACKED_LITS * sizeof(*lit_count));
@@ -168,7 +168,7 @@ void collect_stats(VM *vm)
   /* $TODO$ track distribution of stack depths.
             What is a reasonable stack size? */
 
-  /* $TODO$ track distribution of jump lengths, 
+  /* $TODO$ track distribution of jump lengths,
             I bet most jumps are short distances.
             What are the popular distances to jump? */
 
@@ -307,7 +307,6 @@ int main(int argc, char **argv)
       {
         init_stats(&opstats, opstat_path, call_stats_please);
       }
-        
     }
     else if (strcmp(argv[i], "--shrink") == 0)
     {
