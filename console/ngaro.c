@@ -76,7 +76,6 @@ void init_stats(FILE **opstats, char *opstat_path, int call_tracking_requested)
     }
   }
 
-
   if (! lit_count)
     lit_count = (unsigned int *)malloc(TRACKED_LITS * sizeof(*lit_count));
   if (! lit_count)
@@ -238,7 +237,7 @@ void report_stats(FILE *opstats)
 
   if (call_count)
   {
-    /* report freq. of usage of the various literals. */
+    /* report freq. of the various call targets. */
     fprintf(opstats, "times called | decimal address\n");
     for (a = 0; a < tracked_calls; ++a)
     {
@@ -352,7 +351,6 @@ int main(int argc, char **argv)
     swapEndian(vm);
 
   /* Process the image */
-
   if (opstats == 0)
   {
     if (trace == 0)
