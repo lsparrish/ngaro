@@ -43,30 +43,65 @@ unsigned int straight_line_length = -1;
  * is too much.  So use a pointer and malloc. */
 unsigned int *lit_count = 0;
 
+unsigned int tracked_calls = 0;
+unsigned int *call_count = 0;
+unsigned int call_stats_please = 0; /* no call statistics by default */
 
-void init_stats(FILE **opstats, char *opstat_path)
+/*                       0123456789.123456789. */
+#define OP_STATS_HEADER "   times run | code | op_name\n"
+
+void init_stats(FILE **opstats, char *opstat_path, int call_tracking_requested)
 {
   int a;
+  long int last_header_pos = -1;
+  char *line_buffer;
+  size_t line_buf_size = 1024;
+
   if ((! opstats) || (! opstat_path)) return;
 
-  lit_count = (unsigned int *)malloc(TRACKED_LITS * sizeof(unsigned int));
+  if (call_tracking_requested)
+  {
+    call_stats_please = 1;
+    if (! call_count)
+    {
+      tracked_calls = 10; /* it will grow */
+      call_count = (unsigned int *)malloc(tracked_calls * sizeof(*call_count));
+    }
+    if (! call_count)
+    {
+      fprintf(stderr,
+              "Sorry, can't allocate the structure to count call targets.\n"
+              "Not collecting any stats  this run.\n");
+      return;
+    }
+  }
+  
+
+  if (! lit_count)
+    lit_count = (unsigned int *)malloc(TRACKED_LITS * sizeof(*lit_count));
   if (! lit_count)
   {
-    fprintf(stderr, "Sorry, can't allocate the structure to count lits.\nNot collecting any stats  this run.\n");
+    fprintf(stderr,
+            "Sorry, can't allocate the structure to count lits.\n"
+            "Not collecting any stats  this run.\n");
     return;
   }
 
-  *opstats = fopen(opstat_path, "w");
+  if (! (*opstats))
+    *opstats = fopen(opstat_path, "w+");
   if (! (*opstats))
   {
-    fprintf(stderr, "Sorry, can't open %s to save op code statistics.\nNot collecting any stats  this run.\n", opstat_path);
+    fprintf(stderr,
+            "Sorry, can't open %s to save op code statistics.\n"
+            "Not collecting any stats  this run.\n", opstat_path);
     free(lit_count);
     lit_count = 0;
     return;
   }
-  for (a = 0; a < TRACKED_OPS; ++a)   op_count[a] = 0;
-  for (a = 0; a < TRACKED_SLLS; ++a) sll_count[a] = 0;
-  for (a = 0; a < TRACKED_LITS; ++a) lit_count[a] = 0;
+  for (a = 0; a < TRACKED_OPS; ++a)     op_count[a] = 0;
+  for (a = 0; a < TRACKED_SLLS; ++a)   sll_count[a] = 0;
+  for (a = 0; a < TRACKED_LITS; ++a)   lit_count[a] = 0;
+  for (a = 0; a < tracked_calls; ++a) call_count[a] = 0;
 }
 
 void collect_stats(VM *vm)
@@ -106,6 +141,28 @@ void collect_stats(VM *vm)
     lit_count[lit + OFF_LITS] += 1;
   }
 
+  /* track distribution of call targets */
+  if ((VM_CALL == opcode) && (call_count))
+  {
+    int target = vm->image[vm->ip + 1];
+    if (tracked_calls < target)
+    {
+      int newsize = target + 10;
+      int i;
+      call_count = (unsigned int *)realloc(call_count, newsize*sizeof(*call_count));
+      if (! call_count)
+      {
+        fprintf(stderr,
+                "Sorry, can't grow the structure to count call targets.\n"
+                "aborting this run.\n");
+        exit(1);
+      }
+      for (i = tracked_calls; i < newsize; ++i) call_count[i] = 0;
+      tracked_calls = newsize;
+    }
+    call_count[target] += 1;
+  }
+
   /* $TODO$ read existing stats file and accumulate */
 
   /* $TODO$ track distribution of stack depths.
@@ -142,7 +199,7 @@ void report_stats(FILE *opstats)
   /* if xx_count[] isn't a 32 bit int */
 
   /* report frequency of the opcodes. */
-  fprintf(opstats, "   times run | code | op_name\n");
+  fprintf(opstats, OP_STATS_HEADER);
   for (a = 0; a < TRACKED_OPS; ++a)
   {
     fprintf(opstats, "  %10u |  %2x  | %s\n", op_count[a], a, opname[a]);
@@ -170,14 +227,31 @@ void report_stats(FILE *opstats)
     if (lit_count[a])
     {
       if (0 == a)
-        fprintf(opstats, "  %10d | <%4d\n", lit_count[a], ((a - OFF_LITS) + 1));
+        fprintf(opstats, "  %10d | < %4d\n", lit_count[a], ((a - OFF_LITS) + 1));
       else if (TRACKED_LITS - 1 == a)
-        fprintf(opstats, "  %10d | >%4d\n", lit_count[a], ((a - OFF_LITS) - 1));
+        fprintf(opstats, "  %10d | > %4d\n", lit_count[a], ((a - OFF_LITS) - 1));
       else
-        fprintf(opstats, "  %10d |  %4d\n", lit_count[a], (a - OFF_LITS));
+        fprintf(opstats, "  %10d |   %4d\n", lit_count[a], (a - OFF_LITS));
     }
   }
   fprintf(opstats, "\n");
+
+  if (call_count)
+  {
+    /* report freq. of usage of the various literals. */
+    fprintf(opstats, "times called | decimal address\n");
+    for (a = 0; a < tracked_calls; ++a)
+    {
+      if (call_count[a])
+      {
+        fprintf(opstats, "  %10d | %5d\n", call_count[a], a);
+      }
+    }
+    fprintf(opstats, "\n");
+    free(call_count);
+    call_count = 0;
+    tracked_calls = 0;
+  }
 
   /* clean up */
   free(lit_count);
@@ -224,7 +298,16 @@ int main(int argc, char **argv)
     else if (strcmp(argv[i], "--opstats") == 0)
     {
       i++; opstat_path = argv[i];
-      init_stats(&opstats, opstat_path);
+      init_stats(&opstats, opstat_path, call_stats_please);
+    }
+    else if (strcmp(argv[i], "--callstats") == 0)
+    {
+      call_stats_please = 1;
+      if (opstat_path)
+      {
+        init_stats(&opstats, opstat_path, call_stats_please);
+      }
+        
     }
     else if (strcmp(argv[i], "--shrink") == 0)
     {
@@ -240,6 +323,7 @@ int main(int argc, char **argv)
       fprintf(stderr, "   --shrink         Shrink the image to the current heap size when saving\n");
       fprintf(stderr, "   --with [file]    Treat [file] as an input source\n");
       fprintf(stderr, "   --opstats [file] Write statistics about VM operations to [file]\n");
+      fprintf(stderr, "      --callstats      Include how many times each address is called (slow)\n");
       exit(0);
     }
     else if ((strcmp(argv[i], "--about") == 0) ||
