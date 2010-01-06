@@ -126,8 +126,8 @@ void vm_process(int opcode) {
     case VM_CALL:
          vm.ip++;
          vm.rsp++;
-         TORS = vm.ip++;
-         vm.ip = vm.image[vm.ip-1] - 1;
+         TORS = vm.ip;
+         vm.ip = vm.image[vm.ip] - 1;
          break;
 
     /***************************************************/
