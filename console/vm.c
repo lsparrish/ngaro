@@ -116,7 +116,7 @@ void vm_process(VM *vm)
          vm->ip++;
          vm->rsp++;
          TORS = vm->ip;
-         vm->ip = vm->image[vm->ip-1] - 1;
+         vm->ip = vm->image[vm->ip] - 1;
          break;
 
     /***************************************************/
